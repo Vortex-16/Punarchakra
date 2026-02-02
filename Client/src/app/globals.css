@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #F0FDF4;
+  /* Very light green (Mint/Sage equivalent) */
+  --foreground: #0F4C3A;
+  /* Forest Green as primary text/foreground */
+
+  /* Brand Colors */
+  --forest-green: #0F4C3A;
+  --neon-lime: #39FF14;
+  --white: #ffffff;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-forest-green: var(--forest-green);
+  --color-neon-lime: var(--neon-lime);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
