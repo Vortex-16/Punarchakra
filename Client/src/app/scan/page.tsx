@@ -32,22 +32,11 @@ export default function WasteDetectionPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black transition-colors p-4 md:p-8">
       {/* Header */}
-      <header className="max-w-4xl mx-auto mb-8 flex items-center justify-between">
-        <Link 
-          href="/"
-          className="flex items-center gap-2 text-gray-500 hover:text-forest-green transition-colors font-medium"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Dashboard
-        </Link>
-        <h1 className="text-xl font-bold text-gray-900 dark:text-white hidden md:block">
-          AI Waste Detection
-        </h1>
-        <div className="w-8" /> {/* Spacer for centering */}
-      </header>
+      {/* Header removed */}
+      <div className="pt-8" />
 
       <main className="max-w-xl mx-auto relative min-h-[600px] flex flex-col items-center justify-center">
-        
+
         <AnimatePresence mode="wait">
           {status === 'idle' && (
             <motion.div
@@ -77,7 +66,7 @@ export default function WasteDetectionPage() {
               exit={{ opacity: 0 }}
               className="absolute inset-0 z-20"
             >
-               <AnalysisOverlay status={status} />
+              <AnalysisOverlay status={status} />
             </motion.div>
           )}
 
@@ -86,8 +75,8 @@ export default function WasteDetectionPage() {
               key="result"
               className="w-full z-10"
             >
-              <ResultCard 
-                result={result} 
+              <ResultCard
+                result={result}
                 onReset={resetDetection}
                 onVerification={() => setIsVerificationOpen(true)}
               />
@@ -97,7 +86,7 @@ export default function WasteDetectionPage() {
 
       </main>
 
-      <VerificationModal 
+      <VerificationModal
         isOpen={isVerificationOpen}
         onClose={() => setIsVerificationOpen(false)}
         onSelect={handleManualVerification}

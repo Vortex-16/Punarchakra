@@ -1,107 +1,102 @@
 "use client";
 import React from "react";
-
 import { motion } from "framer-motion";
-import { Heart, Globe, Sparkles, Users2 } from "lucide-react";
+import { Mic, Eye, Smartphone, Volume2 } from "lucide-react";
 
-const accessibilityPoints = [
+const accessibilityFeatures = [
     {
-        icon: Heart,
-        title: "Easy for Everyone",
-        description: "Large buttons, clear text, and simple navigation—designed with seniors in mind",
+        icon: Mic,
+        title: "Voice Commands",
+        description: "Navigate entirely by voice. 'Where is the nearest bin?' works instantly.",
     },
     {
-        icon: Globe,
-        title: "Multilingual Support",
-        description: "Available in multiple languages so everyone can participate",
+        icon: Eye,
+        title: "High Contrast UI",
+        description: "Designed for visibility with clear type, distinct colors, and screen reader support.",
     },
     {
-        icon: Sparkles,
-        title: "Simple Interface",
-        description: "No technical knowledge needed—if you can use a phone, you can recycle with us",
+        icon: Smartphone,
+        title: "Dynamic Text Sizing",
+        description: "Scale text up or down without breaking the layout. Read comfortably on any device.",
     },
     {
-        icon: Users2,
-        title: "Designed for All Ages",
-        description: "From children to grandparents, everyone can make an impact",
+        icon: Volume2,
+        title: "Audio Feedback",
+        description: "Hear confirmation tones and spoken results for every scan and interaction.",
     },
 ];
 
 export default function AccessibilitySection() {
     return (
-        <section className="landing-section px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-off-white to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-800">
             <div className="max-w-7xl mx-auto">
-                {/* Section Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    className="text-center mb-16"
-                >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-soft-teal/10 dark:bg-soft-teal/20 rounded-full mb-4">
-                        <Heart className="w-4 h-4 text-soft-teal" />
-                        <span className="text-sm font-semibold text-soft-teal">
-                            Inclusive by Design
-                        </span>
-                    </div>
-                    <h2 className="text-4xl sm:text-5xl font-black text-forest-green dark:text-white mb-4">
-                        Built for Everyone
-                    </h2>
-                    <p className="text-lg text-text-secondary dark:text-gray-300 max-w-2xl mx-auto">
-                        We believe sustainability should be accessible to all. That's why we've designed our platform with inclusivity at its core.
-                    </p>
-                </motion.div>
+                <div className="grid lg:grid-cols-2 gap-16 items-center">
+                    {/* Left Content */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <span className="text-sm font-bold text-forest-green tracking-wider uppercase mb-2 block">Inclusive Design</span>
+                        <h2 className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
+                            Technology that Includes Everyone.
+                        </h2>
+                        <p className="text-lg text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
+                            We believe sustainability should be accessible to all. That's why we've built Punarchakra with accessibility at its core, not as an afterthought.
+                        </p>
 
-                {/* Points Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    {accessibilityPoints.map((point, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="text-center"
-                        >
-                            {/* Icon */}
-                            <div className="w-16 h-16 mx-auto bg-gradient-to-br from-soft-teal to-success-green p-0.5 rounded-2xl mb-4">
-                                <div className="w-full h-full bg-white dark:bg-gray-900 rounded-2xl flex items-center justify-center">
-                                    <point.icon className="w-8 h-8 text-soft-teal" />
+                        <div className="space-y-6">
+                            {accessibilityFeatures.map((feature, index) => (
+                                <div key={index} className="flex gap-4">
+                                    <div className="flex-shrink-0 w-12 h-12 bg-white dark:bg-neutral-800 rounded-xl flex items-center justify-center shadow-sm">
+                                        <feature.icon className="w-6 h-6 text-forest-green dark:text-green-400" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                                            {feature.title}
+                                        </h3>
+                                        <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                                            {feature.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </motion.div>
+
+                    {/* Right Visual */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="relative"
+                    >
+                        <div className="relative aspect-square bg-white dark:bg-neutral-800 rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden p-8 flex items-center justify-center">
+                            <div className="absolute inset-0 bg-gradient-to-br from-green-50/50 to-transparent dark:from-green-900/10"></div>
+
+                            <div className="relative z-10 text-center space-y-8">
+                                <div className="inline-block p-4 bg-forest-green rounded-full shadow-lg shadow-forest-green/30 animate-pulse">
+                                    <Mic className="w-12 h-12 text-white" />
+                                </div>
+                                <div>
+                                    <p className="text-2xl font-bold text-gray-900 dark:text-white mb-2">"Find e-waste bins"</p>
+                                    <p className="text-forest-green font-medium">Listening...</p>
+                                </div>
+                                <div className="flex justify-center gap-2">
+                                    {[1, 2, 3, 4, 3, 2, 1].map((h, i) => (
+                                        <div
+                                            key={i}
+                                            className="w-2 bg-gray-200 dark:bg-gray-700 rounded-full animate-bounce"
+                                            style={{ height: h * 10, animationDelay: `${i * 0.1}s` }}
+                                        ></div>
+                                    ))}
                                 </div>
                             </div>
-
-                            {/* Content */}
-                            <h3 className="text-lg font-bold text-forest-green dark:text-white mb-2">
-                                {point.title}
-                            </h3>
-                            <p className="text-text-secondary dark:text-gray-400 leading-relaxed">
-                                {point.description}
-                            </p>
-                        </motion.div>
-                    ))}
-                </div>
-
-                {/* Testimonial-style Quote */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 }}
-                    className="max-w-4xl mx-auto"
-                >
-                    <div className="bg-gradient-to-br from-white to-light-grey dark:from-gray-900 dark:to-gray-800 rounded-3xl p-8 md:p-12 border border-gray-100 dark:border-gray-700 text-center shadow-xl">
-                        <div className="w-16 h-16 mx-auto bg-soft-teal/10 dark:bg-soft-teal/20 rounded-full flex items-center justify-center mb-6">
-                            <Users2 className="w-8 h-8 text-soft-teal" />
                         </div>
-                        <p className="text-xl md:text-2xl font-bold text-forest-green dark:text-white mb-4">
-                            "Technology should empower, not exclude"
-                        </p>
-                        <p className="text-text-secondary dark:text-gray-400 leading-relaxed">
-                            Whether you're 8 or 80, tech-savvy or just getting started, our platform welcomes you. We've removed the barriers so everyone can contribute to a cleaner, greener planet.
-                        </p>
-                    </div>
-                </motion.div>
+                    </motion.div>
+                </div>
             </div>
         </section>
     );
