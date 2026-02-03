@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { StatsCard } from "@/components/dashboard/StatsCard";
-import { Trash2, Recycle, DollarSign, Trees, TrendingUp, Map, ExternalLink } from "lucide-react";
+import { Trash2, Recycle, DollarSign, Trees, TrendingUp, Map, ExternalLink, Camera, ArrowRight } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import { ModeToggle } from "@/components/mode-toggle";
 import Link from "next/link";
@@ -74,6 +74,32 @@ export default function Dashboard() {
           trendUp={true}
           icon={Trees}
         />
+      </div>
+      
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1">
+        <Link href="/scan" className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-forest-green text-emerald-600 p-[2px] hover:shadow-xl transition-shadow">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10 h-full">
+                <div className="flex-1 text-center sm:text-left">
+                    <div className="inline-flex items-center justify-center p-2 bg-forest-green/10 rounded-lg text-forest-green mb-3">
+                        <Camera className="w-6 h-6" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                        Identify E-Waste Instantly
+                    </h2>
+                    <p className="text-gray-500 dark:text-gray-400 max-w-2xl">
+                        Use our powerful AI scanner to detect items, estimate their value, and ensure proper recycling. Just point and scan!
+                    </p>
+                </div>
+                <div className="flex items-center gap-4">
+                     <span className="px-6 py-3 bg-forest-green text-white rounded-xl font-bold text-sm shadow-lg shadow-forest-green/20 group-hover:scale-105 transition-transform flex items-center gap-2">
+                        Start Scanning <ArrowRight className="w-5 h-5" />
+                     </span>
+                </div>
+            </div>
+            {/* Background decoration */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-forest-green/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+        </Link>
       </div>
 
       {/* Charts Section */}
