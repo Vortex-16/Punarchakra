@@ -10,7 +10,7 @@ export default function LayoutWrapper({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const isLandingPage = pathname === "/home";
+    const isLandingPage = pathname === "/";
 
     if (isLandingPage) {
         return <div className="min-h-screen bg-background">{children}</div>;
