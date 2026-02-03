@@ -1,15 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LayoutDashboard, Map, BarChart3, Users, Settings, LogOut, Award } from "lucide-react";
+import { LayoutDashboard, Map, Scan, Users, Settings, LogOut, Award } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const sidebarItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/" },
+    { icon: LayoutDashboard, label: "Dashboard", href: "/home" },
+    { icon: Scan, label: "AI Waste Scanner", href: "/scan" },
     { icon: Map, label: "Bin Map", href: "/map" },
-    { icon: BarChart3, label: "Analytics", href: "/analytics" },
     { icon: Award, label: "Rewards", href: "/rewards" },
     { icon: Users, label: "Users", href: "/users" },
     { icon: Settings, label: "Settings", href: "/settings" },

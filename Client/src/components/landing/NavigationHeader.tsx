@@ -43,7 +43,7 @@ export default function NavigationHeader() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
-                    <Link href="/home" className="flex items-center gap-2 group">
+                    <Link href="/" className="flex items-center gap-2 group">
                         <div className="w-10 h-10 bg-forest-green rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
                             <span className="text-neon-lime font-black text-xl">P</span>
                         </div>
@@ -69,13 +69,13 @@ export default function NavigationHeader() {
                     <div className="hidden md:flex items-center gap-3">
                         <ModeToggle />
                         <Link
-                            href="/"
+                            href="/home"
                             className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-forest-green dark:hover:text-neon-lime font-medium transition-colors"
                         >
                             Login
                         </Link>
                         <Link
-                            href="/"
+                            href="/home"
                             className="px-6 py-2.5 bg-forest-green hover:bg-forest-green/90 text-white rounded-lg font-semibold transition-all hover-scale shadow-lg shadow-forest-green/20"
                         >
                             Sign Up
@@ -118,13 +118,13 @@ export default function NavigationHeader() {
                             ))}
                             <div className="pt-4 space-y-3 border-t border-gray-100 dark:border-gray-800">
                                 <Link
-                                    href="/dashboard"
+                                    href="/home"
                                     className="block w-full text-center py-2.5 text-gray-700 dark:text-gray-300 hover:text-forest-green dark:hover:text-neon-lime font-medium transition-colors"
                                 >
                                     Login
                                 </Link>
                                 <Link
-                                    href="/dashboard"
+                                    href="/home"
                                     className="block w-full text-center py-3 bg-forest-green hover:bg-forest-green/90 text-white rounded-lg font-semibold transition-all shadow-lg shadow-forest-green/20"
                                 >
                                     Sign Up
