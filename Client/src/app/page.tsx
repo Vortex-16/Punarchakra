@@ -2,9 +2,10 @@
 
 import { motion } from "framer-motion";
 import { StatsCard } from "@/components/dashboard/StatsCard";
-import { Trash2, Recycle, DollarSign, Trees, TrendingUp, Map } from "lucide-react";
+import { Trash2, Recycle, DollarSign, Trees, TrendingUp, Map, ExternalLink } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import { ModeToggle } from "@/components/mode-toggle";
+import Link from "next/link";
 
 const data = [
   { name: 'Mon', waste: 400, value: 240 },
@@ -161,18 +162,30 @@ export default function Dashboard() {
       {/* Recent Activity & Map Placeholder */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 transition-colors">Live Bin Status</h2>
-          <div className="aspect-video bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gray-200/50 dark:bg-gray-800/50 flex items-center justify-center">
-              <p className="text-gray-500 dark:text-gray-400 font-medium flex items-center gap-2">
-                <Map className="w-5 h-5" /> Interactive Map Component
-              </p>
-            </div>
-            {/* Simulated Pins */}
-            <div className="absolute top-1/4 left-1/4 w-4 h-4 rounded-full bg-forest-green border-2 border-white dark:border-gray-900 shadow-lg animate-pulse" />
-            <div className="absolute top-1/2 left-1/2 w-4 h-4 rounded-full bg-red-500 border-2 border-white dark:border-gray-900 shadow-lg" />
-            <div className="absolute bottom-1/3 right-1/3 w-4 h-4 rounded-full bg-forest-green border-2 border-white dark:border-gray-900 shadow-lg" />
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white transition-colors">Live Bin Status</h2>
+            <Link href="/map" className="text-xs font-semibold text-forest-green hover:underline flex items-center gap-1">
+              View Full Map <ExternalLink className="w-3 h-3" />
+            </Link>
           </div>
+          <Link href="/map" className="block group cursor-pointer relative">
+            <div className="aspect-video bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center relative overflow-hidden group-hover:ring-2 group-hover:ring-forest-green/50 transition-all">
+              <div className="absolute inset-0 bg-gray-200/50 dark:bg-gray-800/50 flex items-center justify-center">
+                <p className="text-gray-500 dark:text-gray-400 font-medium flex items-center gap-2 group-hover:text-forest-green transition-colors">
+                  <Map className="w-5 h-5" /> Interactive Map Component
+                </p>
+              </div>
+              {/* Simulated Pins */}
+              <div className="absolute top-1/4 left-1/4 w-4 h-4 rounded-full bg-forest-green border-2 border-white dark:border-gray-900 shadow-lg animate-pulse" />
+              <div className="absolute top-1/2 left-1/2 w-4 h-4 rounded-full bg-red-500 border-2 border-white dark:border-gray-900 shadow-lg" />
+              <div className="absolute bottom-1/3 right-1/3 w-4 h-4 rounded-full bg-forest-green border-2 border-white dark:border-gray-900 shadow-lg" />
+
+              {/* Hover overlay hint */}
+              <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span className="bg-white/90 dark:bg-gray-900/90 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg backdrop-blur text-gray-900 dark:text-white">Click to Explore</span>
+              </div>
+            </div>
+          </Link>
         </div>
 
         <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors">

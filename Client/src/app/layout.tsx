@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/dashboard/Sidebar";
+import { MobileNav } from "@/components/dashboard/MobileNav";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
@@ -35,9 +36,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex h-screen w-full">
+          <div className="flex h-screen w-full relative">
             <Sidebar />
-            <main className="flex-1 ml-20 md:ml-64 h-screen overflow-y-auto bg-background transition-all duration-300 p-6 md:p-8">
+            <MobileNav />
+            <main className="flex-1 ml-0 md:ml-64 h-screen overflow-y-auto bg-background transition-all duration-300 p-6 md:p-8 pb-24 md:pb-8">
               {children}
             </main>
           </div>

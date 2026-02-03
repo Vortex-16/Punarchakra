@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LayoutDashboard, Map, BarChart3, Users, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Map, BarChart3, Users, Settings, LogOut, Award } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ const sidebarItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/" },
     { icon: Map, label: "Bin Map", href: "/map" },
     { icon: BarChart3, label: "Analytics", href: "/analytics" },
+    { icon: Award, label: "Rewards", href: "/rewards" },
     { icon: Users, label: "Users", href: "/users" },
     { icon: Settings, label: "Settings", href: "/settings" },
 ];
@@ -21,7 +22,7 @@ export function Sidebar() {
         <motion.aside
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="h-screen w-20 md:w-64 bg-forest-green text-white fixed left-0 top-0 flex flex-col justify-between py-6 z-50 shadow-xl"
+            className="h-screen w-20 md:w-64 bg-forest-green text-white fixed left-0 top-0 hidden md:flex flex-col justify-between py-6 z-50 shadow-xl"
         >
             {/* Logo */}
             <div className="px-6 flex items-center gap-3">
