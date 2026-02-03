@@ -10,15 +10,17 @@
 
   /* Brand Colors */
   --forest-green: #0F4C3A;
-  --neon-lime: #39FF14;
+  --fresh-green: #22c55e;
+  /* Replaces neon-lime with a natural vibrant green (Tailwind green-500) */
   --white: #ffffff;
 
   /* Extended Landing Page Colors */
   --off-white: #F9FAFB;
   --light-grey: #F3F4F6;
   --soft-teal: #14B8A6;
-  --success-green: #10B981;
-  --text-secondary: #6B7280;
+  --success-green: #15803d;
+  /* darker green for text */
+  --text-secondary: #4b5563;
   --text-muted: #9CA3AF;
 
   /* Spacing */
@@ -28,10 +30,11 @@
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --off-white: #1a1a1a;
-  --light-grey: #2a2a2a;
+  --background: #121212;
+  /* Neutral dark, no blue tint */
+  --foreground: #f9fafb;
+  --off-white: #1f1f1f;
+  --light-grey: #2d2d2d;
 }
 
 @theme inline {
@@ -39,7 +42,9 @@
   --color-foreground: var(--foreground);
 
   --color-forest-green: var(--forest-green);
-  --color-neon-lime: var(--neon-lime);
+  --color-fresh-green: var(--fresh-green);
+  --color-neon-lime: var(--fresh-green);
+  /* Mapping neon-lime to fresh-green for backward compatibility */
   --color-off-white: var(--off-white);
   --color-light-grey: var(--light-grey);
   --color-soft-teal: var(--soft-teal);
