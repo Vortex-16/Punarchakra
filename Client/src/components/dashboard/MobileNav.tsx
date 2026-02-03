@@ -1,16 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LayoutDashboard, Map, BarChart3, Users, Settings, Award } from "lucide-react";
+import { LayoutDashboard, Map, Scan, Users, Settings, Award } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-    { icon: LayoutDashboard, label: "Home", href: "/" },
+    { icon: LayoutDashboard, label: "Home", href: "/home" },
+    { icon: Scan, label: "Scan", href: "/scan" },
     { icon: Map, label: "Map", href: "/map" },
     { icon: Award, label: "Rewards", href: "/rewards" },
-    { icon: BarChart3, label: "Stats", href: "/analytics" },
     { icon: Settings, label: "Settings", href: "/settings" },
 ];
 
