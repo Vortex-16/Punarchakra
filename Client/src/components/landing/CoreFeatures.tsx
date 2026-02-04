@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { MapPin, Brain, Gift, Leaf, ArrowRight } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -80,33 +80,70 @@ export default function CoreFeatures() {
 
     }, { scope: sectionRef });
 
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
+         const card = e.currentTarget;
+         const rect = card.getBoundingClientRect();
+         const x = e.clientX - rect.left;
+         const y = e.clientY - rect.top;
+
+         card.style.setProperty("--mouse-x", `${x}px`);
+         card.style.setProperty("--mouse-y", `${y}px`);
+    };
+
     return (
-        <section ref={sectionRef} id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-neutral-950">
-            <div className="max-w-7xl mx-auto">
+        <section ref={sectionRef} id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-zinc-50 dark:bg-zinc-950 relative overflow-hidden">
+             {/* Ambient Background Glow */}
+             <div className="absolute top-1/4 left-0 w-full h-[500px] bg-forest-green/5 blur-[120px] pointer-events-none" />
+
+            <div className="max-w-7xl mx-auto relative z-10">
                 {/* Section Header */}
-                <div ref={headerRef} className="text-center mb-16">
-                    <span className="text-sm font-bold text-forest-green tracking-wider uppercase mb-2 block">Powerful Features</span>
-                    <h2 className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
-                        Everything you need to <br /> recycle smarter.
+                <div ref={headerRef} className="text-center mb-20">
+                    <span className="text-sm font-bold text-forest-green tracking-wider uppercase mb-3 block">Powerful Features</span>
+                    <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tight leading-tight">
+                        Everything you need to <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-500">recycle smarter.</span>
                     </h2>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium">
                         We've built a complete ecosystem to make e-waste recycling effortless, rewarding, and transparent.
                     </p>
                 </div>
 
                 {/* Features Grid */}
-                <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
                     {features.map((feature, index) => (
                         <div
                             key={index}
-                            className="group relative h-full"
+                            onMouseMove={(e) => handleMouseMove(e, index)}
+                            className="group relative h-full rounded-[2rem] border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900 overflow-hidden hover:shadow-2xl transition-shadow duration-500"
+                            style={{
+                                // @ts-ignore
+                                "--mouse-x": "0px",
+                                "--mouse-y": "0px"
+                            }}
                         >
-                            {/* Card shadow bloom effect on hover */}
-                            <div className="absolute inset-0 bg-forest-green/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
+                            {/* Spotlight Effect Layer */}
+                            <div 
+                                className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-300 group-hover:opacity-100"
+                                style={{
+                                    background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(16, 185, 129, 0.15), transparent 40%)`
+                                }}
+                            />
+                            
+                            {/* Spotlight Border Layer */}
+                             <div 
+                                className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-300 group-hover:opacity-100"
+                                style={{
+                                    background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(16, 185, 129, 0.6), transparent 40%)`,
+                                    maskImage: "linear-gradient(black, black), linear-gradient(black, black)",
+                                    maskClip: "content-box, border-box",
+                                    maskComposite: "exclude",
+                                    WebkitMaskComposite: "xor",
+                                    padding: "1px",
+                                }}
+                            />
 
-                            {/* Main Card */}
-                            <div className="relative bg-gray-50 dark:bg-neutral-900 rounded-[2rem] p-8 h-full border border-gray-100 dark:border-gray-800 transition-all duration-500 hover:shadow-2xl hover:shadow-forest-green/5 dark:hover:shadow-black/50 hover:-translate-y-2 flex flex-col">
-
+                            {/* Main Card Content */}
+                            <div className="relative p-8 h-full flex flex-col z-10">
                                 {/* Icon Container */}
                                 <div className={`w-14 h-14 rounded-2xl ${feature.color} border flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-500`}>
                                     <feature.icon className="w-7 h-7" />
@@ -116,13 +153,13 @@ export default function CoreFeatures() {
                                 <h3 className="text-xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
                                     {feature.title}
                                 </h3>
-                                <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-sm mb-8 flex-1">
+                                <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-sm mb-8 flex-1 font-medium">
                                     {feature.description}
                                 </p>
 
                                 <div className="flex items-center text-sm font-extrabold text-foreground transition-all duration-300 group/link">
-                                    <span className="mr-2">Learn more</span>
-                                    <ArrowRight className="w-4 h-4 text-forest-green group-hover/link:translate-x-1 transition-transform" />
+                                    <span className="mr-2 group-hover:mr-3 transition-all">Learn more</span>
+                                    <ArrowRight className="w-4 h-4 text-forest-green" />
                                 </div>
                             </div>
                         </div>
@@ -131,15 +168,15 @@ export default function CoreFeatures() {
 
                 {/* Bottom Trust Badge */}
                 <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.6 }}
                     className="mt-20 text-center"
                 >
-                    <div className="inline-flex items-center gap-2 px-6 py-3 bg-forest-green/5 dark:bg-forest-green/10 rounded-full border border-forest-green/10 dark:border-forest-green/20">
+                    <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/50 dark:bg-white/5 rounded-full border border-gray-200 dark:border-white/10 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow">
                         <div className="w-2 h-2 rounded-full bg-forest-green animate-pulse" />
-                        <span className="text-xs font-bold text-forest-green dark:text-emerald-400 uppercase tracking-widest">
+                        <span className="text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-widest">
                             Built for impact • Designed for everyone
                         </span>
                     </div>
