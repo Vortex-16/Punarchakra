@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const sidebarItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/home" },
+    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
     { icon: Scan, label: "AI Waste Scanner", href: "/scan" },
     { icon: Map, label: "Bin Map", href: "/map" },
     { icon: Award, label: "Rewards", href: "/rewards" },
@@ -23,8 +23,8 @@ export function Sidebar() {
             className="h-screen w-20 md:w-56 bg-forest-green text-white fixed left-0 top-0 hidden md:flex flex-col justify-between py-6 z-50 shadow-xl"
         >
             {/* Logo */}
-            <Link href="/home" className="px-6 flex items-center gap-3 hover:opacity-80 transition-opacity">
-                <div className="w-8 h-8 rounded-full bg-neon-lime flex items-center justify-center shrink-0">
+            <Link href="/" className="px-6 flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <div className="w-8 h-8 rounded-full bg-fresh-green flex items-center justify-center shrink-0">
                     <span className="text-forest-green font-bold text-lg">P</span>
                 </div>
                 <span className="font-bold text-xl hidden md:block text-white tracking-wide">

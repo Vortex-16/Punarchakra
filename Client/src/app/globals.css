@@ -51,7 +51,6 @@
   --color-fresh-green: var(--fresh-green);
   --color-neon-lime: var(--fresh-green);
   /* Mapping neon-lime to fresh-green for backward compatibility */
-  --color-neon-lime: var(--neon-lime);
   --color-off-white: var(--off-white);
   --color-light-grey: var(--light-grey);
   --color-soft-teal: var(--soft-teal);
