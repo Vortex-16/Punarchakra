@@ -6,13 +6,20 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { AuroraBackground } from "../ui/AuroraBackground";
 import { TextPlugin } from "gsap/TextPlugin";
+import { useSession } from "@/hooks/useSession";
 
 gsap.registerPlugin(TextPlugin);
 
 export default function HeroSection() {
+    const { isAuthenticated } = useSession();
+    const [isMounted, setIsMounted] = React.useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
     const visualRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     useGSAP(() => {
         const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
@@ -31,8 +38,8 @@ export default function HeroSection() {
             ease: "none",
             delay: 0.5
         });
-        
-         gsap.to(".hero-scramble-2", {
+
+        gsap.to(".hero-scramble-2", {
             duration: 1.5,
             text: {
                 value: "Live Greener.",
@@ -70,12 +77,12 @@ export default function HeroSection() {
 
     return (
         <section className="relative w-full overflow-hidden bg-white dark:bg-[#050505]">
-             <AuroraBackground className="h-full pt-20 pb-12 lg:pt-32 lg:pb-24">
+            <AuroraBackground className="h-full pt-20 pb-12 lg:pt-32 lg:pb-24">
                 <div ref={containerRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
                     <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
                         {/* Content Left */}
                         <div ref={contentRef} className="text-left space-y-8">
-                             <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-forest-green/20 rounded-full shadow-sm hover:shadow-md transition-all cursor-default opacity-0">
+                            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-forest-green/20 rounded-full shadow-sm hover:shadow-md transition-all cursor-default opacity-0">
                                 <span className="relative flex h-2.5 w-2.5">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-forest-green opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-forest-green"></span>
@@ -99,8 +106,10 @@ export default function HeroSection() {
                                     href="/dashboard"
                                     className="w-full sm:w-auto px-8 py-4 bg-forest-green hover:bg-[#0a3f30] text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-xl shadow-forest-green/30 hover:shadow-2xl hover:shadow-forest-green/40 hover:-translate-y-1 group relative overflow-hidden"
                                 >
-                                     <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
-                                    <span className="relative z-10 flex items-center gap-2">Get Started <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></span>
+                                    <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
+                                    <span className="relative z-10 flex items-center gap-2">
+                                        {isMounted && isAuthenticated ? 'Open App' : 'Get Started'} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    </span>
                                 </Link>
                                 <button className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-white/5 text-gray-900 dark:text-white rounded-2xl font-bold flex items-center justify-center gap-2 border-2 border-transparent hover:border-gray-200 dark:hover:border-neutral-700 hover:bg-gray-50 dark:hover:bg-white/10 transition-all backdrop-blur-md">
                                     <Play className="w-4 h-4 fill-current" /> Watch Demo
@@ -122,11 +131,11 @@ export default function HeroSection() {
 
                         {/* Visual Right */}
                         <div ref={visualRef} className="relative hidden lg:block perspective-1000 opacity-0">
-                             <div className="relative z-10 w-full aspect-square max-w-[480px] mx-auto">
+                            <div className="relative z-10 w-full aspect-square max-w-[480px] mx-auto">
                                 {/* Glass Card Stack */}
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 dark:from-white/5 dark:to-transparent backdrop-blur-2xl rounded-[2.5rem] border border-white/20 dark:border-white/10 shadow-2xl transform rotate-[-6deg] translate-y-4"></div>
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 dark:from-white/5 dark:to-transparent backdrop-blur-2xl rounded-[2.5rem] border border-white/20 dark:border-white/10 shadow-2xl transform rotate-[-3deg] translate-y-2"></div>
-                                
+
                                 <div className="relative h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-neutral-800 dark:to-neutral-900 rounded-[2.5rem] p-2 shadow-2xl overflow-hidden group transform transition-transform duration-700 hover:rotate-y-6 hover:rotate-x-6 border border-white/50 dark:border-white/10">
                                     <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1597423244036-ef5020e83f3c?q=80&w=1974&auto=format&fit=crop')] bg-cover bg-center opacity-90 mix-blend-overlay transition-opacity duration-700 group-hover:opacity-75" />
                                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
@@ -148,7 +157,7 @@ export default function HeroSection() {
                                         </div>
                                     </div>
                                 </div>
-                             </div>
+                            </div>
 
                             {/* Floating Elements */}
                             <div className="absolute top-10 -left-8 w-24 h-24 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex items-center justify-center border border-white/50 dark:border-white/10 floating-item z-20">

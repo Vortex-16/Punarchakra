@@ -16,7 +16,7 @@ const sidebarItems = [
     { icon: Award, label: "Rewards", href: "/rewards" },
 ];
 
-export function Sidebar() {
+export function Sidebar({ className }: { className?: string }) {
     const pathname = usePathname();
     const { user } = useSession();
 
@@ -50,7 +50,7 @@ export function Sidebar() {
         <motion.aside
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="h-screen w-20 md:w-56 bg-forest-green text-white fixed left-0 top-0 hidden md:flex flex-col justify-between py-6 z-50 shadow-xl"
+            className={cn("h-screen w-20 md:w-56 bg-forest-green text-white fixed left-0 top-0 flex-col justify-between py-6 z-50 shadow-xl", className)}
         >
             {/* Logo */}
             <Link href="/" className="px-6 flex items-center gap-3 hover:opacity-80 transition-opacity">

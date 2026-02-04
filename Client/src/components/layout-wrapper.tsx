@@ -18,9 +18,9 @@ export default function LayoutWrapper({
 
     return (
         <div className="flex h-screen w-full relative overflow-hidden">
-            <Sidebar />
+            <Sidebar className="hidden lg:flex" />
             <MobileNav />
-            <main className="flex-1 ml-0 md:ml-64 h-screen overflow-y-auto bg-background transition-all duration-300 p-6 md:p-8 pb-24 md:pb-8">
+            <main className="flex-1 ml-0 lg:ml-64 h-screen overflow-y-auto bg-background transition-all duration-300 p-6 md:p-8 pb-24 lg:pb-8">
                 {children}
             </main>
         </div>
