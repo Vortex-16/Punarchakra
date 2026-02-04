@@ -5,10 +5,12 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { motion } from "framer-motion";
 import { StatsCard } from "@/components/dashboard/StatsCard";
-import { Trash2, Recycle, DollarSign, Trees, TrendingUp, Map, ExternalLink, Camera, ArrowRight, Truck, AlertTriangle } from "lucide-react";
+import { Trash2, Recycle, DollarSign, Trees, TrendingUp, Map, ExternalLink, Camera, ArrowRight, Truck, AlertTriangle, Loader2 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import { ModeToggle } from "@/components/mode-toggle";
 import Link from "next/link";
+import { useBinStats, useBins } from "@/hooks/useBins";
+import UserMenu from "@/components/UserMenu";
 
 const data = [
     { name: 'Mon', waste: 400, value: 240 },
@@ -22,7 +24,7 @@ const data = [
 
 const compositionData = [
     { name: 'Batteries', value: 400, color: '#0F4C3A' },
-    { name: 'Phones', value: 300, color: '#22c55e' }, // Fresh Green
+    { name: 'Phones', value: 300, color: '#22c55e' },
     { name: 'Cables', value: 300, color: '#10B981' },
     { name: 'Laptops', value: 200, color: '#059669' },
 ];
@@ -49,46 +51,44 @@ export default function DashboardPage() {
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors">Dashboard</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-1 transition-colors">Welcome back, Admin. Here&apos;s what&apos;s happening today.</p>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-3 items-center">
                     <ModeToggle />
                     <button className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-200 transition-colors">
                         Download Report
                     </button>
-                    <button className="px-4 py-2 bg-forest-green dark:bg-green-700 text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition-colors shadow-sm">
-                        Export Data
-                    </button>
+                    <UserMenu />
                 </div>
             </div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatsCard
-                    title="Total Waste Collected"
-                    value="2,543 kg"
-                    trend="+12.5%"
+                    title="Total Bins"
+                    value={statsLoading ? "..." : `${stats?.totalBins || 0}`}
+                    trend={statsLoading ? "" : `${stats?.activeBins || 0} Active`}
                     trendUp={true}
                     icon={Trash2}
                 />
                 <StatsCard
-                    title="Recovered Value"
-                    value="$12,450"
-                    trend="+8.2%"
-                    trendUp={true}
+                    title="Avg Fill Level"
+                    value={statsLoading ? "..." : `${stats?.avgFillLevel || 0}%`}
+                    trend={statsLoading ? "" : `${stats?.fullBins || 0} Full`}
+                    trendUp={stats?.avgFillLevel ? stats.avgFillLevel < 70 : true}
                     icon={DollarSign}
                 />
                 <StatsCard
                     title="Active Bins"
-                    value="42/45"
-                    trend="3 Offline"
-                    trendUp={false}
+                    value={statsLoading ? "..." : `${stats?.activeBins || 0}/${stats?.totalBins || 0}`}
+                    trend={statsLoading ? "" : `${stats?.maintenanceBins || 0} Maintenance`}
+                    trendUp={(stats?.maintenanceBins || 0) === 0}
                     icon={Recycle}
                 />
                 <StatsCard
-                    title="CO2 Offset"
-                    value="850 tons"
-                    trend="+24%"
-                    trendUp={true}
-                    icon={Trees}
+                    title="Critical Bins"
+                    value={statsLoading ? "..." : `${stats?.criticalBins?.length || 0}`}
+                    trend="Need Collection"
+                    trendUp={(stats?.criticalBins?.length || 0) === 0}
+                    icon={AlertTriangle}
                 />
             </div>
 
@@ -212,15 +212,21 @@ export default function DashboardPage() {
                     </div>
                     <Link href="/map" className="flex-1 relative group cursor-pointer block">
                         <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                            {/* Map Placeholder Content */}
                             <div className="absolute inset-0 bg-[url('/map-placeholder.png')] bg-cover opacity-20 dark:opacity-10 mix-blend-multiply dark:mix-blend-normal"></div>
                             <p className="text-gray-500 dark:text-gray-400 font-medium flex items-center gap-2 group-hover:text-forest-green transition-colors z-10">
                                 <Map className="w-5 h-5" /> Interactive Map Component
                             </p>
-                            {/* Pins */}
-                            <div className="absolute top-1/4 left-1/4 w-4 h-4 rounded-full bg-forest-green border-2 border-white dark:border-gray-900 shadow-lg animate-pulse" />
-                            <div className="absolute top-1/2 left-1/2 w-4 h-4 rounded-full bg-red-500 border-2 border-white dark:border-gray-900 shadow-lg" />
-                            <div className="absolute bottom-1/3 right-1/3 w-4 h-4 rounded-full bg-forest-green border-2 border-white dark:border-gray-900 shadow-lg" />
+                            {/* Real Bin Pins from API */}
+                            {bins.slice(0, 3).map((bin, idx) => (
+                                <div
+                                    key={bin._id}
+                                    className={`absolute w-4 h-4 rounded-full border-2 border-white dark:border-gray-900 shadow-lg ${bin.fillLevel > 80 ? 'bg-red-500' : 'bg-forest-green'} ${bin.fillLevel > 80 ? '' : 'animate-pulse'}`}
+                                    style={{
+                                        top: `${20 + idx * 25}%`,
+                                        left: `${20 + idx * 20}%`
+                                    }}
+                                />
+                            ))}
                         </div>
 
                         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
@@ -241,34 +247,27 @@ export default function DashboardPage() {
                             </span>
                         </div>
                         <div className="space-y-4">
-                            <div className="flex items-center gap-4 relative">
-                                {/* Route Line */}
-                                <div className="absolute left-[19px] top-8 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700 -z-10" />
-
-                                {/* Stop 1 */}
-                                <div className="flex items-center gap-3 w-full">
-                                    <div className="w-10 h-10 rounded-full bg-forest-green text-white flex items-center justify-center shrink-0 z-10 border-4 border-white dark:border-gray-900">
-                                        <span className="text-xs font-bold">1</span>
-                                    </div>
-                                    <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl flex-1 border border-gray-100 dark:border-gray-800/50">
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">Central Station Bin</p>
-                                        <p className="text-xs text-red-500 font-medium">95% Full • Critical</p>
+                            {/* Show critical bins from API */}
+                            {statsLoading ? (
+                                <div className="flex items-center justify-center py-4">
+                                    <Loader2 className="w-6 h-6 animate-spin text-forest-green" />
+                                </div>
+                            ) : stats?.criticalBins?.slice(0, 2).map((bin, idx) => (
+                                <div key={bin._id} className="flex items-center gap-4 relative">
+                                    {idx === 0 && <div className="absolute left-[19px] top-8 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700 -z-10" />}
+                                    <div className="flex items-center gap-3 w-full">
+                                        <div className={`w-10 h-10 rounded-full ${idx === 0 ? 'bg-forest-green text-white' : 'bg-white dark:bg-gray-800 text-gray-400 border-2 border-gray-200 dark:border-gray-700'} flex items-center justify-center shrink-0 z-10 ${idx === 0 ? 'border-4 border-white dark:border-gray-900' : ''}`}>
+                                            <span className="text-xs font-bold">{idx + 1}</span>
+                                        </div>
+                                        <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl flex-1 border border-gray-100 dark:border-gray-800/50">
+                                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{bin.location.address}</p>
+                                            <p className={`text-xs font-medium ${bin.fillLevel >= 90 ? 'text-red-500' : 'text-orange-500'}`}>
+                                                {bin.fillLevel}% Full • {bin.fillLevel >= 90 ? 'Critical' : 'High Priority'}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-
-                                {/* Stop 2 */}
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-3 w-full">
-                                    <div className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 text-gray-400 flex items-center justify-center shrink-0 z-10 border-2 border-gray-200 dark:border-gray-700">
-                                        <span className="text-xs font-bold">2</span>
-                                    </div>
-                                    <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl flex-1 border border-gray-100 dark:border-gray-800/50">
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">Mall Complex West</p>
-                                        <p className="text-xs text-orange-500 font-medium">85% Full • High Priority</p>
-                                    </div>
-                                </div>
-                            </div>
+                            ))}
 
                             <button className="w-full mt-2 py-2.5 bg-forest-green text-white rounded-xl text-sm font-bold shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                                 <Truck className="w-4 h-4" /> Dispatch Collection Truck
@@ -282,21 +281,24 @@ export default function DashboardPage() {
                             <AlertTriangle className="w-5 h-5 text-red-500" /> System Alerts
                         </h2>
                         <div className="space-y-3">
-                            {[
-                                { label: "Sensor Malfunction", location: "Bin #08 • Park Plaza", time: "10 mins ago", color: "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400" },
-                                { label: "Connection Lost", location: "Bin #15 • Metro Station", time: "25 mins ago", color: "bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400" }
-                            ].map((alert, i) => (
-                                <div key={i} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-800/50">
+                            {/* Show bins in maintenance */}
+                            {bins.filter(b => b.status === 'maintenance' || b.status === 'full').slice(0, 2).map((bin, i) => (
+                                <div key={bin._id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-800/50">
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-2 h-2 rounded-full ${alert.label.includes("Malfunction") ? "bg-red-500" : "bg-orange-500"} animate-pulse`} />
+                                        <div className={`w-2 h-2 rounded-full ${bin.status === 'maintenance' ? 'bg-orange-500' : 'bg-red-500'} animate-pulse`} />
                                         <div>
-                                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{alert.label}</p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400">{alert.location}</p>
+                                            <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                                {bin.status === 'maintenance' ? 'Maintenance Required' : 'Bin Full'}
+                                            </p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">{bin.location.address}</p>
                                         </div>
                                     </div>
-                                    <span className="text-xs font-medium text-gray-400">{alert.time}</span>
+                                    <span className="text-xs font-medium text-gray-400">{bin.fillLevel}%</span>
                                 </div>
                             ))}
+                            {bins.filter(b => b.status === 'maintenance' || b.status === 'full').length === 0 && (
+                                <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-2">No active alerts</p>
+                            )}
                         </div>
                     </div>
                 </div>

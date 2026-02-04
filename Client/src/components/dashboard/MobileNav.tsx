@@ -1,13 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LayoutDashboard, Map, Scan, Users, Settings, Award } from "lucide-react";
+import { LayoutDashboard, Map, Scan, Users, Settings, Award, Smartphone } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const navItems = [
     { icon: LayoutDashboard, label: "Home", href: "/home" },
+    { icon: Smartphone, label: "Smart Bin", href: "/smartBin" },
     { icon: Scan, label: "Scan", href: "/scan" },
     { icon: Map, label: "Map", href: "/map" },
     { icon: Award, label: "Rewards", href: "/rewards" },

@@ -1,13 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LayoutDashboard, Map, Scan, LogOut, Award } from "lucide-react";
+import { LayoutDashboard, Map, Scan, LogOut, Award, Smartphone } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const sidebarItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+    { icon: Smartphone, label: "Smart Bin", href: "/smartBin" },
     { icon: Scan, label: "AI Waste Scanner", href: "/scan" },
     { icon: Map, label: "Bin Map", href: "/map" },
     { icon: Award, label: "Rewards", href: "/rewards" },
