@@ -9,8 +9,85 @@ export default function ThemeToggle() {
     const { theme, setTheme } = useTheme();
     const isDark = theme === "dark";
 
-    const toggleTheme = () => {
-        setTheme(isDark ? "light" : "dark");
+    const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
+        // @ts-ignore - StartViewTransition is not yet in all TS types
+        if (!document.startViewTransition) {
+            setTheme(isDark ? "light" : "dark");
+            return;
+        }
+
+        const button = e.currentTarget;
+        const rect = button.getBoundingClientRect();
+        
+        // Get button center
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+
+        // Calculate distance to furthest corner for full coverage
+        const endRadius = Math.hypot(
+            Math.max(x, innerWidth - x),
+            Math.max(y, innerHeight - y)
+        );
+
+        // Determine direction: 
+        // If current is Dark, we go to Light -> Contract expanding darkness (reverse) OR just contract the old Dark layer?
+        // Plan: 
+        // Light -> Dark (Expand): New(Dark) layer expands from 0 to Full.
+        // Dark -> Light (Contract): Old(Dark) layer contracts from Full to 0. (Revealing Light underneath).
+        
+        // Current theme is 'isDark'.
+        // if isDark (true) -> Going to Light. We want "Darkness" to contract. 
+        // "Darkness" is the OLD view. So we animate Old View: Clip Full -> 0.
+        // And we need Old View on TOP. (handled by .contract-transition in CSS)
+        
+        // if !isDark (false) -> Going to Dark. We want "Darkness" to expand.
+        // "Darkness" is the NEW view. So we animate New View: Clip 0 -> Full.
+        // New View is usually on TOP.
+
+        if (isDark) {
+            document.documentElement.classList.add("contract-transition");
+        } else {
+            document.documentElement.classList.remove("contract-transition");
+        }
+
+        // @ts-ignore
+        const transition = document.startViewTransition(() => {
+            setTheme(isDark ? "light" : "dark");
+        });
+
+        transition.ready.then(() => {
+            const clipPath = [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+            ];
+
+            const isContracting = isDark; // We are contracting the "Darkness" (Old View)
+
+            // Animation Config
+            // Expand: New View grows from 0 to Full.
+            // Contract: Old View shrinks from Full to 0. (So we run the clipPath in reverse? or use different keyframes?)
+            
+            // If Expanding: New View, 0 -> Radius
+            // If Contracting: Old View, Radius -> 0.
+
+            document.documentElement.animate(
+                {
+                    clipPath: isContracting ? [...clipPath].reverse() : clipPath,
+                },
+                {
+                    duration: 1500, // Increased duration as requested
+                    easing: "ease-in-out",
+                    pseudoElement: isContracting
+                        ? "::view-transition-old(root)"
+                        : "::view-transition-new(root)",
+                }
+            );
+        });
+        
+        // Cleanup class after transition
+        transition.finished.then(() => {
+             document.documentElement.classList.remove("contract-transition");
+        });
     };
 
     const [mounted, setMounted] = React.useState(false);

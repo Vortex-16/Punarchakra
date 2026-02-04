@@ -344,6 +344,26 @@
   background: #374151;
 }
 
-.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #0f4c3a;
+
+/* View Transition API overrides */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Ensure default stacking: New on top */
+::view-transition-new(root) {
+  z-index: 10;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+/* For contracting animation: Old on top */
+html.contract-transition::view-transition-old(root) {
+  z-index: 10 !important;
+}
+html.contract-transition::view-transition-new(root) {
+  z-index: 1 !important;
 }
