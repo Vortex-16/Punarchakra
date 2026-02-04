@@ -13,24 +13,28 @@ const steps = [
         title: "Find a Bin",
         description: "Use the interactive map to find the nearest Punarchakra smart bin in your area.",
         color: "bg-blue-500",
+        hoverBorder: "group-hover:border-blue-500",
     },
     {
         icon: Camera,
         title: "Scan Item",
         description: "Open the scanner at the bin and point your camera at the e-waste item for instant AI identification.",
         color: "bg-purple-500",
+        hoverBorder: "group-hover:border-purple-500",
     },
     {
         icon: CreditCard,
         title: "Get Value",
         description: "The AI calculates the recyclable value. Confirm the deposit and see your rewards instantly.",
         color: "bg-orange-500",
+        hoverBorder: "group-hover:border-orange-500",
     },
     {
         icon: Recycle,
         title: "Impact Made",
         description: "Track your CO2 savings and earn points for your contribution to a circular economy.",
         color: "bg-green-500",
+        hoverBorder: "group-hover:border-green-500",
     },
 ];
 
@@ -39,6 +43,8 @@ export default function HowItWorks() {
     const headerRef = useRef<HTMLDivElement>(null);
     const stepsRef = useRef<HTMLDivElement>(null);
 
+    const beamRef = useRef<HTMLDivElement>(null);
+
     useGSAP(() => {
         // Animate Header
         gsap.fromTo(headerRef.current,
@@ -46,11 +52,12 @@ export default function HowItWorks() {
             {
                 y: 0,
                 opacity: 1,
-                duration: 0.8,
                 ease: "power3.out",
                 scrollTrigger: {
                     trigger: headerRef.current,
                     start: "top 85%",
+                    end: "bottom 60%",
+                    scrub: 1
                 }
             }
         );
@@ -59,25 +66,54 @@ export default function HowItWorks() {
         if (stepsRef.current) {
             const stepItems = stepsRef.current.querySelectorAll(".step-item");
             stepItems.forEach((step, index) => {
+                const isEven = index % 2 === 0;
+                
+                // Set initial state for clip-path to work
+                gsap.set(step, { 
+                    clipPath: isEven ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)",
+                    webkitClipPath: isEven ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)"
+                });
+
                 gsap.fromTo(step,
-                    { x: index % 2 === 0 ? -30 : 30, opacity: 0 },
+                    { 
+                        x: isEven ? -50 : 50, 
+                        opacity: 0,
+                    },
                     {
                         x: 0,
                         opacity: 1,
-                        duration: 0.8,
-                        ease: "power3.out",
+                        clipPath: "inset(0 0% 0 0)",
+                        webkitClipPath: "inset(0 0% 0 0)",
+                        ease: "power3.inOut",
                         scrollTrigger: {
                             trigger: step,
-                            start: "top 85%",
+                            start: "top 80%",
+                            end: "center center",
+                            scrub: 1
                         }
                     }
                 );
             });
+            
+            // Animate Vertical Line Beam
+            gsap.fromTo(beamRef.current,
+                { height: "0%" },
+                {
+                    height: "100%",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: stepsRef.current,
+                        start: "top center",
+                        end: "bottom center",
+                        scrub: true
+                    }
+                }
+            );
         }
     }, { scope: sectionRef });
 
     return (
-        <section ref={sectionRef} id="how-it-works" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-neutral-900/50">
+        <section ref={sectionRef} id="how-it-works" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-neutral-900/50 overflow-hidden">
             <div className="max-w-7xl mx-auto">
                 {/* Section Header */}
                 <div ref={headerRef} className="text-center mb-20 opacity-0">
@@ -92,14 +128,24 @@ export default function HowItWorks() {
                 {/* Steps Timeline */}
                 <div ref={stepsRef} className="relative">
                     {/* Vertical Line for Desktop */}
-                    <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-800 -translate-x-1/2" />
+                    <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-800 -translate-x-1/2">
+                         <div 
+                            ref={beamRef}
+                            className="absolute top-0 left-0 w-full bg-gradient-to-b from-transparent via-green-400 to-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.8)]"
+                         >
+                            {/* Glowing Head */}
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_25px_rgba(255,255,255,1)] z-20" />
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-8 h-8 bg-green-500/40 rounded-full blur-md z-10" />
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-12 h-12 bg-green-400/20 rounded-full blur-lg z-0" />
+                         </div>
+                    </div>
 
                     <div className="space-y-12 lg:space-y-0">
                         {steps.map((step, index) => (
                             <div key={index} className="step-item relative flex flex-col lg:flex-row items-center opacity-0">
                                 {/* Desktop Indexing */}
                                 <div className={`flex-1 w-full lg:w-1/2 ${index % 2 === 0 ? "lg:text-right lg:pr-16" : "lg:order-last lg:pl-16"}`}>
-                                    <div className={`p-8 bg-white dark:bg-neutral-900 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-shadow duration-500`}>
+                                    <div className={`p-8 bg-white dark:bg-neutral-900 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-800 ${step.hoverBorder} hover:shadow-xl transition-all duration-300 group`}>
                                         <div className={`w-14 h-14 ${step.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg ${index % 2 === 0 ? "lg:ml-auto" : ""}`}>
                                             <step.icon className="w-7 h-7 text-white" />
                                         </div>

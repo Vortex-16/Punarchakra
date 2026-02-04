@@ -4,7 +4,7 @@ import { Shield, Eye, CheckCircle, Lock } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { motion } from "framer-motion";
+
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -44,6 +44,7 @@ export default function TrustSection() {
     const sectionRef = useRef<HTMLElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<HTMLDivElement>(null);
+    const bottomRef = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
         gsap.fromTo(headerRef.current,
@@ -51,31 +52,53 @@ export default function TrustSection() {
             {
                 y: 0,
                 opacity: 1,
-                duration: 0.8,
+                duration: 2.5,
                 ease: "power3.out",
                 scrollTrigger: {
                     trigger: headerRef.current,
                     start: "top 90%",
+                    end: "bottom 60%",
+                    scrub: 1
                 }
             }
         );
 
         if (gridRef.current) {
             gsap.fromTo(gridRef.current.children,
-                { x: -20, opacity: 0 },
+                { 
+                    y: -60, 
+                    opacity: 0 
+                },
                 {
-                    x: 0,
+                    y: 0,
                     opacity: 1,
-                    duration: 0.6,
-                    stagger: 0.1,
+                    duration: 2.5,
+                    stagger: 0.2,
                     ease: "power2.out",
                     scrollTrigger: {
                         trigger: gridRef.current,
-                        start: "top 85%",
+                        start: "top 80%",
+                        end: "center center",
+                        scrub: 1
                     }
                 }
             );
         }
+
+        // Bottom Assurance
+        gsap.fromTo(bottomRef.current,
+            { opacity: 0 },
+            {
+                opacity: 1,
+                delay: 0.6,
+                scrollTrigger: {
+                    trigger: bottomRef.current,
+                    start: "top 95%",
+                    end: "bottom 90%",
+                    scrub: 1
+                }
+            }
+        );
 
     }, { scope: sectionRef });
 
@@ -103,10 +126,13 @@ export default function TrustSection() {
                     {trustPoints.map((point, index) => (
                         <div
                             key={index}
-                            className="flex gap-6 p-8 bg-gray-50 dark:bg-neutral-900 rounded-[2rem] border border-gray-100 dark:border-neutral-800 transition-all hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/50 hover:-translate-y-1 opacity-0"
+                            className="group relative flex gap-6 p-8 bg-gray-50 dark:bg-neutral-900 rounded-[2rem] border border-gray-100 dark:border-neutral-800 transition-all duration-500 hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/50 hover:-translate-y-2 opacity-0 overflow-hidden"
                         >
+                            {/* Bottom Border Sweep */}
+                            <div className="absolute bottom-0 left-0 h-1 bg-forest-green w-0 group-hover:w-full transition-all duration-500 ease-out" />
+
                             {/* Icon */}
-                            <div className="flex-shrink-0 w-14 h-14 bg-white dark:bg-neutral-800 rounded-2xl flex items-center justify-center shadow-sm">
+                            <div className="flex-shrink-0 w-14 h-14 bg-white dark:bg-neutral-800 rounded-2xl flex items-center justify-center shadow-sm transition-transform duration-500 group-hover:scale-110 group-hover:bg-green-50 dark:group-hover:bg-green-900/10">
                                 <point.icon className="w-7 h-7 text-forest-green dark:text-green-400" />
                             </div>
 
@@ -124,17 +150,14 @@ export default function TrustSection() {
                 </div>
 
                 {/* Bottom Assurance */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.6 }}
-                    className="mt-20 text-center"
+                <div
+                    ref={bottomRef}
+                    className="mt-20 text-center opacity-0"
                 >
                     <p className="text-gray-400 dark:text-gray-500 italic font-medium max-w-lg mx-auto leading-relaxed">
                         "Your trust is our priority. Every decision we make puts transparency and security at the center of the experience."
                     </p>
-                </motion.div>
+                </div>
             </div>
         </section>
     );

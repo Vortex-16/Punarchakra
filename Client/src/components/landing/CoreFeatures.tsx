@@ -51,11 +51,12 @@ export default function CoreFeatures() {
             {
                 y: 0,
                 opacity: 1,
-                duration: 0.8,
                 ease: "power3.out",
                 scrollTrigger: {
                     trigger: headerRef.current,
                     start: "top 85%",
+                    end: "bottom 60%",
+                    scrub: 1
                 }
             }
         );
@@ -63,16 +64,24 @@ export default function CoreFeatures() {
         // Animate Grid Items
         if (gridRef.current) {
             gsap.fromTo(gridRef.current.children,
-                { y: 40, opacity: 0 },
+                { 
+                    scale: 0.8,
+                    rotation: 5,
+                    opacity: 0,
+                    y: 50 
+                },
                 {
-                    y: 0,
+                    scale: 1,
+                    rotation: 0,
                     opacity: 1,
-                    duration: 0.6,
+                    y: 0,
                     stagger: 0.1,
-                    ease: "power3.out",
+                    ease: "linear",
                     scrollTrigger: {
                         trigger: gridRef.current,
                         start: "top 80%",
+                        end: "bottom 60%",
+                        scrub: 1
                     }
                 }
             );
@@ -114,7 +123,7 @@ export default function CoreFeatures() {
                         <div
                             key={index}
                             onMouseMove={(e) => handleMouseMove(e, index)}
-                            className="group relative h-full rounded-[2rem] border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900 overflow-hidden hover:shadow-2xl transition-shadow duration-500"
+                            className="group relative h-full rounded-[2rem] border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-forest-green/10"
                             style={{
                                 // @ts-ignore
                                 "--mouse-x": "0px",
