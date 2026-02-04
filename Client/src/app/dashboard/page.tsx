@@ -11,6 +11,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import Link from "next/link";
 import { useBinStats, useBins } from "@/hooks/useBins";
 import UserMenu from "@/components/UserMenu";
+import { useSession } from "@/hooks/useSession";
 
 const data = [
     { name: 'Mon', waste: 400, value: 240 },
@@ -31,6 +32,9 @@ const compositionData = [
 
 export default function DashboardPage() {
     const containerRef = useRef<HTMLDivElement>(null);
+    const { stats, loading } = useBinStats();
+    const { bins = [] } = useBins();
+    const { user } = useSession();
 
     useGSAP(() => {
         gsap.from(".stats-card", {
@@ -43,13 +47,19 @@ export default function DashboardPage() {
         });
     }, { scope: containerRef });
 
+    const getUserGreeting = () => {
+        if (user?.name) return user.name;
+        if (user?.role) return user.role.charAt(0).toUpperCase() + user.role.slice(1);
+        return "User";
+    };
+
     return (
         <div className="space-y-8" ref={containerRef}>
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors">Dashboard</h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-1 transition-colors">Welcome back, Admin. Here&apos;s what&apos;s happening today.</p>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1 transition-colors">Welcome back, {getUserGreeting()}. Here&apos;s what&apos;s happening today.</p>
                 </div>
                 <div className="flex gap-3 items-center">
                     <ModeToggle />
@@ -64,28 +74,28 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatsCard
                     title="Total Bins"
-                    value={statsLoading ? "..." : `${stats?.totalBins || 0}`}
-                    trend={statsLoading ? "" : `${stats?.activeBins || 0} Active`}
+                    value={loading ? "..." : `${stats?.totalBins || 0}`}
+                    trend={loading ? "" : `${stats?.activeBins || 0} Active`}
                     trendUp={true}
                     icon={Trash2}
                 />
                 <StatsCard
                     title="Avg Fill Level"
-                    value={statsLoading ? "..." : `${stats?.avgFillLevel || 0}%`}
-                    trend={statsLoading ? "" : `${stats?.fullBins || 0} Full`}
+                    value={loading ? "..." : `${stats?.avgFillLevel || 0}%`}
+                    trend={loading ? "" : `${stats?.fullBins || 0} Full`}
                     trendUp={stats?.avgFillLevel ? stats.avgFillLevel < 70 : true}
                     icon={DollarSign}
                 />
                 <StatsCard
                     title="Active Bins"
-                    value={statsLoading ? "..." : `${stats?.activeBins || 0}/${stats?.totalBins || 0}`}
-                    trend={statsLoading ? "" : `${stats?.maintenanceBins || 0} Maintenance`}
+                    value={loading ? "..." : `${stats?.activeBins || 0}/${stats?.totalBins || 0}`}
+                    trend={loading ? "" : `${stats?.maintenanceBins || 0} Maintenance`}
                     trendUp={(stats?.maintenanceBins || 0) === 0}
                     icon={Recycle}
                 />
                 <StatsCard
                     title="Critical Bins"
-                    value={statsLoading ? "..." : `${stats?.criticalBins?.length || 0}`}
+                    value={loading ? "..." : `${stats?.criticalBins?.length || 0}`}
                     trend="Need Collection"
                     trendUp={(stats?.criticalBins?.length || 0) === 0}
                     icon={AlertTriangle}
@@ -248,7 +258,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="space-y-4">
                             {/* Show critical bins from API */}
-                            {statsLoading ? (
+                            {loading ? (
                                 <div className="flex items-center justify-center py-4">
                                     <Loader2 className="w-6 h-6 animate-spin text-forest-green" />
                                 </div>

@@ -5,6 +5,8 @@ import { LayoutDashboard, Map, Scan, LogOut, Award, Smartphone } from "lucide-re
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/hooks/useSession";
+import { signOut } from "next-auth/react";
 
 const sidebarItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
@@ -16,6 +18,33 @@ const sidebarItems = [
 
 export function Sidebar() {
     const pathname = usePathname();
+    const { user } = useSession();
+
+    const handleLogout = async () => {
+        await signOut({ callbackUrl: "/login" });
+    };
+
+    // Get user initials for avatar
+    const getInitials = (name?: string, email?: string) => {
+        if (name) {
+            return name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .toUpperCase()
+                .slice(0, 2);
+        }
+        if (email) {
+            return email.slice(0, 2).toUpperCase();
+        }
+        return "U";
+    };
+
+    // Get role display name
+    const getRoleDisplay = (role?: string) => {
+        if (!role) return "User";
+        return role.charAt(0).toUpperCase() + role.slice(1);
+    };
 
     return (
         <motion.aside
@@ -61,7 +90,10 @@ export function Sidebar() {
 
             {/* Bottom Actions */}
             <div className="px-4 space-y-4">
-                <button className="flex items-center gap-4 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white w-full transition-colors group">
+                <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-4 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white w-full transition-colors group"
+                >
                     <LogOut className="w-5 h-5" />
                     <span className="hidden md:block text-sm font-medium">Logout</span>
                 </button>
@@ -69,12 +101,18 @@ export function Sidebar() {
                 <div className="flex items-center gap-3 px-3 pt-4 border-t border-white/10">
                     <div className="w-10 h-10 rounded-full bg-white/10 p-0.5">
                         <div className="w-full h-full rounded-full bg-forest-green flex items-center justify-center overflow-hidden border border-white/20">
-                            <span className="text-xs font-bold text-white">AD</span>
+                            <span className="text-xs font-bold text-white">
+                                {getInitials(user?.name, user?.email)}
+                            </span>
                         </div>
                     </div>
                     <div className="hidden md:block">
-                        <p className="text-sm font-semibold text-white">Admin User</p>
-                        <p className="text-xs text-white/50">admin@punarchakra.com</p>
+                        <p className="text-sm font-semibold text-white">
+                            {user?.name || getRoleDisplay(user?.role)}
+                        </p>
+                        <p className="text-xs text-white/50">
+                            {user?.email || "user@punarchakra.com"}
+                        </p>
                     </div>
                 </div>
             </div>
