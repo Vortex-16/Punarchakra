@@ -8,7 +8,7 @@ const publicRoutes = ["/", "/login", "/register"];
 // Define admin-only routes
 const adminRoutes = ["/admin"];
 
-export async function proxy(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
     const session = await auth();
     const { pathname } = request.nextUrl;
 

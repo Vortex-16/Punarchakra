@@ -1,4 +1,5 @@
 const Bin = require('../models/Bin');
+const User = require('../models/User');
 
 // @desc    Get all bins
 // @route   GET /api/bins
@@ -133,11 +134,71 @@ const getBinStats = async (req, res) => {
     }
 };
 
+// @desc    Deposit item into bin
+// @route   POST /api/bins/deposit
+// @access  Private
+const depositItem = async (req, res) => {
+    const { binId, itemType, points, sustainabilityScore } = req.body;
+
+    if (!itemType || !points) {
+        return res.status(400).json({ message: 'Missing deposit details' });
+    }
+
+    try {
+        // 1. Update User Points
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.points += points;
+        user.history.unshift({
+            itemType: `Recycled: ${itemType}`,
+            pointsEarned: points,
+            date: Date.now()
+        });
+        await user.save();
+
+        // 2. Update Bin Fill Level
+        // If no binId provided, find the first active bin (Simulation Mode)
+        let bin;
+        if (binId) {
+            bin = await Bin.findById(binId);
+        } else {
+            bin = await Bin.findOne({ status: 'active' });
+        }
+
+        if (bin) {
+            // Simulate volume based on item type or fixed increment
+            const fillIncrement = 5; // Fixed 5% per item for demo
+            bin.fillLevel = Math.min(bin.fillLevel + fillIncrement, 100);
+
+            if (bin.fillLevel >= 90) {
+                bin.status = 'full';
+            }
+
+            await bin.save();
+        }
+
+        res.status(200).json({
+            message: 'Deposit successful',
+            pointsAdded: points,
+            totalPoints: user.points,
+            binFillLevel: bin ? bin.fillLevel : null
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Transaction failed' });
+    }
+};
+
 module.exports = {
     getBins,
     getBinById,
     createBin,
     updateBin,
     deleteBin,
-    getBinStats
+    getBinStats,
+    depositItem
 };

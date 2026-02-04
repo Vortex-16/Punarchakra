@@ -15,7 +15,9 @@ const api = {
             (headers as any)['Authorization'] = `Bearer ${options.token}`;
         }
 
-        const response = await fetch(`${API_URL}${endpoint}`, {
+        const url = `${API_URL}${endpoint}`;
+        console.log(`Fetching: ${url} with token: ${options.token ? 'Yes' : 'No'}`);
+        const response = await fetch(url, {
             ...options,
             method: 'GET',
             headers,
@@ -52,6 +54,14 @@ const api = {
 
         return response.json();
     },
+};
+
+export const redeemReward = async (token: string, pointsCost: number, rewardTitle: string) => {
+    return api.post('/auth/redeem', { pointsCost, rewardTitle }, { token });
+};
+
+export const depositWasteItem = async (token: string, itemType: string, points: number, sustainabilityScore: number) => {
+    return api.post('/bins/deposit', { itemType, points, sustainabilityScore }, { token });
 };
 
 export default api;

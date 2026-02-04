@@ -81,8 +81,50 @@ const getMe = async (req, res) => {
     res.status(200).json(user);
 };
 
+// @desc    Redeem a reward
+// @route   POST /api/auth/redeem
+// @access  Private
+const redeemReward = async (req, res) => {
+    const { pointsCost, rewardTitle } = req.body;
+
+    if (!pointsCost || !rewardTitle) {
+        return res.status(400).json({ message: 'Please provide reward details' });
+    }
+
+    // Get fresh user data
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check balance
+    if (user.points < pointsCost) {
+        return res.status(400).json({ message: 'Insufficient points' });
+    }
+
+    // Deduct points
+    user.points -= pointsCost;
+
+    // Add to history
+    user.history.unshift({
+        itemType: `Redeemed: ${rewardTitle}`,
+        pointsEarned: -pointsCost,
+        date: Date.now()
+    });
+
+    await user.save();
+
+    res.status(200).json({
+        points: user.points,
+        history: user.history,
+        message: 'Reward redeemed successfully'
+    });
+};
+
 module.exports = {
     registerUser,
     loginUser,
     getMe,
+    redeemReward,
 };

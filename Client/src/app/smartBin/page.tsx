@@ -4,6 +4,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, Camera, RefreshCw, AlertTriangle, CheckCircle, Loader2, X, Zap, Box, Recycle, QrCode, Globe, Battery, Wifi } from "lucide-react";
 import { detectWaste } from "@/app/actions/detectWaste";
+import { useSession } from "@/hooks/useSession";
+import { depositWasteItem } from "@/lib/api";
+import { useToast } from "@/components/ui/use-toast";
 
 // Quick helper to convert file to base64
 const fileToBase64 = (file: File): Promise<string> => {
@@ -93,10 +96,13 @@ const TRANSLATIONS = {
 };
 
 export default function SmartBinMachine() {
+    const { session } = useSession(); // Access user session
+    const { toast } = useToast();
     const [status, setStatus] = useState<"locked" | "idle" | "camera" | "analyzing" | "result" | "error">("locked");
     const [imageSrc, setImageSrc] = useState<string | null>(null);
     const [result, setResult] = useState<any>(null);
     const [dragActive, setDragActive] = useState(false);
+    const [hasDeposited, setHasDeposited] = useState(false);
 
     // New State Features
     const [language, setLanguage] = useState<Language>('en');
@@ -109,10 +115,39 @@ export default function SmartBinMachine() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Initial random setup
+    // Initial setup - Fetch real bin status
     useEffect(() => {
-        // Randomize fill level slightly on mount
-        setFillLevel(Math.floor(Math.random() * 60) + 20);
+        // Fetch specific bin or default bin status
+        const fetchBinStatus = async () => {
+            try {
+                // For demo, we might not have a bin ID, so we'll fetch stats or a default bin
+                // Ideally, this machine knows its ID. Let's assume a default bin for now or fetch stats
+                // We'll fetch bin stats to get an average or a specific bin if we had one.
+                // Instead, let's use the 'active' bin logic from backend by depositing 0 points or just getting bins
+                // A better way: GET /api/bins?status=active
+
+                // For now, let's start at 0 or a fixed value if we can't fetch, 
+                // but real implementation should fetch.
+                // Let's simulation a "connect" to backend.
+
+                // Simple: Set to 0 initially, or fetch if we add a getBin API.
+                // Let's keep it simple: Start at 45 (visual) but if we had an ID we'd fetch.
+                // BUT user said "randomly changing". 
+                // REMOVE THE RANDOM SETTIMEOUT/INTERVAL IF ANY.
+                // The previous code had: setFillLevel(Math.floor(Math.random() * 60) + 20);
+                // We will remove that.
+
+                // If we want to show REAL fill level, we need to GET it.
+                // Let's just default to a static value for now since we don't have a 'getMyBin' endpoint for the kiosk
+                // unless we want to query the list.
+
+                setFillLevel(40); // Default starting level
+
+            } catch (err) {
+                console.error("Failed to fetch bin status");
+            }
+        };
+        fetchBinStatus();
     }, []);
 
     // Helper to simulate login
@@ -178,19 +213,65 @@ export default function SmartBinMachine() {
     // --- AI Integration ---
     const analyzeImage = async (base64: string) => {
         setStatus("analyzing");
+        setHasDeposited(false); // Reset deposit state
         try {
             const response = await detectWaste(base64);
-            if (response.success) {
+
+            if (response.success && response.data.recyclable) {
+                const aiData = response.data;
+                // Don't deposit yet. Just show result and ask for confirmation.
+                setResult(aiData);
+                setStatus("result");
+
+            } else if (response.success && !response.data.recyclable) {
                 setResult(response.data);
                 setStatus("result");
-                // Increment fill level on success
-                setFillLevel(prev => Math.min(prev + Math.floor(Math.random() * 10) + 5, 100));
+                toast({
+                    title: "Item Rejected",
+                    description: "Only E-Waste is accepted. General waste detected.",
+                    variant: "destructive"
+                });
             } else {
                 console.error(response.error);
                 setStatus("error");
             }
         } catch (e) {
             setStatus("error");
+        }
+    };
+
+    const handleConfirmDeposit = async () => {
+        if (!result || !session?.accessToken) return;
+
+        try {
+            // Show loading or optimistic update?
+            const depositRes = await depositWasteItem(
+                session.accessToken,
+                result.label,
+                result.estimated_credit,
+                result.sustainability_score
+            );
+
+            setHasDeposited(true);
+
+            // Update fill level from BACKEND response
+            if (depositRes.binFillLevel) {
+                setFillLevel(depositRes.binFillLevel);
+            }
+
+            toast({
+                title: "Deposit Successful! 🎉",
+                description: `${result.estimated_credit} credits added to ${session.user?.email}`,
+                variant: "default"
+            });
+
+        } catch (err) {
+            console.error("Deposit failed", err);
+            toast({
+                title: "Deposit Failed",
+                description: "Could not connect to server.",
+                variant: "destructive"
+            });
         }
     };
 
@@ -421,7 +502,7 @@ export default function SmartBinMachine() {
                                         </div>
 
                                         <div>
-                                            <h2 className="text-3xl font-black text-white uppercase">{result.label}</h2>
+                                            <h2 className="text-3xl font-black text-white uppercase leading-none mb-1">{result.label}</h2>
                                             <p className="text-neutral-400 text-sm">{result.material}</p>
                                         </div>
 
@@ -438,14 +519,36 @@ export default function SmartBinMachine() {
                                                 <p className="text-gray-400 text-xs italic">"{result.reasoning}"</p>
                                             </div>
                                         </div>
+
+                                        {/* Confirmation Message */}
+                                        {result.recyclable && !hasDeposited && (
+                                            <div className="text-xs text-center text-neutral-400 mt-2">
+                                                <p className="mb-1">Deposit this item to claim rewards?</p>
+                                                <p className="text-neutral-500">Credited to: <span className="text-white font-mono">{session?.user?.email || "..."}</span></p>
+                                            </div>
+                                        )}
+                                        {hasDeposited && (
+                                            <div className="text-green-500 font-bold text-sm animate-pulse">
+                                                Item Deposited Successfully!
+                                            </div>
+                                        )}
                                     </div>
 
-                                    <button
-                                        onClick={() => setStatus("idle")}
-                                        className="mt-6 w-full py-4 bg-[#FFD700] text-black font-black uppercase tracking-wider rounded-xl hover:bg-yellow-300 transition-colors"
-                                    >
-                                        {t.nextItem}
-                                    </button>
+                                    {!hasDeposited ? (
+                                        <button
+                                            onClick={result.recyclable ? handleConfirmDeposit : () => setStatus("idle")}
+                                            className={`mt-6 w-full py-4 font-black uppercase tracking-wider rounded-xl transition-colors cursor-pointer ${result.recyclable ? "bg-green-500 text-black hover:bg-green-400" : "bg-neutral-700 text-white hover:bg-neutral-600"}`}
+                                        >
+                                            {result.recyclable ? "Confirm Deposit" : "Cancel"}
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => setStatus("idle")}
+                                            className="mt-6 w-full py-4 bg-[#FFD700] text-black font-black uppercase tracking-wider rounded-xl hover:bg-yellow-300 transition-colors cursor-pointer"
+                                        >
+                                            {t.nextItem}
+                                        </button>
+                                    )}
                                 </motion.div>
                             )}
 

@@ -6,7 +6,8 @@ const {
     createBin,
     updateBin,
     deleteBin,
-    getBinStats
+    getBinStats,
+    depositItem
 } = require('../controllers/binController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -21,5 +22,6 @@ router.get('/:id', getBinById);
 router.post('/', protect, createBin);
 router.put('/:id', protect, updateBin);
 router.delete('/:id', protect, deleteBin);
+router.post('/deposit', protect, depositItem);
 
 module.exports = router;
