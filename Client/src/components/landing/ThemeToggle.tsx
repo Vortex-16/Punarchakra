@@ -112,7 +112,7 @@ export default function ThemeToggle() {
                 animate={{
                     backgroundColor: isDark ? "#0F172A" : "#60A5FA", // Dark Slate vs Sky Blue
                 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
+                transition={{ duration: 1.5, ease: "easeInOut" }}
             />
 
             {/* Scenery Container */}
@@ -123,7 +123,7 @@ export default function ThemeToggle() {
                          y: isDark ? 20 : 0,
                          opacity: isDark ? 0 : 1 
                      }}
-                     transition={{ duration: 0.4 }}
+                     transition={{ duration: 1.5, ease: "easeInOut" }}
                      className="absolute inset-0"
                 >
                     <Cloud className="absolute top-1 left-2 w-4 h-4 text-white fill-white opacity-90" />
@@ -137,7 +137,7 @@ export default function ThemeToggle() {
                          y: isDark ? 0 : -20,
                          opacity: isDark ? 1 : 0 
                      }}
-                     transition={{ duration: 0.4 }}
+                     transition={{ duration: 1.5, ease: "easeInOut" }}
                      className="absolute inset-0"
                 >
                     <Star className="absolute top-2 left-3 w-2 h-2 text-yellow-100 fill-yellow-100 opacity-80 animate-pulse" />
@@ -157,16 +157,21 @@ export default function ThemeToggle() {
                 }}
                 transition={{
                     type: "spring",
-                    stiffness: 700,
-                    damping: 30
+                    stiffness: 700, ease: "easeInOut",
+                    damping: 30, // Kept spring for movement feel, but maybe should align roughly with 1.5s
+                    duration: 1.5 // Adding duration just in case layout supports it, but spring overrides. 
+                    // Actually, let's keep spring for the movement X, it feels better, but maybe soften the stiffness/damping to be slower.
+                    // Or switch to tween for perfect sync. Let's try tween.
                 }}
+                // switching to tween for perfect sync with the circular wipe
+                
                 className="relative w-9 h-9 rounded-full shadow-lg flex items-center justify-center z-10 bg-transparent overflow-hidden"
             >
                 {/* Sun Face */}
                  <motion.div
                      // Sun sets (goes down) when dark, rises (comes up) when light
                      animate={{ opacity: isDark ? 0 : 1, y: isDark ? 20 : 0 }}
-                     transition={{ duration: 0.3 }}
+                     transition={{ duration: 1.5, ease: "easeInOut" }}
                      className="absolute inset-0 bg-yellow-400 rounded-full flex items-center justify-center"
                 >
                    {/* Simple Sun Glow/Rays */}
@@ -176,7 +181,7 @@ export default function ThemeToggle() {
                 <motion.div
                      // Moon rises (comes up) when dark, sets (goes down) when light
                      animate={{ opacity: isDark ? 1 : 0, y: isDark ? 0 : 20 }}
-                     transition={{ duration: 0.3 }}
+                     transition={{ duration: 1.5, ease: "easeInOut" }}
                      className="absolute inset-0 bg-slate-200 rounded-full flex items-center justify-center"
                 >
                      {/* Craters */}
