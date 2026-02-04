@@ -6,6 +6,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
+import { useSession } from "@/hooks/useSession";
+
 const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
     { icon: Smartphone, label: "Smart Bin", href: "/smartBin" },
@@ -17,6 +19,9 @@ const navItems = [
 
 export function MobileNav() {
     const pathname = usePathname();
+    const { user } = useSession();
+
+    const filteredItems = navItems;
 
     return (
         <div className="fixed bottom-4 left-4 right-4 z-50 lg:hidden flex justify-center">
@@ -25,7 +30,7 @@ export function MobileNav() {
                 animate={{ y: 0, opacity: 1 }}
                 className="bg-forest-green/80 backdrop-blur-md border border-white/20 text-white rounded-2xl shadow-xl shadow-forest-green/20 px-6 py-3 md:py-3.5 flex items-center justify-between gap-4 md:gap-6 max-w-sm md:max-w-md w-full"
             >
-                {navItems.map((item) => {
+                {filteredItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
                         <Link

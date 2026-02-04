@@ -368,9 +368,9 @@ export default function SmartBinMachine() {
                                         <h2 className="text-2xl font-bold text-white uppercase mb-2">{t.scanQr}</h2>
                                         <button
                                             onClick={handleLogin}
-                                            className="px-8 py-3 bg-[#FFD700] text-black font-bold rounded-full hover:bg-yellow-300 transition-colors"
+                                            className="px-8 py-3 bg-[#FFD700] text-black font-bold rounded-full hover:bg-yellow-300 transition-colors cursor-pointer"
                                         >
-                                            {t.login} (Simulate Scan)
+                                            {t.login}
                                         </button>
                                     </div>
                                 </motion.div>

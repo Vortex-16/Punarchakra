@@ -8,6 +8,12 @@ export interface User {
     name?: string;
     role: "admin" | "user" | "developer";
     token: string;
+    points?: number;
+    history?: Array<{
+        itemType: string;
+        pointsEarned: number;
+        date: string;
+    }>;
 }
 
 export interface ExtendedSession {
