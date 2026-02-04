@@ -17,8 +17,10 @@ interface MapComponentProps {
   bins: Bin[];
   selectedBin: Bin | null;
   onSelectBin: (bin: Bin) => void;
+  onLocateUser?: () => void;
 }
 
 export default function MapComponent(props: MapComponentProps) {
   return <MapInner {...props} />;
 }
+

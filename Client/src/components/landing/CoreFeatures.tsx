@@ -35,7 +35,7 @@ const features = [
 ];
 
 export default function CoreFeatures() {
-    const sectionRef = useRef<HTMLSectionElement>(null);
+    const sectionRef = useRef<HTMLElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<HTMLDivElement>(null);
 

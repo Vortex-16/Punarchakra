@@ -101,3 +101,56 @@ export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2
 function deg2rad(deg: number) {
   return deg * (Math.PI / 180);
 }
+
+// Format distance for display (meters vs kilometers)
+export function formatDistance(distanceKm: number): string {
+  if (distanceKm < 1) {
+    return `${Math.round(distanceKm * 1000)}m`;
+  }
+  return `${distanceKm.toFixed(1)}km`;
+}
+
+// Calculate estimated travel time (walking at ~5km/h)
+export function estimateTravelTime(distanceKm: number): string {
+  const walkingSpeedKmH = 5;
+  const timeHours = distanceKm / walkingSpeedKmH;
+  const timeMinutes = Math.round(timeHours * 60);
+
+  if (timeMinutes < 60) {
+    return `${timeMinutes} min walk`;
+  }
+  const hours = Math.floor(timeMinutes / 60);
+  const mins = timeMinutes % 60;
+  return mins > 0 ? `${hours}h ${mins}m walk` : `${hours}h walk`;
+}
+
+// Get status color based on bin properties
+export function getBinStatusColor(bin: Bin): { bg: string; text: string; border: string } {
+  if (bin.status === "Closed") {
+    return {
+      bg: "bg-gray-100 dark:bg-gray-800",
+      text: "text-gray-700 dark:text-gray-300",
+      border: "border-gray-300 dark:border-gray-600"
+    };
+  }
+  if (bin.status === "Full" || bin.fillLevel > 80) {
+    return {
+      bg: "bg-red-100 dark:bg-red-900/30",
+      text: "text-red-700 dark:text-red-400",
+      border: "border-red-300 dark:border-red-700"
+    };
+  }
+  if (bin.fillLevel > 50) {
+    return {
+      bg: "bg-amber-100 dark:bg-amber-900/30",
+      text: "text-amber-700 dark:text-amber-400",
+      border: "border-amber-300 dark:border-amber-700"
+    };
+  }
+  return {
+    bg: "bg-green-100 dark:bg-green-900/30",
+    text: "text-green-700 dark:text-green-400",
+    border: "border-green-300 dark:border-green-700"
+  };
+}
+
