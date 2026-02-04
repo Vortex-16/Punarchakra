@@ -63,28 +63,40 @@ export default function ImpactSection() {
             {
                 y: 0,
                 opacity: 1,
-                duration: 0.8,
+                duration: 2.5,
                 ease: "power3.out",
                 scrollTrigger: {
                     trigger: headerRef.current,
                     start: "top 90%",
+                    end: "bottom 60%",
+                    scrub: 1
                 }
             }
         );
 
         // Stats Grid
         if (gridRef.current) {
+            gsap.set(gridRef.current, { perspective: 1000 });
+            
             gsap.fromTo(gridRef.current.children,
-                { y: 40, opacity: 0 },
+                { 
+                    rotationX: 90, 
+                    y: 50, 
+                    opacity: 0,
+                    transformOrigin: "center top",
+                },
                 {
+                    rotationX: 0,
                     y: 0,
                     opacity: 1,
-                    duration: 0.8,
+                    duration: 2.5,
                     stagger: 0.15,
-                    ease: "back.out(1.2)",
+                    ease: "power2.out",
                     scrollTrigger: {
                         trigger: gridRef.current,
                         start: "top 85%",
+                        end: "center center",
+                        scrub: 1
                     }
                 }
             );
@@ -96,11 +108,12 @@ export default function ImpactSection() {
             {
                 y: 0,
                 opacity: 1,
-                duration: 1,
                 delay: 0.2,
                 scrollTrigger: {
                     trigger: messageRef.current,
                     start: "top 90%",
+                    end: "bottom 80%",
+                    scrub: 1
                 }
             }
         );
@@ -128,9 +141,9 @@ export default function ImpactSection() {
                     {impactStats.map((stat, index) => (
                         <div key={index} className="relative group opacity-0">
                             {/* Card */}
-                            <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-[2rem] p-8 border border-white/10 hover:bg-white/15 transition-all duration-300 transform hover:-translate-y-1">
+                            <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-[2rem] p-8 border border-white/10 hover:bg-white/20 hover:shadow-lg hover:shadow-black/10 transition-all duration-500 transform hover:-translate-y-2 group">
                                 {/* Icon */}
-                                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:bg-white/30 group-hover:animate-pulse">
                                     <stat.icon className="w-7 h-7 text-white" />
                                 </div>
 
