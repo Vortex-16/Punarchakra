@@ -1,5 +1,8 @@
 "use client";
 
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { motion } from "framer-motion";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { Trash2, Recycle, DollarSign, Trees, TrendingUp, Map, ExternalLink, Camera, ArrowRight, Truck, AlertTriangle } from "lucide-react";
@@ -25,8 +28,21 @@ const compositionData = [
 ];
 
 export default function DashboardPage() {
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(() => {
+        gsap.from(".stats-card", {
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power3.out",
+            clearProps: "all"
+        });
+    }, { scope: containerRef });
+
     return (
-        <div className="space-y-8">
+        <div className="space-y-8" ref={containerRef}>
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
