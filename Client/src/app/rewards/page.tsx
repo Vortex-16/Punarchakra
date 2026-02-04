@@ -30,7 +30,7 @@ const leaderboard = [
 ];
 
 export default function RewardsPage() {
-    const { user, session } = useSession();
+    const { user, session, status } = useSession();
     const [userData, setUserData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const { toast } = useToast();
@@ -49,10 +49,15 @@ export default function RewardsPage() {
     };
 
     useEffect(() => {
-        if (session) {
+        if (status === "loading") return; // Wait for session to be determined
+
+        if (status === "authenticated" && session) {
             fetchUserData();
+        } else {
+            // If unauthenticated or no session, stop loading
+            setLoading(false);
         }
-    }, [session]);
+    }, [session, status]);
 
     const handleRedeem = async (reward: any) => {
         if (!userData || userData.points < reward.cost) {
