@@ -173,6 +173,15 @@ const depositItem = async (req, res) => {
             const fillIncrement = 5; // Fixed 5% per item for demo
             bin.fillLevel = Math.min(bin.fillLevel + fillIncrement, 100);
 
+            // Logic: If fill > 80%, send alert!
+            if (bin.fillLevel >= 80) {
+                // If it wasn't full before, or maybe just alert every time it gets added to when > 80?
+                // Let's alert.
+                const { sendBinFullAlert } = require('../utils/mailer');
+                // Don't await this to block the response, run in background
+                sendBinFullAlert(bin).catch(err => console.error(err));
+            }
+
             if (bin.fillLevel >= 90) {
                 bin.status = 'full';
             }

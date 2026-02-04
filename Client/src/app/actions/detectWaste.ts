@@ -21,7 +21,7 @@ export async function detectWaste(imageBase64: string) {
                     content: [
                         {
                             type: "text",
-                            text: "Analyze this image. Is it ELECTRONIC WASTE (e-waste)? Return ONLY a JSON: { \"label\": \"Item Name\", \"material\": \"Material\", \"recyclable\": true/false, \"sustainability_score\": 1-10, \"estimated_credit\": 10-100, \"reasoning\": \"Why it is/isn't e-waste\" }. Set 'recyclable': true ONLY if it is e-waste (electronics, cables, circuit boards). Set 'recyclable': false for plastic bottles, paper, food, or general trash."
+                            text: "Analyze this image. Is it ELECTRONIC WASTE (e-waste)? Return ONLY a JSON: { \"label\": \"Item Name\", \"material\": \"Material\", \"recyclable\": true/false, \"confidence_score\": 0-100, \"sustainability_score\": 1-10, \"estimated_credit\": 10-100, \"reasoning\": \"Why it is/isn't e-waste\" }. Set 'recyclable': true ONLY if it is e-waste (electronics, cables, circuit boards). Set 'recyclable': false for plastic bottles, paper, food, or general trash."
                         },
                         {
                             type: "image_url",

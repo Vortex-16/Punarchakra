@@ -506,17 +506,39 @@ export default function SmartBinMachine() {
                                             <p className="text-neutral-400 text-sm">{result.material}</p>
                                         </div>
 
+                                        {/* Confidence Score Badge */}
+                                        <div className="flex items-center gap-2 px-3 py-1 bg-neutral-800 rounded-full border border-neutral-700">
+                                            <div className="text-[10px] uppercase text-neutral-400 font-bold">AI Confidence</div>
+                                            <div className={`text-xs font-bold ${result.confidence_score > 80 ? 'text-green-500' : result.confidence_score > 50 ? 'text-yellow-500' : 'text-red-500'}`}>
+                                                {result.confidence_score}%
+                                            </div>
+                                        </div>
+
                                         <div className="w-full bg-black/40 rounded-xl p-4 border border-white/10 text-left space-y-2">
-                                            <div className="flex justify-between">
-                                                <span className="text-gray-500 text-xs uppercase">{t.estValue}</span>
-                                                <span className="text-[#FFD700] font-bold">+{result.estimated_credit} {t.credits}</span>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <span className="text-gray-500 text-xs uppercase">{t.impact}</span>
-                                                <span className="text-green-500 font-bold">{result.sustainability_score}/10 {t.score}</span>
-                                            </div>
+
+                                            {result.recyclable ? (
+                                                <>
+                                                    <div className="flex justify-between">
+                                                        <span className="text-gray-500 text-xs uppercase">{t.estValue}</span>
+                                                        <span className="text-[#FFD700] font-bold">+{result.estimated_credit} {t.credits}</span>
+                                                    </div>
+                                                    <div className="flex justify-between">
+                                                        <span className="text-gray-500 text-xs uppercase">{t.impact}</span>
+                                                        <span className="text-green-500 font-bold">{result.sustainability_score}/10 {t.score}</span>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="flex justify-between text-red-400">
+                                                    <span className="text-xs uppercase font-bold">Status</span>
+                                                    <span className="font-bold">REJECTED</span>
+                                                </div>
+                                            )}
+
                                             <div className="pt-2 border-t border-white/5">
-                                                <p className="text-gray-400 text-xs italic">"{result.reasoning}"</p>
+                                                <p className="text-gray-400 text-xs italic">
+                                                    <span className="text-neutral-500 font-bold not-italic mr-1">Analysis:</span>
+                                                    "{result.reasoning}"
+                                                </p>
                                             </div>
                                         </div>
 

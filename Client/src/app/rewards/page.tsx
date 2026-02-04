@@ -97,6 +97,39 @@ export default function RewardsPage() {
     const dynamicLeaderboard = leaderboard.map(l => l.name === 'You' ? { ...l, points } : l).sort((a, b) => b.points - a.points);
     // Re-rank
     const rankedLeaderboard = dynamicLeaderboard.map((l, i) => ({ ...l, rank: i + 1 }));
+    const myRank = rankedLeaderboard.find(l => l.name === 'You')?.rank || 999;
+
+    // Dynamic Badges
+    const dynamicBadges = [
+        {
+            id: 1,
+            name: "First Recycler",
+            description: "Recycled your first item",
+            icon: Star,
+            earned: itemsRecycled > 0
+        },
+        {
+            id: 2,
+            name: "Battery Saver",
+            description: "Recycled a battery",
+            icon: Zap,
+            earned: history.some((h: any) => h.itemType.toLowerCase().includes('battery'))
+        },
+        {
+            id: 3,
+            name: "Gold Member",
+            description: "Earned 5000 points",
+            icon: Award,
+            earned: points >= 5000
+        },
+        {
+            id: 4,
+            name: "Top 10",
+            description: "Reached top 10 in leaderboard",
+            icon: Trophy,
+            earned: myRank <= 10
+        },
+    ];
 
     if (loading && !userData) {
         return <div className="p-8 text-center">Loading rewards data...</div>;
@@ -256,7 +289,7 @@ export default function RewardsPage() {
                         <button className="text-xs text-forest-green hover:underline">View All</button>
                     </div>
                     <div className="bg-green-50 dark:bg-neutral-900 p-6 rounded-2xl border border-green-100 dark:border-gray-800 space-y-4 flex-1 h-full">
-                        {badges.map((badge) => (
+                        {dynamicBadges.map((badge) => (
                             <div key={badge.id} className={`flex items-center gap-4 p-3 rounded-xl transition-colors ${badge.earned ? 'bg-forest-green/5' : 'bg-gray-50 dark:bg-gray-800 opacity-60 grayscale'}`}>
                                 <div className={`p-3 rounded-full ${badge.earned ? 'bg-forest-green text-white' : 'bg-gray-200 text-gray-500'}`}>
                                     <badge.icon className="w-5 h-5" />
