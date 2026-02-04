@@ -21,6 +21,8 @@
   --success-green: #15803d;
   /* darker green for text */
   --text-secondary: #4b5563;
+  --success-green: #10B981;
+  --text-secondary: #6B7280;
   --text-muted: #9CA3AF;
 
   /* Spacing */
@@ -35,6 +37,10 @@
   --foreground: #f9fafb;
   --off-white: #1f1f1f;
   --light-grey: #2d2d2d;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --off-white: #1a1a1a;
+  --light-grey: #2a2a2a;
 }
 
 @theme inline {
@@ -45,6 +51,7 @@
   --color-fresh-green: var(--fresh-green);
   --color-neon-lime: var(--fresh-green);
   /* Mapping neon-lime to fresh-green for backward compatibility */
+  --color-neon-lime: var(--neon-lime);
   --color-off-white: var(--off-white);
   --color-light-grey: var(--light-grey);
   --color-soft-teal: var(--soft-teal);
@@ -227,4 +234,5 @@ body {
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #0F4C3A;
+
 }

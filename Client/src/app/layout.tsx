@@ -52,6 +52,9 @@ export default function RootLayout({
               </SmoothScroll>
             </FavoritesProvider>
           </ToastProvider>
+          <LayoutWrapper>
+            {children}
+          </LayoutWrapper>
         </ThemeProvider>
       </body>
     </html>

@@ -24,7 +24,9 @@ export function Sidebar() {
         >
             {/* Logo */}
             <Link href="/home" className="px-6 flex items-center gap-3 hover:opacity-80 transition-opacity">
+
                 <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-full bg-neon-lime flex items-center justify-center shrink-0">
                     <span className="text-forest-green font-bold text-lg">P</span>
                 </div>
                 <span className="font-bold text-xl hidden md:block text-white tracking-wide">
