@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Gift, Award, Trophy, Leaf, Zap, ShoppingBag, ArrowRight, Star, TrendingUp } from "lucide-react";
-import { useState } from "react";
+import { Gift, Award, Trophy, Leaf, Zap, ShoppingBag, Star, TrendingUp, Trees } from "lucide-react";
 
 // Mock Data
 const userStats = {
@@ -19,8 +18,6 @@ const rewards = [
     { id: 3, title: "Eco-Friendly Water Bottle", cost: 2000, icon: Leaf, color: "bg-blue-100 text-blue-600" },
     { id: 4, title: "Tree Planting Donation", cost: 500, icon: Trees, color: "bg-emerald-100 text-emerald-600" },
 ];
-
-import { Trees } from "lucide-react";
 
 const badges = [
     { id: 1, name: "First Recycler", description: "Recycled your first item", icon: Star, earned: true },
@@ -61,7 +58,7 @@ export default function RewardsPage() {
                     <div className="relative z-10">
                         <div className="flex justify-between items-start mb-4">
                             <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
-                                <Trophy className="w-6 h-6 text-neon-lime" />
+                                <Trophy className="w-6 h-6 text-yellow-300" />
                             </div>
                             <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded backdrop-blur-sm">Level {Math.floor(userStats.points / 1000) + 1}</span>
                         </div>
@@ -74,7 +71,7 @@ export default function RewardsPage() {
                             </div>
                             <div className="h-2 bg-black/20 rounded-full overflow-hidden">
                                 <div
-                                    className="h-full bg-neon-lime rounded-full"
+                                    className="h-full bg-white rounded-full"
                                     style={{ width: `${(userStats.points / userStats.nextLevel) * 100}%` }}
                                 ></div>
                             </div>
@@ -88,7 +85,7 @@ export default function RewardsPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800"
+                    className="bg-white dark:bg-neutral-900 p-6 rounded-2xl shadow-sm border border-green-100 dark:border-neutral-800"
                 >
                     <div className="flex items-center gap-4 mb-4">
                         <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-xl text-forest-green">
@@ -117,7 +114,7 @@ export default function RewardsPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800"
+                    className="bg-white dark:bg-neutral-900 p-6 rounded-2xl shadow-sm border border-green-100 dark:border-neutral-800"
                 >
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -156,7 +153,7 @@ export default function RewardsPage() {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
                         {rewards.map((reward) => (
-                            <div key={reward.id} className="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-100 dark:border-gray-800 flex flex-col justify-between hover:shadow-md transition-shadow group h-full">
+                            <div key={reward.id} className="bg-green-50 dark:bg-neutral-900 p-5 rounded-2xl border border-green-100 dark:border-neutral-800 flex flex-col justify-between hover:shadow-md transition-shadow group h-full">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className={`p-3 rounded-xl ${reward.color}`}>
                                         <reward.icon className="w-6 h-6" />
@@ -168,7 +165,7 @@ export default function RewardsPage() {
                                 <div>
                                     <h3 className="font-bold text-gray-900 dark:text-white mb-1">{reward.title}</h3>
                                     <p className="text-xs text-gray-500 mb-4">Instant digital delivery</p>
-                                    <button className="w-full py-2 rounded-xl border border-forest-green text-forest-green font-semibold text-sm hover:bg-forest-green hover:text-neon-lime transition-colors">
+                                    <button className="w-full py-2 rounded-xl border border-forest-green text-forest-green font-semibold text-sm hover:bg-forest-green hover:text-white transition-colors">
                                         Claim Reward
                                     </button>
                                 </div>
@@ -185,10 +182,10 @@ export default function RewardsPage() {
                         </h2>
                         <button className="text-xs text-forest-green hover:underline">View All</button>
                     </div>
-                    <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 space-y-4 flex-1 h-full">
+                    <div className="bg-green-50 dark:bg-neutral-900 p-6 rounded-2xl border border-green-100 dark:border-gray-800 space-y-4 flex-1 h-full">
                         {badges.map((badge) => (
                             <div key={badge.id} className={`flex items-center gap-4 p-3 rounded-xl transition-colors ${badge.earned ? 'bg-forest-green/5' : 'bg-gray-50 dark:bg-gray-800 opacity-60 grayscale'}`}>
-                                <div className={`p-3 rounded-full ${badge.earned ? 'bg-forest-green text-neon-lime' : 'bg-gray-200 text-gray-500'}`}>
+                                <div className={`p-3 rounded-full ${badge.earned ? 'bg-forest-green text-white' : 'bg-gray-200 text-gray-500'}`}>
                                     <badge.icon className="w-5 h-5" />
                                 </div>
                                 <div className="flex-1">

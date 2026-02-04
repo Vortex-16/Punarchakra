@@ -10,13 +10,17 @@
 
   /* Brand Colors */
   --forest-green: #0F4C3A;
-  --neon-lime: #39FF14;
+  --fresh-green: #22c55e;
+  /* Replaces neon-lime with a natural vibrant green (Tailwind green-500) */
   --white: #ffffff;
 
   /* Extended Landing Page Colors */
   --off-white: #F9FAFB;
   --light-grey: #F3F4F6;
   --soft-teal: #14B8A6;
+  --success-green: #15803d;
+  /* darker green for text */
+  --text-secondary: #4b5563;
   --success-green: #10B981;
   --text-secondary: #6B7280;
   --text-muted: #9CA3AF;
@@ -28,6 +32,11 @@
 }
 
 .dark {
+  --background: #121212;
+  /* Neutral dark, no blue tint */
+  --foreground: #f9fafb;
+  --off-white: #1f1f1f;
+  --light-grey: #2d2d2d;
   --background: #0a0a0a;
   --foreground: #ededed;
   --off-white: #1a1a1a;
@@ -39,6 +48,9 @@
   --color-foreground: var(--foreground);
 
   --color-forest-green: var(--forest-green);
+  --color-fresh-green: var(--fresh-green);
+  --color-neon-lime: var(--fresh-green);
+  /* Mapping neon-lime to fresh-green for backward compatibility */
   --color-neon-lime: var(--neon-lime);
   --color-off-white: var(--off-white);
   --color-light-grey: var(--light-grey);
@@ -195,4 +207,32 @@ body {
   .landing-section {
     padding: var(--section-padding-mobile) 0;
   }
+}
+
+/* Custom Scrollbar for Bin List */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #0F4C3A;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #374151;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #0F4C3A;
+
 }
