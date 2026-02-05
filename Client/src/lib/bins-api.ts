@@ -24,6 +24,9 @@ export interface BinStats {
     maintenanceBins: number;
     avgFillLevel: number;
     criticalBins: Bin[];
+    totalWasteKg: number;
+    totalEstimatedValue: number;
+    activeUserCount: number;
 }
 
 export const binsApi = {
@@ -74,5 +77,10 @@ export const binsApi = {
                 'Authorization': `Bearer ${token}`
             }
         });
+    },
+
+    // Get waste collection analytics for chart
+    getAnalytics: async (): Promise<any[]> => {
+        return api.get('/bins/analytics');
     }
 };

@@ -29,6 +29,7 @@ export function useSession() {
         user: session?.user as User | null,
         isLoading: status === "loading",
         isAuthenticated: !!session,
+        isAdmin: (session?.user as User | null)?.role === "admin",
         status,
     };
 }

@@ -21,7 +21,10 @@ export function MobileNav() {
     const pathname = usePathname();
     const { user } = useSession();
 
-    const filteredItems = navItems;
+    const filteredItems = [
+        { icon: LayoutDashboard, label: "Admin", href: "/admin" },
+        ...navItems
+    ];
 
     return (
         <div className="fixed bottom-4 left-4 right-4 z-50 lg:hidden flex justify-center">

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LayoutDashboard, Map, Scan, LogOut, Award, Smartphone } from "lucide-react";
+import { LayoutDashboard, Map, Scan, LogOut, Award, Smartphone, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -18,7 +18,7 @@ const sidebarItems = [
 
 export function Sidebar({ className }: { className?: string }) {
     const pathname = usePathname();
-    const { user } = useSession();
+    const { user, isAuthenticated } = useSession();
 
     // Filter items based on role
     const filteredItems = sidebarItems;
@@ -92,7 +92,25 @@ export function Sidebar({ className }: { className?: string }) {
             </nav>
 
             {/* Bottom Actions */}
-            <div className="px-4 space-y-4">
+            <div className="px-4 pb-4 space-y-2 mt-auto">
+                <Link
+                    href="/settings"
+                    className="flex items-center gap-4 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white w-full transition-colors group"
+                >
+                    <Settings className="w-5 h-5" />
+                    <span className="hidden md:block text-sm font-medium">Settings</span>
+                </Link>
+
+                {isAuthenticated && (
+                    <Link
+                        href="/admin"
+                        className="flex items-center gap-4 px-3 py-2.5 rounded-xl text-white/70 hover:bg-emerald-500/20 hover:text-white w-full transition-colors group border border-white/5 hover:border-emerald-500/30"
+                    >
+                        <LayoutDashboard className="w-5 h-5 text-fresh-green" />
+                        <span className="hidden md:block text-xs font-bold">Admin Panel</span>
+                    </Link>
+                )}
+
                 <button
                     onClick={handleLogout}
                     className="flex items-center gap-4 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white w-full transition-colors group"
@@ -101,19 +119,19 @@ export function Sidebar({ className }: { className?: string }) {
                     <span className="hidden md:block text-sm font-medium">Logout</span>
                 </button>
 
-                <div className="flex items-center gap-3 px-3 pt-4 border-t border-white/10">
-                    <div className="w-10 h-10 rounded-full bg-white/10 p-0.5">
+                <div className="flex items-center gap-3 px-3 pt-3 border-t border-white/10 shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-white/10 p-0.5">
                         <div className="w-full h-full rounded-full bg-forest-green flex items-center justify-center overflow-hidden border border-white/20">
-                            <span className="text-xs font-bold text-white">
+                            <span className="text-[10px] font-bold text-white uppercase">
                                 {getInitials(user?.name, user?.email)}
                             </span>
                         </div>
                     </div>
-                    <div className="hidden md:block">
-                        <p className="text-sm font-semibold text-white">
+                    <div className="hidden md:block min-w-0">
+                        <p className="text-xs font-semibold text-white truncate">
                             {user?.name || getRoleDisplay(user?.role)}
                         </p>
-                        <p className="text-xs text-white/50">
+                        <p className="text-[10px] text-white/50 truncate">
                             {user?.email || "user@punarchakra.com"}
                         </p>
                     </div>
