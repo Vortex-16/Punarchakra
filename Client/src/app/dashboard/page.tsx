@@ -15,6 +15,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { ImpactChart } from "@/components/dashboard/ImpactChart";
 import { FactsQuizCard } from "@/components/dashboard/FactsQuizCard";
 import { AchievementsHub } from "@/components/dashboard/AchievementsHub";
+import { CommunityChallenges } from "@/components/dashboard/CommunityChallenges";
 import { HistorySummaryCard } from "@/components/dashboard/HistorySummaryCard";
 import Link from "next/link";
 import { useBinStats, useBins } from "@/hooks/useBins";
@@ -119,6 +120,22 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Recent Activity / Tips */}
+                <div className="h-full">
+                    <CommunityChallenges />
+                </div>
+            </div>
+
+            {/* Educational & Achievements Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <FactsQuizCard />
+                <AchievementsHub />
+            </div>
+
+            {/* Scan History & Recent Activity Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+                <HistorySummaryCard />
+
+                {/* Recent Activity (Moved) */}
                 <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -163,17 +180,6 @@ export default function DashboardPage() {
                         </div>
                     )}
                 </motion.div>
-            </div>
-
-            {/* Educational & Achievements Grid (Moved to Bottom) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FactsQuizCard />
-                <AchievementsHub />
-            </div>
-
-            {/* Scan History (Real DB Data) */}
-            <div className="w-full">
-                <HistorySummaryCard />
             </div>
         </div>
     );

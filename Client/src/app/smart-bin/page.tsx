@@ -44,7 +44,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useToast } from "../../components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
+
 import { ModeToggle } from "@/components/mode-toggle";
 
 // --- TYPES ---
@@ -176,6 +177,8 @@ function PriorityIndicator({ priority }: { priority: SmartBin["aiPriority"] }) {
 function SmartBinContent() {
     const [bins, setBins] = useState<SmartBin[]>(INITIAL_BINS);
     const [selectedBin, setSelectedBin] = useState<SmartBin | null>(null);
+    const [isMaintenance, setIsMaintenance] = useState(false);
+
     const [filter, setFilter] = useState("All");
     const [lastDepositAlert, setLastDepositAlert] = useState<any>(null);
     const [liveHistory, setLiveHistory] = useState<Record<string, { time: string, event: string }[]>>({});
