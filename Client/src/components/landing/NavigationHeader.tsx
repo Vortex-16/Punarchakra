@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -59,15 +60,19 @@ export default function NavigationHeader() {
             <div className={`px-6 sm:px-8 transition-all duration-500 ${isScrolled ? "py-0" : ""}`}>
                 <div className={`relative flex items-center justify-between transition-all duration-500 ${isScrolled ? "h-16" : "h-20"} md:grid md:grid-cols-3 md:items-center`}>
 
+
+
                     {/* 1. Logo Section (Left) */}
                     <Link href="/" className="flex items-center gap-3 group relative w-fit justify-self-start">
-                        <div className="absolute inset-0 bg-forest-green/20 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
-                        <div className="relative w-10 h-10 bg-gradient-to-br from-forest-green to-emerald-600 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-500 shadow-xl">
-                            <span className="text-white font-black text-xl tracking-tighter">P</span>
+                        <div className="relative h-10 w-40">
+                            <Image
+                                src="/punarchakra_logo.png"
+                                alt="Punarchakra"
+                                fill
+                                className="object-contain object-left"
+                                priority
+                            />
                         </div>
-                        <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 tracking-tight group-hover:to-forest-green dark:group-hover:to-emerald-400 transition-all duration-500">
-                            Punarchakra
-                        </span>
                     </Link>
 
                     {/* 2. Navigation Links (Center) - Only visible on Desktop */}

@@ -11,7 +11,10 @@ export interface DetectionResult {
   confidence: number;
   value: number; // Estimated value in currency
   message: string;
+  instruction?: string; // Guidance for users
 }
+
+
 
 export function useWasteDetection() {
   const { user } = useSession();
@@ -66,27 +69,28 @@ export function useWasteDetection() {
         confidence: (data.confidence_score || 0) / 100,
         value: data.estimated_credit || 0,
         message: data.reasoning || data.material || 'Analysis complete.',
+        instruction: data.handling_instruction || 'Please dispose of responsibly.',
       };
 
       setResult(resultData as any);
 
       // Save to History
       if (user?._id) {
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api'}/history/add`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                  userId: user._id,
-                  imageUrl: base64Image, // Warning: Large payload
-                  itemLabel: resultData.item,
-                  category: resultData.category,
-                  confidence: resultData.confidence,
-                  value: resultData.value,
-                  weight: additionalInfo?.weight,
-                  size: additionalInfo?.size,
-                  message: resultData.message
-              })
-          }).catch(err => console.error("Failed to save history:", err));
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api'}/history/add`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: user._id,
+            imageUrl: base64Image, // Warning: Large payload
+            itemLabel: resultData.item,
+            category: resultData.category,
+            confidence: resultData.confidence,
+            value: resultData.value,
+            weight: additionalInfo?.weight,
+            size: additionalInfo?.size,
+            message: resultData.message
+          })
+        }).catch(err => console.error("Failed to save history:", err));
       }
 
       setStatus('success');

@@ -27,7 +27,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Smart E-Waste Admin",
+  title: "Punarchakra Admin",
   description: "Admin Dashboard for Smart E-Waste Bin System",
   manifest: "/manifest.json",
 };

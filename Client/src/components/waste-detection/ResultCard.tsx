@@ -32,7 +32,7 @@ export function ResultCard({ result, onReset, onVerification }: ResultCardProps)
             </div>
             <div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                 {result.confidence < 0.6 ? "Low Confidence" : "Analysis Complete"}
+                {result.confidence < 0.6 ? "Low Confidence" : "Analysis Complete"}
               </h3>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">AI Confidence:</span>
@@ -87,25 +87,37 @@ export function ResultCard({ result, onReset, onVerification }: ResultCardProps)
             <Sparkles className="w-4 h-4" /> Why this result?
           </p>
           <div className="relative z-10 space-y-2">
-             <p className="text-sm text-blue-700/80 dark:text-blue-200/80 leading-relaxed italic border-l-2 border-blue-400 pl-3">
-               "{result.message}"
-             </p>
-             <div className="flex gap-2 text-[10px] uppercase font-bold tracking-wider text-blue-600/50 dark:text-blue-400/50 mt-2">
-                <span>• Visual Analysis</span>
-                <span>• Material Matching</span>
-                {result.value > 0 && <span>• Market Value</span>}
-             </div>
+            <p className="text-sm text-blue-700/80 dark:text-blue-200/80 leading-relaxed italic border-l-2 border-blue-400 pl-3">
+              "{result.message}"
+            </p>
+            <div className="flex gap-2 text-[10px] uppercase font-bold tracking-wider text-blue-600/50 dark:text-blue-400/50 mt-2">
+              <span>• Visual Analysis</span>
+              <span>• Material Matching</span>
+              {result.value > 0 && <span>• Market Value</span>}
+            </div>
           </div>
         </div>
 
+        {/* Handling Instructions (Education/Guidance) */}
+        {result.instruction && (
+          <div className="bg-emerald-50 dark:bg-emerald-900/10 p-5 rounded-2xl mb-8 border border-emerald-100 dark:border-emerald-900/20">
+            <p className="text-sm font-bold text-emerald-800 dark:text-emerald-300 mb-2 flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" /> Handling Guide
+            </p>
+            <p className="text-sm text-emerald-700/80 dark:text-emerald-200/80 font-medium">
+              {result.instruction}
+            </p>
+          </div>
+        )}
+
         {/* Celebration Effect for High Value */}
         {isHighValue && result.confidence > 0.8 && (
-           <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
-               {/* Simple CSS Confetti placeholder - ideally use a library but avoiding deps */}
-               <div className="absolute top-[-20px] left-[20%] w-2 h-2 bg-yellow-400 rounded-full animate-bounce delay-100"></div>
-               <div className="absolute top-[-20px] left-[50%] w-3 h-3 bg-red-400 rounded-md animate-bounce delay-300"></div>
-               <div className="absolute top-[-20px] left-[80%] w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-500"></div>
-           </div>
+          <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
+            {/* Simple CSS Confetti placeholder - ideally use a library but avoiding deps */}
+            <div className="absolute top-[-20px] left-[20%] w-2 h-2 bg-yellow-400 rounded-full animate-bounce delay-100"></div>
+            <div className="absolute top-[-20px] left-[50%] w-3 h-3 bg-red-400 rounded-md animate-bounce delay-300"></div>
+            <div className="absolute top-[-20px] left-[80%] w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-500"></div>
+          </div>
         )}
 
         {/* Actions */}
@@ -120,10 +132,10 @@ export function ResultCard({ result, onReset, onVerification }: ResultCardProps)
           {onVerification && (
             <button
               onClick={onVerification}
-              className={`px-6 py-4 rounded-xl font-bold transition-colors flex items-center gap-2 justify-center ${result.confidence < 0.6 
-                ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800 hover:bg-amber-200 dark:hover:bg-amber-900/60" 
+              className={`px-6 py-4 rounded-xl font-bold transition-colors flex items-center gap-2 justify-center ${result.confidence < 0.6
+                ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800 hover:bg-amber-200 dark:hover:bg-amber-900/60"
                 : "bg-transparent border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10"
-              }`}
+                }`}
             >
               <AlertCircle className="w-4 h-4" />
               {result.confidence < 0.6 ? "Verify Manually" : "Report Issue"}
