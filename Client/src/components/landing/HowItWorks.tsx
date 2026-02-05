@@ -46,76 +46,68 @@ export default function HowItWorks() {
 
     useGSAP(() => {
         // Animate Header
-        gsap.fromTo(headerRef.current,
-            { y: 30, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: headerRef.current,
-                    start: "top 85%",
-                    end: "bottom 60%",
-                    scrub: 1
+        if (headerRef.current) {
+            gsap.fromTo(headerRef.current,
+                { y: 50, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    scrollTrigger: {
+                        trigger: headerRef.current,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse"
+                    }
                 }
-            }
-        );
+            );
+        }
 
         // Animate Steps
         if (stepsRef.current) {
-            const stepItems = stepsRef.current.querySelectorAll(".step-item");
+            const stepItems = gsap.utils.toArray<HTMLElement>(".step-item");
+
             stepItems.forEach((step, index) => {
-                const isEven = index % 2 === 0;
-
-                // Set initial state for clip-path to work
-                // Even (0, 2) is Row (Image Left, Content Right) -> Slide from Left
-                // Odd (1, 3) is Row-Reverse (Image Right, Content Left) -> Slide from Right
-
-                // Correction: The layout logic is:
-                // index % 2 !== 0 ? 'md:flex-row-reverse' (Image Right) : '' (Image Left)
-                // Actually, let's keep it simple: Odd indices slide from right, Even from left.
-
                 const slideFromRight = index % 2 !== 0;
 
-                // Explicitly set initial state before scroll trigger
                 gsap.set(step, {
                     clipPath: slideFromRight ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)",
                     webkitClipPath: slideFromRight ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)",
-                    x: slideFromRight ? 100 : -100, // Increased distance for smoother feel
+                    x: slideFromRight ? 50 : -50,
                     opacity: 0
                 });
 
                 gsap.to(step, {
-                    x: 0,
-                    opacity: 1,
                     clipPath: "inset(0 0% 0 0)",
                     webkitClipPath: "inset(0 0% 0 0)",
-                    ease: "power2.out", // Softer ease
-                    duration: 1, // Explicit duration
+                    x: 0,
+                    opacity: 1,
+                    duration: 1.2,
+                    ease: "power2.out",
                     scrollTrigger: {
                         trigger: step,
-                        start: "top 80%", // Start earlier
-                        end: "top 30%", // End later
-                        scrub: 1,
+                        start: "top 75%",
+                        end: "bottom 25%",
                         toggleActions: "play none none reverse"
                     }
                 });
             });
 
             // Animate Vertical Line Beam
-            gsap.fromTo(beamRef.current,
-                { height: "0%" },
-                {
-                    height: "100%",
-                    ease: "none",
-                    scrollTrigger: {
-                        trigger: stepsRef.current,
-                        start: "top center",
-                        end: "bottom center",
-                        scrub: true
+            if (beamRef.current) {
+                gsap.fromTo(beamRef.current,
+                    { height: "0%" },
+                    {
+                        height: "100%",
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: stepsRef.current,
+                            start: "top center",
+                            end: "bottom center",
+                            scrub: true
+                        }
                     }
-                }
-            );
+                );
+            }
         }
     }, { scope: sectionRef });
 

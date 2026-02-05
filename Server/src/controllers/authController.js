@@ -126,9 +126,52 @@ const redeemReward = async (req, res) => {
     });
 };
 
+// @desc    Google Auth Login/Register
+// @route   POST /api/auth/google
+// @access  Public
+const googleAuth = async (req, res) => {
+    const { email, name, googleId } = req.body;
+
+    try {
+        // Check if user exists
+        let user = await User.findOne({ email });
+
+        if (user) {
+            // Update googleId if not present (linking accounts)
+            if (!user.googleId) {
+                user.googleId = googleId;
+                await user.save();
+            }
+        } else {
+            // Create new user (password is optional now)
+            user = await User.create({
+                name,
+                email,
+                googleId,
+                role: 'user', // Default role
+                password: '' // Explicitly empty or handled by schema default
+            });
+        }
+
+        res.status(200).json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            points: user.points,
+            history: user.history,
+            token: generateToken(user.id),
+        });
+    } catch (error) {
+        console.error("Google Auth Error:", error);
+        res.status(500).json({ message: 'Server error processing Google login' });
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
+    googleAuth, // Export new function
     getMe,
     redeemReward,
 };
