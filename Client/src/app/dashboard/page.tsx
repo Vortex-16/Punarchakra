@@ -102,18 +102,19 @@ export default function DashboardPage() {
                 />
 
                 {/* Scan Action */}
-                <Link href="/scan" className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 hover:shadow-lg transition-shadow col-span-1 lg:col-span-2">
-                    <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10 h-full text-white">
+                <Link href="/scan" className="group relative overflow-hidden rounded-2xl col-span-1 lg:col-span-2 shimmer">
+                    <div className="bg-gradient-emerald rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10 h-full text-white shadow-xl shadow-emerald-500/20 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all">
                         <div className="flex-1 text-center sm:text-left">
-                            <h2 className="text-2xl font-bold mb-2">Scan & Check Credits Points</h2>
-                            <p className="text-white/80 max-w-xl">
+                            <h2 className="text-2xl font-bold mb-2 group-hover:scale-105 transition-transform">Scan & Check Credits Points</h2>
+                            <p className="text-white/90 max-w-xl">
                                 Detect e-waste instantly with AI and find the nearest bin to deposit.
                             </p>
                         </div>
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                            <div className="p-4 glass-heavy rounded-full backdrop-blur-sm group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
                                 <Camera className="w-8 h-8" />
                             </div>
+                            <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
                         </div>
                     </div>
                 </Link>

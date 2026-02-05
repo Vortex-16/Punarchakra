@@ -1,10 +1,13 @@
 "use client";
 import React, { useRef, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Play, Shield, Zap, Globe, Recycle, Leaf } from "lucide-react";
+import { ArrowRight, Play, Shield, Zap, Globe, Recycle, Leaf, Sparkles } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { AuroraBackground } from "../ui/AuroraBackground";
+import ParticleBackground from "../ui/ParticleBackground";
+import MagneticButton from "../ui/MagneticButton";
+import AnimatedCounter from "../ui/AnimatedCounter";
 import { TextPlugin } from "gsap/TextPlugin";
 import { useSession } from "@/hooks/useSession";
 
@@ -77,12 +80,15 @@ export default function HeroSection() {
 
     return (
         <section className="relative w-full overflow-hidden bg-white dark:bg-[#050505]">
+            {/* Particle Background */}
+            <ParticleBackground particleCount={60} particleColor="rgba(16, 185, 129, 0.4)" />
             <AuroraBackground className="h-full pt-20 pb-12 lg:pt-32 lg:pb-24">
                 <div ref={containerRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
                     <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
                         {/* Content Left */}
                         <div ref={contentRef} className="text-left space-y-8">
-                            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-forest-green/20 rounded-full shadow-sm hover:shadow-md transition-all cursor-default opacity-0">
+                            <div className="inline-flex items-center gap-2.5 px-4 py-2 glass backdrop-blur-xl border border-forest-green/20 rounded-full shadow-sm hover:shadow-lg hover:scale-105 transition-all cursor-default opacity-0 group">
+                                <Sparkles className="w-4 h-4 text-forest-green group-hover:rotate-180 transition-transform duration-500" />
                                 <span className="relative flex h-2.5 w-2.5">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-forest-green opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-forest-green"></span>
@@ -102,29 +108,45 @@ export default function HeroSection() {
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center gap-4 pt-2 opacity-0">
-                                <Link
-                                    href="/dashboard"
-                                    className="w-full sm:w-auto px-8 py-4 bg-forest-green hover:bg-[#0a3f30] text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-xl shadow-forest-green/30 hover:shadow-2xl hover:shadow-forest-green/40 hover:-translate-y-1 group relative overflow-hidden"
+                                <MagneticButton
+                                    strength={0.4}
+                                    className="w-full sm:w-auto"
                                 >
-                                    <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
-                                    <span className="relative z-10 flex items-center gap-2">
-                                        {isMounted && isAuthenticated ? 'Open App' : 'Start App'} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                    </span>
-                                </Link>
-                                <button className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-white/5 text-gray-900 dark:text-white rounded-2xl font-bold flex items-center justify-center gap-2 border-2 border-transparent hover:border-gray-200 dark:hover:border-neutral-700 hover:bg-gray-50 dark:hover:bg-white/10 transition-all backdrop-blur-md">
-                                    <Play className="w-4 h-4 fill-current" /> Watch Demo
-                                </button>
+                                    <Link
+                                        href="/dashboard"
+                                        className="w-full block px-8 py-4 bg-gradient-emerald text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/50 hover:-translate-y-1 group relative overflow-hidden"
+                                    >
+                                        <span className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-full transition-transform duration-500"></span>
+                                        <span className="relative z-10 flex items-center gap-2">
+                                            {isMounted && isAuthenticated ? 'Open App' : 'Start App'} <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                                        </span>
+                                    </Link>
+                                </MagneticButton>
+                                <MagneticButton
+                                    strength={0.3}
+                                    className="w-full sm:w-auto px-8 py-4 glass backdrop-blur-md text-gray-900 dark:text-white rounded-2xl font-bold flex items-center justify-center gap-2 border border-gray-200/50 dark:border-white/10 hover:border-emerald-500/50 transition-all group"
+                                >
+                                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
+                                        <Play className="w-4 h-4 fill-emerald-500" />
+                                    </div>
+                                    <span>Watch Demo</span>
+                                </MagneticButton>
                             </div>
 
                             {/* Stats / Trust */}
-                            <div className="pt-8 flex items-center gap-10 border-t border-gray-200 dark:border-white/10 opacity-0">
-                                <div>
-                                    <h4 className="text-3xl font-black text-gray-900 dark:text-white">50K+</h4>
-                                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-1">Active Users</p>
+                            <div className="pt-8 flex items-center gap-10 glass glass-border rounded-2xl p-6 opacity-0">
+                                <div className="group cursor-default">
+                                    <h4 className="text-3xl font-black text-gradient-emerald">
+                                        <AnimatedCounter value={50} suffix="K+" duration={2.5} />
+                                    </h4>
+                                    <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mt-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Active Users</p>
                                 </div>
-                                <div>
-                                    <h4 className="text-3xl font-black text-gray-900 dark:text-white">120K</h4>
-                                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-1">Kg Recycled</p>
+                                <div className="h-10 w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent"></div>
+                                <div className="group cursor-default">
+                                    <h4 className="text-3xl font-black text-gradient-emerald">
+                                        <AnimatedCounter value={120} suffix="K" duration={2.5} />
+                                    </h4>
+                                    <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mt-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Kg Recycled</p>
                                 </div>
                             </div>
                         </div>
@@ -133,8 +155,8 @@ export default function HeroSection() {
                         <div ref={visualRef} className="relative hidden lg:block perspective-1000 opacity-0">
                             <div className="relative z-10 w-full aspect-[4/5] max-w-[420px] mx-auto group">
                                 {/* Glow Effect */}
-                                <div className="absolute -inset-4 bg-emerald-500/20 blur-[60px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/10 to-transparent rounded-[2.5rem] -z-10" />
+                                <div className="absolute -inset-4 bg-emerald-500/20 blur-[80px] rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-700 -z-10 animate-pulse" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/20 via-teal-500/10 to-transparent rounded-[2.5rem] -z-10" />
 
                                 <div className="relative h-full w-full rounded-[2.5rem] overflow-hidden shadow-2xl transition-transform duration-700 group-hover:scale-[1.02] group-hover:rotate-y-2">
                                     <img
@@ -146,7 +168,7 @@ export default function HeroSection() {
                                 </div>
 
                                 {/* Floating Badge */}
-                                <div className="absolute -bottom-6 -right-6 bg-white dark:bg-neutral-900 p-4 rounded-3xl shadow-2xl border border-gray-100 dark:border-white/10 flex items-center gap-3 floating-item z-20">
+                                <div className="absolute -bottom-6 -right-6 glass-heavy p-4 rounded-3xl shadow-2xl border border-white/20 dark:border-white/10 flex items-center gap-3 floating-item z-20 backdrop-blur-xl">
                                     <div className="w-10 h-10 rounded-xl bg-forest-green flex items-center justify-center text-white">
                                         <Zap className="w-5 h-5 fill-current" />
                                     </div>
