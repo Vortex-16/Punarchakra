@@ -1,4 +1,5 @@
 import NavigationHeader from "@/components/landing/NavigationHeader";
+import CustomCursor from "@/components/ui/CustomCursor";
 
 import HeroSection from "@/components/landing/HeroSection";
 import HowItWorks from "@/components/landing/HowItWorks";
@@ -12,6 +13,7 @@ import LandingFooter from "@/components/landing/LandingFooter";
 export default function LandingPage() {
     return (
         <div className="min-h-screen bg-white dark:bg-gray-950">
+            <CustomCursor />
             <NavigationHeader />
             <main>
                 <HeroSection />

@@ -15,8 +15,12 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
         pathname?.startsWith("/home") ||
         pathname?.startsWith("/scan") ||
         pathname?.startsWith("/map") ||
+        pathname?.startsWith("/dashboard") ||
+        pathname?.startsWith("/login") ||
+        pathname?.startsWith("/register") ||
         pathname?.startsWith("/rewards") ||
         pathname?.startsWith("/admin") ||
+        pathname?.startsWith("/smartBin") ||
         pathname?.startsWith("/smart-bin");
 
     if (isAppRoute) {

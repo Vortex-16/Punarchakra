@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { detectWaste } from '@/app/actions/detectWaste';
 
 export type DetectionStatus = 'idle' | 'scanning' | 'analyzing' | 'success' | 'error';
 
@@ -32,43 +33,43 @@ export function useWasteDetection() {
       });
 
       const base64Image = await base64Promise;
-      
+
       // Artificial delay for "Scanning" animation (optional, but good for UX)
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       setStatus('analyzing');
 
-      const response = await fetch('/api/analyze-waste', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ image: base64Image }),
-      });
+      // Use Server Action directly
+      const response = await detectWaste(base64Image);
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown server error' }));
-        console.error("Server Response Error:", response.status, errorData);
-        throw new Error(errorData.error || `Server error: ${response.status}`);
+      if (response.error) {
+        throw new Error(response.error);
       }
 
-      const data = await response.json();
+      const data = response.data;
+
+      // Map server response to DetectionResult
+      // The server returns: { label, material, recyclable, confidence_score, sustainability_score, estimated_credit, reasoning }
+      // We need to map it to: { id, item, category, confidence, value, message }
+
+      const categoryMap: Record<string, 'electronic' | 'battery' | 'plastic' | 'other'> = {
+        'true': 'electronic', // If recyclable is true, we assume it's electronic/e-waste based on the prompt
+        'false': 'other'
+      };
 
       setResult({
         id: Date.now().toString(),
-        item: data.item || 'Unknown Item',
-        category: data.category || 'other',
-        confidence: data.confidence || 0.5,
-        value: data.value || 0,
-        message: data.message || 'Could not determine details.',
+        item: data.label || 'Unknown Item',
+        category: data.recyclable ? 'electronic' : 'other', // Simplified mapping based on prompt logic
+        confidence: (data.confidence_score || 0) / 100, // prompt returns 0-100
+        value: data.estimated_credit || 0,
+        message: data.reasoning || data.material || 'Analysis complete.',
       });
-      
+
       setStatus('success');
     } catch (error) {
       console.error("Detection Error:", error);
       setStatus('error');
-      // For demo resilience, fall back to mock result if API fails (optional)
-      // or just show error state
     }
   }, []);
 
@@ -83,7 +84,7 @@ export function useWasteDetection() {
     result,
     startDetection,
     resetDetection,
-    debugImage, 
+    debugImage,
     setDebugImage
   };
 }

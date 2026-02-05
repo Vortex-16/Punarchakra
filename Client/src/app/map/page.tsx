@@ -143,49 +143,56 @@ export default function BinFinderPage() {
   const activeFiltersCount = (selectedWasteType ? 1 : 0) + (searchQuery ? 1 : 0);
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-forest-green flex items-center justify-center shadow-lg shadow-forest-green/20">
-            <MapPin className="w-6 h-6 text-white" />
+    <div className="space-y-4 md:space-y-8 pb-6">
+      {/* Header - Fixed at top on mobile */}
+      <div className="fixed md:relative top-0 left-0 right-0 z-40 bg-white dark:bg-gray-950 pb-4 md:pb-0 px-6 md:px-0 pt-6 md:pt-0 shadow-sm md:shadow-none">
+        <div className="flex items-center justify-between flex-wrap gap-3 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-forest-green flex items-center justify-center shadow-lg shadow-forest-green/20">
+              <MapPin className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Bin Finder</h1>
+              <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-0.5 md:mt-1">Locate nearest e-waste collection points</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Bin Finder</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1">Locate nearest e-waste collection points</p>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/smart-bin"
+              className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-lg bg-forest-green text-white hover:bg-forest-green/90 transition-colors font-semibold text-sm md:text-base"
+            >
+              <Smartphone className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              <span className="hidden sm:inline">Smart Bin</span>
+              <span className="sm:hidden">Scan</span>
+            </Link>
+            <ModeToggle />
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/smart-bin"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-forest-green text-white hover:bg-forest-green/90 transition-colors font-semibold"
-          >
-            <Smartphone className="w-4 h-4" />
-            Smart Bin
-          </Link>
-          <ModeToggle />
         </div>
       </div>
+
+      {/* Add top padding on mobile to account for fixed header */}
+      <div className="h-20 md:h-0"></div>
 
       {/* Statistics Cards */}
       <BinStats bins={filteredBins} userLocation={userLocation} />
 
       {/* Waste Type Selection */}
-      <section className="space-y-4">
+      <section className="space-y-3 md:space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-forest-green text-white font-bold text-sm">
+            <div className="flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-full bg-forest-green text-white font-bold text-xs md:text-sm">
               1
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Select Waste Type</h2>
+            <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">Select Waste Type</h2>
           </div>
           {activeFiltersCount > 0 && (
             <button
               onClick={handleClearFilters}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-forest-green hover:bg-forest-green/10 dark:hover:bg-forest-green/20 transition-colors"
+              className="flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium text-forest-green hover:bg-forest-green/10 dark:hover:bg-forest-green/20 transition-colors"
             >
-              <X className="w-4 h-4" />
-              Clear Filters ({activeFiltersCount})
+              <X className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              <span className="hidden sm:inline">Clear Filters ({activeFiltersCount})</span>
+              <span className="sm:hidden">Clear ({activeFiltersCount})</span>
             </button>
           )}
         </div>
@@ -196,12 +203,12 @@ export default function BinFinderPage() {
       </section>
 
       {/* Search Bar */}
-      <section className="space-y-4">
+      <section className="space-y-3 md:space-y-4">
         <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-forest-green text-white font-bold text-sm">
+          <div className="flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-full bg-forest-green text-white font-bold text-xs md:text-sm">
             2
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Search Bins</h2>
+          <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">Search Bins</h2>
         </div>
         <BinSearchBar
           value={searchQuery}
@@ -210,19 +217,19 @@ export default function BinFinderPage() {
         />
       </section>
 
-      {/* Map and List Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Bin List */}
-        <div className="lg:col-span-1 flex flex-col h-[600px] border-2 border-green-100 dark:border-neutral-700 rounded-2xl overflow-hidden bg-green-50 dark:bg-neutral-900 shadow-lg">
-          <div className="p-4 border-b-2 border-green-100 dark:border-neutral-700 bg-green-100/50 dark:bg-neutral-800">
-            <div className="flex items-center justify-between mb-3">
+      {/* Map and List Grid - Mobile First, Tablet Side-by-Side */}
+      <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-5 lg:grid-cols-3 md:gap-4 lg:gap-6">
+        {/* Bin List - Full width on mobile, 2/5 on tablet, 1/3 on desktop */}
+        <div className="md:col-span-2 lg:col-span-1 flex flex-col h-[500px] md:h-[700px] lg:h-[600px] border-2 border-green-100 dark:border-neutral-700 rounded-2xl overflow-hidden bg-green-50 dark:bg-neutral-900 shadow-lg">
+          <div className="p-3 md:p-4 border-b-2 border-green-100 dark:border-neutral-700 bg-green-100/50 dark:bg-neutral-800">
+            <div className="flex items-center justify-between mb-2 md:mb-3">
               <div className="flex items-center gap-2">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-forest-green text-white font-bold text-sm">
+                <div className="flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-full bg-forest-green text-white font-bold text-xs md:text-sm">
                   3
                 </div>
-                <h2 className="font-semibold text-gray-900 dark:text-white">Nearest Bins</h2>
+                <h2 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">Nearest Bins</h2>
               </div>
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <span className="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400">
                 {filteredBins.length} found
               </span>
             </div>
@@ -235,7 +242,7 @@ export default function BinFinderPage() {
               disabled={filteredBins.length === 0}
             />
           </div>
-          <div className="flex-1 overflow-hidden p-4">
+          <div className="flex-1 overflow-hidden p-3 md:p-4">
             {isLoadingLocation ? (
               <div className="flex flex-col items-center justify-center h-full">
                 <Loader2 className="w-8 h-8 text-forest-green animate-spin mb-2" />
@@ -252,8 +259,8 @@ export default function BinFinderPage() {
           </div>
         </div>
 
-        {/* Map */}
-        <div className="lg:col-span-2 h-[600px] rounded-2xl overflow-hidden border-2 border-green-100 dark:border-neutral-700 shadow-lg relative">
+        {/* Map - Full width on mobile, 3/5 on tablet, 2/3 on desktop */}
+        <div className="md:col-span-3 lg:col-span-2 h-[400px] md:h-[700px] lg:h-[600px] rounded-2xl overflow-hidden border-2 border-green-100 dark:border-neutral-700 shadow-lg relative">
           <MapComponent
             userLocation={userLocation}
             bins={filteredBins}
@@ -262,8 +269,8 @@ export default function BinFinderPage() {
             onLocateUser={handleLocateUser}
           />
           {!userLocation && !isLoadingLocation && (
-            <div className="absolute top-4 right-4 bg-white dark:bg-gray-900 p-3 rounded-xl text-sm shadow-xl z-1000 border-2 border-gray-200 dark:border-gray-700 flex items-center gap-2 max-w-xs">
-              <Sparkles className="w-4 h-4 text-forest-green flex-shrink-0" />
+            <div className="absolute top-3 md:top-4 right-3 md:right-4 bg-white dark:bg-gray-900 p-2.5 md:p-3 rounded-xl text-xs md:text-sm shadow-xl z-1000 border-2 border-gray-200 dark:border-gray-700 flex items-center gap-2 max-w-[200px] md:max-w-xs">
+              <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4 text-forest-green flex-shrink-0" />
               <span className="text-gray-700 dark:text-gray-300">Enable location for personalized results</span>
             </div>
           )}

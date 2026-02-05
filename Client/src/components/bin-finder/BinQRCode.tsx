@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { QrCode, X, Download, Navigation, Smartphone } from "lucide-react";
 import Link from "next/link";
@@ -8,13 +8,17 @@ import { Bin } from "@/lib/bin-data";
 
 interface BinQRCodeProps {
     bin: Bin;
+    iconOnly?: boolean;
 }
 
-export default function BinQRCode({ bin }: BinQRCodeProps) {
+export default function BinQRCode({ bin, iconOnly = false }: BinQRCodeProps) {
     const [showQR, setShowQR] = useState(false);
+    const [binDataUrl, setBinDataUrl] = useState("");
 
-    // Create bin data URL for QR code
-    const binDataUrl = `${window.location.origin}/smart-bin?binId=${bin.id}`;
+    // Create bin data URL for QR code - only on client side
+    useEffect(() => {
+        setBinDataUrl(`${window.location.origin}/smart-bin?binId=${bin.id}`);
+    }, [bin.id]);
 
     const downloadQR = () => {
         const svg = document.getElementById(`qr-${bin.id}`);
@@ -46,6 +50,18 @@ export default function BinQRCode({ bin }: BinQRCodeProps) {
     };
 
     if (!showQR) {
+        if (iconOnly) {
+            return (
+                <button
+                    onClick={() => setShowQR(true)}
+                    className="p-1.5 md:p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-300 flex items-center justify-center cursor-pointer"
+                    title="Show QR Code"
+                >
+                    <QrCode className="w-4 h-4" />
+                </button>
+            );
+        }
+
         return (
             <button
                 onClick={() => setShowQR(true)}

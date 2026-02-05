@@ -1,32 +1,63 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LayoutDashboard, Map, Scan, LogOut, Award } from "lucide-react";
+import { LayoutDashboard, Map, Scan, LogOut, Award, Smartphone, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/hooks/useSession";
+import { signOut } from "next-auth/react";
 
 const sidebarItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/home" },
+    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+    { icon: Smartphone, label: "Smart Bin", href: "/smartBin" },
     { icon: Scan, label: "AI Waste Scanner", href: "/scan" },
     { icon: Map, label: "Bin Map", href: "/map" },
     { icon: Award, label: "Rewards", href: "/rewards" },
 ];
 
-export function Sidebar() {
+export function Sidebar({ className }: { className?: string }) {
     const pathname = usePathname();
+    const { user, isAuthenticated } = useSession();
+
+    // Filter items based on role
+    const filteredItems = sidebarItems;
+
+    const handleLogout = async () => {
+        await signOut({ callbackUrl: "/login" });
+    };
+
+    // Get user initials for avatar
+    const getInitials = (name?: string, email?: string) => {
+        if (name) {
+            return name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .toUpperCase()
+                .slice(0, 2);
+        }
+        if (email) {
+            return email.slice(0, 2).toUpperCase();
+        }
+        return "U";
+    };
+
+    // Get role display name
+    const getRoleDisplay = (role?: string) => {
+        if (!role) return "User";
+        return role.charAt(0).toUpperCase() + role.slice(1);
+    };
 
     return (
         <motion.aside
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="h-screen w-20 md:w-56 bg-forest-green text-white fixed left-0 top-0 hidden md:flex flex-col justify-between py-6 z-50 shadow-xl"
+            className={cn("h-screen w-20 md:w-56 bg-forest-green text-white fixed left-0 top-0 flex-col justify-between py-6 z-50 shadow-xl", className)}
         >
             {/* Logo */}
-            <Link href="/home" className="px-6 flex items-center gap-3 hover:opacity-80 transition-opacity">
-
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0">
-                <div className="w-8 h-8 rounded-full bg-neon-lime flex items-center justify-center shrink-0">
+            <Link href="/" className="px-6 flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <div className="w-8 h-8 rounded-full bg-fresh-green flex items-center justify-center shrink-0">
                     <span className="text-forest-green font-bold text-lg">P</span>
                 </div>
                 <span className="font-bold text-xl hidden md:block text-white tracking-wide">
@@ -36,7 +67,7 @@ export function Sidebar() {
 
             {/* Navigation */}
             <nav className="flex-1 mt-10 px-4 space-y-2">
-                {sidebarItems.map((item) => {
+                {filteredItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
                         <Link
@@ -61,21 +92,48 @@ export function Sidebar() {
             </nav>
 
             {/* Bottom Actions */}
-            <div className="px-4 space-y-4">
-                <button className="flex items-center gap-4 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white w-full transition-colors group">
+            <div className="px-4 pb-4 space-y-2 mt-auto">
+                <Link
+                    href="/settings"
+                    className="flex items-center gap-4 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white w-full transition-colors group"
+                >
+                    <Settings className="w-5 h-5" />
+                    <span className="hidden md:block text-sm font-medium">Settings</span>
+                </Link>
+
+                {isAuthenticated && (
+                    <Link
+                        href="/admin"
+                        className="flex items-center gap-4 px-3 py-2.5 rounded-xl text-white/70 hover:bg-emerald-500/20 hover:text-white w-full transition-colors group border border-white/5 hover:border-emerald-500/30"
+                    >
+                        <LayoutDashboard className="w-5 h-5 text-fresh-green" />
+                        <span className="hidden md:block text-xs font-bold">Admin Panel</span>
+                    </Link>
+                )}
+
+                <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-4 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white w-full transition-colors group"
+                >
                     <LogOut className="w-5 h-5" />
                     <span className="hidden md:block text-sm font-medium">Logout</span>
                 </button>
 
-                <div className="flex items-center gap-3 px-3 pt-4 border-t border-white/10">
-                    <div className="w-10 h-10 rounded-full bg-white/10 p-0.5">
+                <div className="flex items-center gap-3 px-3 pt-3 border-t border-white/10 shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-white/10 p-0.5">
                         <div className="w-full h-full rounded-full bg-forest-green flex items-center justify-center overflow-hidden border border-white/20">
-                            <span className="text-xs font-bold text-white">AD</span>
+                            <span className="text-[10px] font-bold text-white uppercase">
+                                {getInitials(user?.name, user?.email)}
+                            </span>
                         </div>
                     </div>
-                    <div className="hidden md:block">
-                        <p className="text-sm font-semibold text-white">Admin User</p>
-                        <p className="text-xs text-white/50">admin@punarchakra.com</p>
+                    <div className="hidden md:block min-w-0">
+                        <p className="text-xs font-semibold text-white truncate">
+                            {user?.name || getRoleDisplay(user?.role)}
+                        </p>
+                        <p className="text-[10px] text-white/50 truncate">
+                            {user?.email || "user@punarchakra.com"}
+                        </p>
                     </div>
                 </div>
             </div>

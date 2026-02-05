@@ -1,230 +1,184 @@
 "use client";
 import React, { useRef } from "react";
-import { Smartphone, MapPin, Scan, Trophy, ArrowRight } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Link from "next/link";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
-import React from "react";
-
-import { motion } from "framer-motion";
-import { Smartphone, MapPin, Scan, Trophy } from "lucide-react";
 
 const steps = [
     {
-        number: "01",
-        icon: Smartphone,
-        title: "Choose Your E-Waste",
-        description: "Select what you want to recycle—phones, laptops, cables, or batteries.",
-        description: "Select what you want to recycle—phones, laptops, cables, or batteries",
+        image: "/assets/images/step1-locate.png",
+        title: "Locate",
+        description: "Find a bin near you with our app",
+        color: "bg-emerald-500/10",
+        hoverBorder: "group-hover:border-emerald-500",
     },
     {
-        number: "02",
-        icon: MapPin,
-        title: "Find Nearest Bin",
-        description: "Locate the closest smart collection bin using our interactive map instantly.",
-        title: "Find Nearest Smart Bin",
-        description: "Locate the closest bin using our interactive map",
+        image: "/assets/images/step2-scan.png",
+        title: "Scan & Drop",
+        description: "Scan the bin & Deposit Your Item",
+        color: "bg-emerald-500/10",
+        hoverBorder: "group-hover:border-emerald-500",
     },
     {
-        number: "03",
-        icon: Scan,
-        title: "AI Detects Item",
-        description: "Simply drop your item. Our AI camera instantly identifies and values it.",
-
-        title: "AI Detects Your Item",
-        description: "Drop your item and let AI instantly identify and value it",
+        image: "/assets/images/step3-verify.png",
+        title: "AI Verification",
+        description: "Our Secure AI Instantly Identify and values your item",
+        color: "bg-emerald-500/10",
+        hoverBorder: "group-hover:border-emerald-500",
     },
     {
-        number: "04",
-        icon: Trophy,
-        title: "Collect Rewards",
-        description: "Get instant points credited to your wallet and see your impact on the planet.",
-        title: "Earn Rewards & Track Impact",
-        description: "Get points, rewards, and see your environmental contribution",
+        image: "/assets/images/step4-earn.png",
+        title: "Earn",
+        description: "Receive Points Instantly to redeem your rewards",
+        color: "bg-emerald-500/10",
+        hoverBorder: "group-hover:border-emerald-500",
     },
 ];
 
 export default function HowItWorks() {
-    const containerRef = useRef<HTMLElement>(null);
+    const sectionRef = useRef<HTMLElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
     const stepsRef = useRef<HTMLDivElement>(null);
 
+    const beamRef = useRef<HTMLDivElement>(null);
+
     useGSAP(() => {
-        // Header Animation
-        gsap.from(headerRef.current, {
-            scrollTrigger: {
-                trigger: headerRef.current,
-                start: "top 80%",
-            },
-            y: 30,
-            opacity: 0,
-            duration: 0.8,
-            ease: "power3.out"
-        });
+        // Animate Header
+        if (headerRef.current) {
+            gsap.fromTo(headerRef.current,
+                { y: 50, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    scrollTrigger: {
+                        trigger: headerRef.current,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        }
 
-        // Steps Animation
-        const stepElements = stepsRef.current!.children;
+        // Animate Steps
+        if (stepsRef.current) {
+            const stepItems = gsap.utils.toArray<HTMLElement>(".step-item");
 
-        // Connecting Line Animation (Desktop)
-        gsap.from(".connecting-line", {
-            scrollTrigger: {
-                trigger: stepsRef.current,
-                start: "top 70%",
-            },
-            width: 0,
-            duration: 1.5,
-            ease: "power2.inOut"
-        });
+            stepItems.forEach((step, index) => {
+                const slideFromRight = index % 2 !== 0;
 
-        // Steps Stagger
-        gsap.from(stepElements, {
-            scrollTrigger: {
-                trigger: stepsRef.current,
-                start: "top 70%",
-            },
-            y: 50,
-            opacity: 0,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: "back.out(1.7)"
-        });
+                gsap.set(step, {
+                    clipPath: slideFromRight ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)",
+                    webkitClipPath: slideFromRight ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)",
+                    x: slideFromRight ? 50 : -50,
+                    opacity: 0
+                });
 
-    }, { scope: containerRef });
+                gsap.to(step, {
+                    clipPath: "inset(0 0% 0 0)",
+                    webkitClipPath: "inset(0 0% 0 0)",
+                    x: 0,
+                    opacity: 1,
+                    duration: 1.2,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: step,
+                        start: "top 75%",
+                        end: "bottom 25%",
+                        toggleActions: "play none none reverse"
+                    }
+                });
+            });
+
+            // Animate Vertical Line Beam
+            if (beamRef.current) {
+                gsap.fromTo(beamRef.current,
+                    { height: "0%" },
+                    {
+                        height: "100%",
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: stepsRef.current,
+                            start: "top center",
+                            end: "bottom center",
+                            scrub: true
+                        }
+                    }
+                );
+            }
+        }
+    }, { scope: sectionRef });
 
     return (
-        <section ref={containerRef} id="how-it-works" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-neutral-900 overflow-hidden">
+        <section ref={sectionRef} id="how-it-works" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-neutral-900/50 overflow-hidden">
             <div className="max-w-7xl mx-auto">
                 {/* Section Header */}
-                <div ref={headerRef} className="text-center mb-20">
-                    <span className="text-sm font-bold text-forest-green tracking-wider uppercase mb-2 block">Simple Process</span>
+                <div ref={headerRef} className="text-center mb-20 opacity-0">
                     <h2 className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
-                        How It Works
+                        How it Works
                     </h2>
                     <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                        Four simple steps to turn your e-waste into rewards and environmental impact.
+                        Recycling your electronics has never been this easy. Follow these four simple steps to make an impact.
                     </p>
                 </div>
 
-                {/* Steps Grid */}
-                <div ref={stepsRef} className="relative grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {/* Connecting Line (Desktop) - Behind text */}
-                    <div className="hidden lg:block absolute top-[60px] left-0 w-full h-0.5 bg-gray-200 dark:bg-gray-800 z-0">
-                        <div className="connecting-line absolute top-0 left-0 h-full bg-forest-green/30 w-full origin-left"></div>
+                {/* Steps Timeline */}
+                <div ref={stepsRef} className="relative">
+                    {/* Vertical Line for Desktop */}
+                    <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-800 -translate-x-1/2">
+                        <div
+                            ref={beamRef}
+                            className="absolute top-0 left-0 w-full bg-gradient-to-b from-transparent via-green-400 to-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.8)]"
+                        >
+                            {/* Glowing Head */}
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_25px_rgba(255,255,255,1)] z-20" />
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-8 h-8 bg-green-500/40 rounded-full blur-md z-10" />
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-12 h-12 bg-green-400/20 rounded-full blur-lg z-0" />
+                        </div>
                     </div>
 
-                    {steps.map((step, index) => (
-                        <div key={index} className="relative z-10 group">
-                            <div className="flex flex-col items-center text-center">
-                                {/* Number Circle */}
-                                <div className="w-32 h-32 bg-white dark:bg-neutral-800 rounded-full border-4 border-gray-50 dark:border-gray-800 flex items-center justify-center shadow-lg relative mb-8 group-hover:scale-110 transition-transform duration-300">
-                                    <div className="absolute inset-0 bg-forest-green/5 rounded-full transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                                    <step.icon className="w-10 h-10 text-forest-green transition-transform duration-300" />
-                                    <div className="absolute -top-2 -right-2 w-10 h-10 bg-forest-green text-white rounded-full flex items-center justify-center font-bold text-sm border-2 border-white dark:border-neutral-900">
-                                        {step.number}
+                    <div className="space-y-12 lg:space-y-0">
+                        {steps.map((step, index) => (
+                            <div key={index} className="step-item relative flex justify-center opacity-0 w-full">
+                                <div className="w-full max-w-4xl relative">
+                                    {/* Central Node for Desktop (Optional visual anchor) */}
+                                    <div className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-forest-green border-[4px] border-white dark:border-neutral-950 shadow-lg z-20" />
+
+                                    {/* Alternating Layout: Row for Even, Row-Reverse for Odd */}
+                                    <div className={`relative overflow-hidden bg-white dark:bg-neutral-900 rounded-[2.5rem] shadow-lg border border-gray-100 dark:border-gray-800 ${step.hoverBorder} hover:shadow-2xl transition-all duration-500 group flex flex-col md:flex-row ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
+
+                                        {/* Content Side */}
+                                        <div className="flex-1 p-8 md:p-12 flex flex-col justify-center relative z-10">
+                                            <div className="mb-6 inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-forest-green/10 text-forest-green font-black text-lg shadow-inner">
+                                                {index + 1}
+                                            </div>
+                                            <h3 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-6 tracking-tight group-hover:text-forest-green transition-colors">
+                                                {step.title}
+                                            </h3>
+                                            <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-lg font-medium">
+                                                {step.description}
+                                            </p>
+                                        </div>
+
+                                        {/* Image Side */}
+                                        <div className={`flex-1 relative min-h-[300px] md:min-h-[400px] overflow-hidden ${step.color}`}>
+                                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/20 to-transparent opacity-50" />
+                                            <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl" />
+
+                                            <img
+                                                src={step.image}
+                                                alt={step.title}
+                                                className="absolute inset-0 w-full h-full object-contain p-12 transform group-hover:scale-110 group-hover:-rotate-2 transition-transform duration-700 ease-out drop-shadow-2xl"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-
-                                {/* Content */}
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                                    {step.title}
-                                </h3>
-                                <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-sm">
-                                    {step.description}
-                                </p>
                             </div>
-                        </div>
-    return (
-        <section id="how-it-works" className="landing-section px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-950">
-            <div className="max-w-7xl mx-auto">
-                {/* Section Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    className="text-center mb-16"
-                >
-                    <h2 className="text-4xl sm:text-5xl font-black text-forest-green dark:text-white mb-4">
-                        How It Works
-                    </h2>
-                    <p className="text-lg text-text-secondary dark:text-gray-300 max-w-2xl mx-auto">
-                        Four simple steps to turn your e-waste into rewards and environmental impact
-                    </p>
-                </motion.div>
-
-                {/* Steps Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {steps.map((step, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="relative"
-                        >
-                            {/* Connecting Line (Desktop) */}
-                            {index < steps.length - 1 && (
-                                <div className="hidden lg:block absolute top-16 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-forest-green/30 to-transparent dark:from-neon-lime/20"></div>
-                            )}
-
-                            {/* Card */}
-                            <div className="relative bg-gradient-to-br from-white to-light-grey dark:from-gray-900 dark:to-gray-800 rounded-2xl p-6 hover-lift border border-gray-100 dark:border-gray-700 h-full">
-                                {/* Number Badge */}
-                                <div className="absolute -top-4 -right-4 w-12 h-12 bg-forest-green dark:bg-neon-lime rounded-full flex items-center justify-center shadow-lg">
-                                    <span className="text-white dark:text-forest-green font-black text-lg">
-                                        {step.number}
-                                    </span>
-                                </div>
-
-                                {/* Icon */}
-                                <div className="w-16 h-16 bg-forest-green/10 dark:bg-neon-lime/10 rounded-xl flex items-center justify-center mb-4">
-                                    <step.icon className="w-8 h-8 text-forest-green dark:text-neon-lime" />
-                                </div>
-
-                                {/* Content */}
-                                <h3 className="text-xl font-bold text-forest-green dark:text-white mb-2">
-                                    {step.title}
-                                </h3>
-                                <p className="text-text-secondary dark:text-gray-400 leading-relaxed">
-                                    {step.description}
-                                </p>
-                            </div>
-                        </motion.div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-
-                {/* Bottom CTA */}
-                <div className="mt-20 text-center">
-                    <Link
-                        href="/map"
-                        className="inline-flex items-center gap-2 px-8 py-4 bg-forest-green text-white rounded-2xl font-bold text-lg hover:bg-[#0a3f30] transition-all shadow-lg hover:shadow-forest-green/20 hover:-translate-y-1"
-                    >
-                        <MapPin className="w-5 h-5" />
-                        Find Your Nearest Bin
-                    </Link>
-                </div>
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.6 }}
-                    className="mt-12 text-center"
-                >
-                    <p className="text-text-muted dark:text-gray-400 mb-4">
-                        Ready to get started?
-                    </p>
-                    <a
-                        href="/map"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-forest-green hover:bg-forest-green/90 text-white rounded-lg font-semibold transition-all hover-scale shadow-lg shadow-forest-green/20"
-                    >
-                        <MapPin className="w-5 h-5" />
-                        Find Your Nearest Bin
-                    </a>
-                </motion.div>
             </div>
         </section>
     );

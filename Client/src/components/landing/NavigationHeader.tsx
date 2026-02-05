@@ -1,21 +1,37 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import Link from "next/link"; // Link fixed
-
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ModeToggle } from "@/components/mode-toggle";
+import ThemeToggle from "./ThemeToggle";
+import { useSession } from "@/hooks/useSession";
+import { LayoutDashboard } from "lucide-react";
 
 export default function NavigationHeader() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const { user, isAuthenticated, isAdmin } = useSession();
 
     useEffect(() => {
+        let ticking = false;
+
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    // Add a small hysteresis to avoid rapid toggling
+                    const scrollY = window.scrollY;
+                    if (scrollY > 20) {
+                        setIsScrolled(true);
+                    } else if (scrollY < 15) {
+                        setIsScrolled(false);
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
-        window.addEventListener("scroll", handleScroll);
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
@@ -35,124 +51,143 @@ export default function NavigationHeader() {
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-
-                ? "bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800"
-                ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-sm"
-                : "bg-transparent"
+            className={`fixed z-50 left-1/2 -translate-x-1/2 transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${isScrolled
+                ? "top-6 w-[90%] md:w-[85%] max-w-6xl rounded-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl shadow-lg shadow-black/5 border border-white/20 dark:border-white/10"
+                : "top-0 w-full bg-transparent py-4 border-b border-transparent"
                 }`}
         >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2 group">
-                        <div className="w-10 h-10 bg-forest-green rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform shadow-lg shadow-forest-green/20">
-                            <span className="text-white font-black text-xl">P</span>
+            <div className={`px-6 sm:px-8 transition-all duration-500 ${isScrolled ? "py-0" : ""}`}>
+                <div className={`relative flex items-center justify-between transition-all duration-500 ${isScrolled ? "h-16" : "h-20"} md:grid md:grid-cols-3 md:items-center`}>
+
+                    {/* 1. Logo Section (Left) */}
+                    <Link href="/" className="flex items-center gap-3 group relative w-fit justify-self-start">
+                        <div className="absolute inset-0 bg-forest-green/20 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
+                        <div className="relative w-10 h-10 bg-gradient-to-br from-forest-green to-emerald-600 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-500 shadow-xl">
+                            <span className="text-white font-black text-xl tracking-tighter">P</span>
                         </div>
-                        <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                    <Link href="/home" className="flex items-center gap-2 group">
-                        <div className="w-10 h-10 bg-forest-green rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
-                            <span className="text-neon-lime font-black text-xl">P</span>
-                        </div>
-                        <span className="text-xl font-bold text-forest-green dark:text-white">
+                        <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 tracking-tight group-hover:to-forest-green dark:group-hover:to-emerald-400 transition-all duration-500">
                             Punarchakra
                         </span>
                     </Link>
 
-                    {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center gap-2">
-
-                    <nav className="hidden md:flex items-center gap-8">
+                    {/* 2. Navigation Links (Center) - Only visible on Desktop */}
+                    <nav className="hidden md:flex justify-self-center items-center p-1 bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md rounded-full border border-gray-200/50 dark:border-white/5 shadow-sm">
                         {navLinks.map((link) => (
                             <button
                                 key={link.id}
                                 onClick={() => scrollToSection(link.id)}
-                                className="cursor-pointer px-4 py-2 rounded-full text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-forest-green/10 hover:text-forest-green dark:hover:text-green-400 transition-all duration-300"
-                                className="text-gray-700 dark:text-gray-300 hover:text-forest-green dark:hover:text-neon-lime font-medium transition-colors"
+                                className="cursor-pointer relative px-5 py-2 rounded-full text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-forest-green dark:hover:text-emerald-400 transition-colors duration-300 overflow-hidden group"
                             >
-                                {link.label}
+                                <span className="relative z-10">{link.label}</span>
+                                <span className="absolute inset-0 bg-forest-green/10 dark:bg-emerald-500/10 scale-0 group-hover:scale-100 rounded-full transition-transform duration-300 origin-center" />
                             </button>
                         ))}
                     </nav>
 
-                    {/* Desktop Auth Buttons */}
-                    <div className="hidden md:flex items-center gap-3">
-                        <ModeToggle />
-                        <Link
-                            href="/home"
-                            className="px-4 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-forest-green dark:hover:text-green-400 transition-colors"
-                            href="/"
-                            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-forest-green dark:hover:text-neon-lime font-medium transition-colors"
-                        >
-                            Login
-                        </Link>
-                        <Link
-                            href="/home"
-                            className="px-5 py-2.5 bg-forest-green hover:bg-[#0a3f30] text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-forest-green/20 hover:shadow-xl hover:-translate-y-0.5"
-                            href="/"
-                            className="px-6 py-2.5 bg-forest-green hover:bg-forest-green/90 text-white rounded-lg font-semibold transition-all hover-scale shadow-lg shadow-forest-green/20"
-                        >
-                            Sign Up
-                        </Link>
+                    {/* 3. Auth & Theme (Right) */}
+                    <div className="hidden md:flex items-center gap-5 justify-self-end">
+                        <ThemeToggle />
+
+                        <div className="flex items-center gap-4 pl-5 border-l border-gray-200 dark:border-white/10 h-8">
+                            {isAuthenticated ? (
+                                <>
+                                    <Link
+                                        href="/admin"
+                                        className="text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 flex items-center gap-1.5"
+                                    >
+                                        <LayoutDashboard className="w-4 h-4" />
+                                        Admin Panel
+                                    </Link>
+                                    <Link
+                                        href="/dashboard"
+                                        className="relative px-5 py-2.5 bg-forest-green text-white rounded-xl text-sm font-bold shadow-lg shadow-forest-green/25 hover:shadow-forest-green/40 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden group"
+                                    >
+                                        <span className="relative z-10">Dashboard</span>
+                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-forest-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    </Link>
+                                </>
+                            ) : (
+                                <>
+                                    <Link
+                                        href="/dashboard"
+                                        className="text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-forest-green dark:hover:text-emerald-400 transition-colors"
+                                    >
+                                        Login
+                                    </Link>
+                                    <Link
+                                        href="/dashboard"
+                                        className="relative px-5 py-2.5 bg-forest-green text-white rounded-xl text-sm font-bold shadow-lg shadow-forest-green/25 hover:shadow-forest-green/40 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden group"
+                                    >
+                                        <span className="relative z-10">Sign Up</span>
+                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-forest-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    </Link>
+                                </>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Mobile Menu Button */}
-                    <button
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} // Fixed toggle
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-forest-green transition-colors"
-                        aria-label="Toggle mobile menu"
-                    >
-                        {isMobileMenuOpen ? (
-                            <X className="w-6 h-6" />
-                        ) : (
-                            <Menu className="w-6 h-6" />
-                        )}
-                    </button>
+                    {/* Mobile Menu Button (Right on Mobile) */}
+                    <div className="flex items-center gap-4 md:hidden">
+                        <ThemeToggle />
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="p-2 text-gray-700 dark:text-gray-300 hover:text-forest-green transition-colors"
+                            aria-label="Toggle mobile menu"
+                        >
+                            {isMobileMenuOpen ? (
+                                <X className="w-7 h-7" />
+                            ) : (
+                                <Menu className="w-7 h-7" />
+                            )}
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu Overlay */}
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="md:hidden bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border-t border-gray-100 dark:border-gray-800"
-                        className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800"
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="md:hidden bg-white/95 dark:bg-neutral-950/95 backdrop-blur-3xl border-t border-gray-100 dark:border-gray-800 overflow-hidden absolute top-full left-0 right-0 mx-4 mt-2 rounded-2xl shadow-xl border border-gray-100 dark:border-white/10"
                     >
-                        <div className="max-w-7xl mx-auto px-4 py-6 space-y-4">
+                        <div className="px-6 py-6 space-y-4">
                             {navLinks.map((link) => (
                                 <button
                                     key={link.id}
                                     onClick={() => scrollToSection(link.id)}
-                                    className="block w-full text-left py-3 text-base font-medium text-gray-900 dark:text-white hover:text-forest-green dark:hover:text-green-400 border-b border-gray-50 dark:border-gray-800"
-                                    className="block w-full text-left py-2 text-gray-700 dark:text-gray-300 hover:text-forest-green dark:hover:text-neon-lime font-medium transition-colors"
+                                    className="block w-full text-left py-3 text-lg font-bold text-gray-900 dark:text-white hover:text-forest-green dark:hover:text-emerald-400 border-b border-gray-100 dark:border-white/5 last:border-0"
                                 >
                                     {link.label}
                                 </button>
                             ))}
-                            <div className="pt-4 space-y-3">
-                                <Link
-                                    href="/home"
-                                    className="block w-full text-center py-3 text-gray-700 dark:text-gray-300 font-bold hover:text-forest-green"
-                            <div className="pt-4 space-y-3 border-t border-gray-100 dark:border-gray-800">
-                                <Link
-                                    href="/dashboard"
-                                    className="block w-full text-center py-2.5 text-gray-700 dark:text-gray-300 hover:text-forest-green dark:hover:text-neon-lime font-medium transition-colors"
-                                >
-                                    Login
-                                </Link>
-                                <Link
-                                    href="/home"
-                                    className="block w-full text-center py-3 bg-forest-green text-white rounded-xl font-bold shadow-lg"
-
-                                    href="/dashboard"
-                                    className="block w-full text-center py-3 bg-forest-green hover:bg-forest-green/90 text-white rounded-lg font-semibold transition-all shadow-lg shadow-forest-green/20"
-                                >
-                                    Sign Up
-                                </Link>
+                            <div className="pt-4 grid grid-cols-2 gap-4">
+                                {isAuthenticated ? (
+                                    <Link
+                                        href="/dashboard"
+                                        className="col-span-2 flex items-center justify-center py-3 bg-forest-green text-white rounded-xl font-bold shadow-lg shadow-forest-green/20"
+                                    >
+                                        Go to Dashboard
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <Link
+                                            href="/dashboard"
+                                            className="flex items-center justify-center py-3 text-gray-700 dark:text-gray-300 font-bold hover:text-forest-green bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10"
+                                        >
+                                            Login
+                                        </Link>
+                                        <Link
+                                            href="/dashboard"
+                                            className="flex items-center justify-center py-3 bg-forest-green text-white rounded-xl font-bold shadow-lg shadow-forest-green/20"
+                                        >
+                                            Sign Up
+                                        </Link>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </motion.div>

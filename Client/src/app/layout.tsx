@@ -6,6 +6,9 @@ import LayoutWrapper from "@/components/layout-wrapper";
 import SmoothScroll from "@/components/SmoothScroll";
 import { ToastProvider } from "@/components/ui/toast";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
+import AuthProvider from "@/components/AuthProvider";
+import { OfflineBanner } from "@/components/ui/OfflineBanner";
+import { VoiceAssistant } from "@/components/ai/VoiceAssistant";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,25 +40,26 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased bg-background text-foreground`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ToastProvider>
-            <FavoritesProvider>
-              <SmoothScroll>
-                <LayoutWrapper>
-                  {children}
-                </LayoutWrapper>
-              </SmoothScroll>
-            </FavoritesProvider>
-          </ToastProvider>
-          <LayoutWrapper>
-            {children}
-          </LayoutWrapper>
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ToastProvider>
+              <FavoritesProvider>
+                <SmoothScroll>
+                  <LayoutWrapper>
+                    {children}
+                  </LayoutWrapper>
+                  <OfflineBanner />
+                  <VoiceAssistant />
+                </SmoothScroll>
+              </FavoritesProvider>
+            </ToastProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

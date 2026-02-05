@@ -5,11 +5,8 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
-import React from "react";
 
-import { motion } from "framer-motion";
-import { Shield, Eye, CheckCircle, Lock } from "lucide-react";
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 function Brain(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -47,6 +44,7 @@ export default function TrustSection() {
     const sectionRef = useRef<HTMLElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<HTMLDivElement>(null);
+    const bottomRef = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
         gsap.fromTo(headerRef.current,
@@ -54,26 +52,50 @@ export default function TrustSection() {
             {
                 y: 0,
                 opacity: 1,
-                duration: 0.8,
+                duration: 2.5,
                 ease: "power3.out",
                 scrollTrigger: {
                     trigger: headerRef.current,
                     start: "top 90%",
+                    end: "bottom 60%",
+                    scrub: 1
                 }
             }
         );
 
-        gsap.fromTo(gridRef.current!.children,
-            { x: -20, opacity: 0 },
+        if (gridRef.current) {
+            gsap.fromTo(gridRef.current.children,
+                { 
+                    y: -60, 
+                    opacity: 0 
+                },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 2.5,
+                    stagger: 0.2,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: gridRef.current,
+                        start: "top 80%",
+                        end: "center center",
+                        scrub: 1
+                    }
+                }
+            );
+        }
+
+        // Bottom Assurance
+        gsap.fromTo(bottomRef.current,
+            { opacity: 0 },
             {
-                x: 0,
                 opacity: 1,
-                duration: 0.6,
-                stagger: 0.1,
-                ease: "power2.out",
+                delay: 0.6,
                 scrollTrigger: {
-                    trigger: gridRef.current,
-                    start: "top 85%",
+                    trigger: bottomRef.current,
+                    start: "top 95%",
+                    end: "bottom 90%",
+                    scrub: 1
                 }
             }
         );
@@ -104,90 +126,38 @@ export default function TrustSection() {
                     {trustPoints.map((point, index) => (
                         <div
                             key={index}
-                            className="flex gap-6 p-8 bg-gray-50 dark:bg-neutral-900 rounded-[2rem] border border-gray-100 dark:border-neutral-800 transition-all hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/50 hover:-translate-y-1 opacity-0"
+                            className="group relative flex gap-6 p-8 bg-gray-50 dark:bg-neutral-900 rounded-[2rem] border border-gray-100 dark:border-neutral-800 transition-all duration-500 hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/50 hover:-translate-y-2 opacity-0 overflow-hidden"
                         >
-                            {/* Icon */}
-                            <div className="flex-shrink-0 w-14 h-14 bg-white dark:bg-neutral-800 rounded-2xl flex items-center justify-center shadow-sm">
-                                <point.icon className="w-7 h-7 text-forest-green dark:text-green-400" />
-    return (
-        <section className="landing-section px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-950">
-            <div className="max-w-7xl mx-auto">
-                {/* Section Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    className="text-center mb-16"
-                >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-success-green/10 dark:bg-success-green/20 rounded-full mb-4">
-                        <Shield className="w-4 h-4 text-success-green" />
-                        <span className="text-sm font-semibold text-success-green">
-                            Built on Trust
-                        </span>
-                    </div>
-                    <h2 className="text-4xl sm:text-5xl font-black text-forest-green dark:text-white mb-4">
-                        Transparent & Secure
-                    </h2>
-                    <p className="text-lg text-text-secondary dark:text-gray-300 max-w-2xl mx-auto">
-                        We believe in clarity and security. Here's how we ensure you can trust every step of the process.
-                    </p>
-                </motion.div>
+                            {/* Bottom Border Sweep */}
+                            <div className="absolute bottom-0 left-0 h-1 bg-forest-green w-0 group-hover:w-full transition-all duration-500 ease-out" />
 
-                {/* Trust Points Grid */}
-                <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                    {trustPoints.map((point, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: index * 0.1 }}
-                            className="flex gap-4 p-6 bg-gradient-to-br from-white to-light-grey dark:from-gray-900 dark:to-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover-lift"
-                        >
                             {/* Icon */}
-                            <div className="flex-shrink-0 w-12 h-12 bg-success-green/10 dark:bg-success-green/20 rounded-xl flex items-center justify-center">
-                                <point.icon className="w-6 h-6 text-success-green dark:text-neon-lime" />
+                            <div className="flex-shrink-0 w-14 h-14 bg-white dark:bg-neutral-800 rounded-2xl flex items-center justify-center shadow-sm transition-transform duration-500 group-hover:scale-110 group-hover:bg-green-50 dark:group-hover:bg-green-900/10">
+                                <point.icon className="w-7 h-7 text-forest-green dark:text-green-400" />
                             </div>
 
                             {/* Content */}
                             <div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                                     {point.title}
                                 </h3>
-                                <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                                     {point.description}
                                 </p>
                             </div>
                         </div>
-                                <h3 className="text-lg font-bold text-forest-green dark:text-white mb-2">
-                                    {point.title}
-                                </h3>
-                                <p className="text-text-secondary dark:text-gray-400 leading-relaxed">
-                                    {point.description}
-                                </p>
-                            </div>
-                        </motion.div>
                     ))}
                 </div>
 
                 {/* Bottom Assurance */}
-                <div className="mt-16 text-center">
-                    <p className="text-gray-400 dark:text-gray-500 italic font-medium">
-                        "Your trust is our priority. Every decision we make puts transparency and security first."
+                <div
+                    ref={bottomRef}
+                    className="mt-20 text-center opacity-0"
+                >
+                    <p className="text-gray-400 dark:text-gray-500 italic font-medium max-w-lg mx-auto leading-relaxed">
+                        "Your trust is our priority. Every decision we make puts transparency and security at the center of the experience."
                     </p>
                 </div>
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.6 }}
-                    className="mt-12 text-center"
-                >
-                    <p className="text-text-muted dark:text-gray-400 italic">
-                        "Your trust is our priority. Every decision we make puts transparency and security first."
-                    </p>
-                </motion.div>
             </div>
         </section>
     );

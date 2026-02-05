@@ -1,7 +1,11 @@
 "use client";
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
 import { Mic, Eye, Smartphone, Volume2 } from "lucide-react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const accessibilityFeatures = [
     {
@@ -27,29 +31,89 @@ const accessibilityFeatures = [
 ];
 
 export default function AccessibilitySection() {
+    const sectionRef = useRef<HTMLElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
+    const visualRef = useRef<HTMLDivElement>(null);
+    const listRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(() => {
+        // Animate Left Content Text
+        gsap.fromTo(contentRef.current,
+            { x: -50, opacity: 0 },
+            {
+                x: 0,
+                opacity: 1,
+                duration: 2.5,
+                ease: "power4.out",
+                scrollTrigger: {
+                    trigger: contentRef.current,
+                    start: "top 85%",
+                    end: "bottom 60%",
+                    scrub: 1
+                }
+            }
+        );
+
+        // Animate List Items Staggered
+        if (listRef.current) {
+            gsap.fromTo(listRef.current.children,
+                { x: -50, opacity: 0 },
+                {
+                    x: 0,
+                    opacity: 1,
+                    duration: 2.5,
+                    stagger: 0.1,
+                    ease: "power4.out",
+                    delay: 0.2, // Wait for header a bit
+                    scrollTrigger: {
+                        trigger: listRef.current,
+                        start: "top 85%",
+                        end: "bottom 60%",
+                        scrub: 1
+                    }
+                }
+            );
+        }
+
+        // Animate Right Visual
+        gsap.fromTo(visualRef.current,
+            { scale: 0.8, opacity: 0 },
+            {
+                scale: 1,
+                opacity: 1,
+                duration: 3.0,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: visualRef.current,
+                    start: "top 85%",
+                    end: "center center",
+                    scrub: 1
+                }
+            }
+        );
+
+    }, { scope: sectionRef });
+
     return (
-        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-800">
+        <section ref={sectionRef} className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-800 overflow-hidden">
             <div className="max-w-7xl mx-auto">
                 <div className="grid lg:grid-cols-2 gap-16 items-center">
                     {/* Left Content */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                    >
-                        <span className="text-sm font-bold text-forest-green tracking-wider uppercase mb-2 block">Inclusive Design</span>
-                        <h2 className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
-                            Technology that Includes Everyone.
-                        </h2>
-                        <p className="text-lg text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
-                            We believe sustainability should be accessible to all. That's why we've built Punarchakra with accessibility at its core, not as an afterthought.
-                        </p>
+                    <div>
+                        <div ref={contentRef} className="opacity-0">
+                            <span className="text-sm font-bold text-forest-green tracking-wider uppercase mb-2 block">Inclusive Design</span>
+                            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
+                                Technology that Includes Everyone.
+                            </h2>
+                            <p className="text-lg text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
+                                We believe sustainability should be accessible to all. That's why we've built Punarchakra with accessibility at its core, not as an afterthought.
+                            </p>
+                        </div>
 
-                        <div className="space-y-6">
+                        <div ref={listRef} className="space-y-6">
                             {accessibilityFeatures.map((feature, index) => (
-                                <div key={index} className="flex gap-4">
-                                    <div className="flex-shrink-0 w-12 h-12 bg-white dark:bg-neutral-800 rounded-xl flex items-center justify-center shadow-sm">
+                                <div key={index} className="flex gap-4 opacity-0 group transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 p-4 rounded-xl -mx-4 hover:translate-x-2 cursor-default">
+                                    <div className="flex-shrink-0 w-12 h-12 bg-white dark:bg-neutral-800 rounded-xl flex items-center justify-center shadow-sm group-hover:rotate-12 transition-transform duration-300">
                                         <feature.icon className="w-6 h-6 text-forest-green dark:text-green-400" />
                                     </div>
                                     <div>
@@ -63,16 +127,10 @@ export default function AccessibilitySection() {
                                 </div>
                             ))}
                         </div>
-                    </motion.div>
+                    </div>
 
                     {/* Right Visual */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className="relative"
-                    >
+                    <div ref={visualRef} className="relative opacity-0">
                         <div className="relative aspect-square bg-white dark:bg-neutral-800 rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden p-8 flex items-center justify-center">
                             <div className="absolute inset-0 bg-gradient-to-br from-green-50/50 to-transparent dark:from-green-900/10"></div>
 
@@ -95,7 +153,7 @@ export default function AccessibilitySection() {
                                 </div>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
         </section>

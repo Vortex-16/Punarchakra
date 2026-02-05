@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Scan, Cpu } from 'lucide-react';
+import { Scan, Cpu, Loader2, Sparkles } from 'lucide-react';
 
 interface AnalysisOverlayProps {
   status: 'scanning' | 'analyzing' | 'idle' | 'success' | 'error';
@@ -9,59 +9,61 @@ export function AnalysisOverlay({ status }: AnalysisOverlayProps) {
   if (status === 'idle' || status === 'success' || status === 'error') return null;
 
   return (
-    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm rounded-2xl overflow-hidden">
+    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80 backdrop-blur-md rounded-3xl overflow-hidden">
       <div className="relative">
-        {/* Scanning Line */}
+        {/* Scanning Grid Effect */}
         {status === 'scanning' && (
-          <motion.div
-            className="absolute -left-1/2 w-[200%] h-1 bg-gradient-to-r from-transparent via-forest-green to-transparent shadow-[0_0_20px_rgba(57,255,20,0.5)]"
-            animate={{
-              top: ['0%', '100%', '0%'],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
+          <div className="absolute inset-[-100px] z-0 opacity-20">
+            <motion.div
+              className="w-full h-[5px] bg-emerald-500 shadow-[0_0_50px_rgba(16,185,129,1)]"
+              animate={{ top: ["0%", "100%", "0%"] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            />
+            <div className="w-full h-full bg-[linear-gradient(rgba(16,185,129,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.1)_1px,transparent_1px)] bg-[size:40px_40px]" />
+          </div>
         )}
 
-        {/* Center Icon */}
-        <div className="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center border border-gray-700 shadow-2xl relative z-20">
+        {/* Central visual */}
+        <div className="relative z-10 w-32 h-32 flex items-center justify-center">
+          {/* Pulsing rings */}
+          <motion.div
+            className="absolute inset-0 rounded-full border-2 border-emerald-500/30"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute inset-0 rounded-full border-2 border-emerald-500/30"
+            animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+          />
+
+          <div className="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center border border-gray-700 shadow-2xl relative z-20 overflow-hidden">
+            {/* Inner glow */}
+            <div className="absolute inset-0 bg-emerald-500/10 blur-lg" />
+
             {status === 'scanning' ? (
-                <Scan className="w-10 h-10 text-forest-green animate-pulse" />
+              <Scan className="w-10 h-10 text-emerald-500 animate-pulse relative z-10" />
             ) : (
-                <Cpu className="w-10 h-10 text-blue-500 animate-pulse" />
+              <Sparkles className="w-10 h-10 text-blue-400 relative z-10 animate-spin-slow" />
             )}
+          </div>
         </div>
-        
-        {/* Ripple Effect */}
-         <motion.div
-            className="absolute top-0 left-0 w-20 h-20 rounded-2xl bg-forest-green/20 z-10"
-            animate={{
-                scale: [1, 1.5, 2],
-                opacity: [0.5, 0.2, 0]
-            }}
-            transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeOut"
-            }}
-         />
       </div>
 
-      <motion.p
+      <motion.div
+        key={status}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        key={status} // Animate on status change
-        className="mt-6 text-white font-medium text-lg tracking-wide"
+        className="mt-8 text-center relative z-20 max-w-xs"
       >
-        {status === 'scanning' ? 'Scanning object...' : 'Analyzing composition...'}
-      </motion.p>
-      
-      <p className="mt-2 text-white/50 text-sm">
-        {status === 'scanning' ? 'Identifying shape and dimensions' : 'Estimating value and material'}
-      </p>
+        <h3 className="text-2xl font-bold text-white mb-2 flex items-center justify-center gap-2">
+          {status === 'scanning' ? 'Scanning...' : 'Analyzing AI Model'}
+          {status === 'analyzing' && <Loader2 className="w-5 h-5 animate-spin text-blue-500" />}
+        </h3>
+        <p className="text-white/60 text-sm font-medium">
+          {status === 'scanning' ? 'Identifying object structure and dimensions' : 'Determining material composition and value'}
+        </p>
+      </motion.div>
     </div>
   );
 }
