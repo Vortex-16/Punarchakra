@@ -22,16 +22,16 @@ export function MobileNav() {
     const { user } = useSession();
 
     const filteredItems = [
-        { icon: LayoutDashboard, label: "Admin", href: "/admin" },
+        ...(user?.role === 'admin' ? [{ icon: LayoutDashboard, label: "Admin", href: "/admin" }] : []),
         ...navItems
     ];
 
     return (
-        <div className="fixed bottom-4 left-4 right-4 z-50 lg:hidden flex justify-center">
+        <div className="fixed bottom-4 left-4 right-4 z-50 md:hidden flex justify-center">
             <motion.nav
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="bg-forest-green/80 backdrop-blur-md border border-white/20 text-white rounded-2xl shadow-xl shadow-forest-green/20 px-6 py-3 md:py-3.5 flex items-center justify-between gap-4 md:gap-6 max-w-sm md:max-w-md w-full"
+                className="bg-forest-green/80 backdrop-blur-md border border-white/20 text-white rounded-2xl shadow-xl shadow-forest-green/20 px-3 py-3 md:py-3.5 flex items-center justify-between gap-1 md:gap-6 max-w-full md:max-w-md w-full"
             >
                 {filteredItems.map((item) => {
                     const isActive = pathname === item.href;
@@ -39,10 +39,10 @@ export function MobileNav() {
                         <Link
                             key={item.href}
                             href={item.href}
-                            className="relative flex flex-col items-center justify-center gap-1 group"
+                            className="relative flex flex-col items-center justify-center gap-1 group flex-1"
                         >
                             <div className={cn(
-                                "p-2 md:p-2.5 rounded-xl transition-all duration-300",
+                                "p-1.5 md:p-2.5 rounded-xl transition-all duration-300",
                                 isActive ? "bg-white text-forest-green shadow-sm translate-y-[-4px]" : "text-white/70 group-hover:text-white"
                             )}>
                                 <item.icon className="w-5 h-5 md:w-5.5 md:h-5.5" />

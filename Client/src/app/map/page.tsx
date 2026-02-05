@@ -146,17 +146,17 @@ export default function BinFinderPage() {
     <div className="space-y-4 md:space-y-8 pb-6">
       {/* Header - Fixed at top on mobile */}
       <div className="fixed md:relative top-0 left-0 right-0 z-40 bg-white dark:bg-gray-950 pb-4 md:pb-0 px-6 md:px-0 pt-6 md:pt-0 shadow-sm md:shadow-none">
-        <div className="flex items-center justify-between flex-wrap gap-3 md:gap-4">
-          <div className="flex items-center gap-2 md:gap-3">
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-forest-green flex items-center justify-center shadow-lg shadow-forest-green/20">
+        <div className="flex items-center justify-between gap-3 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-3 overflow-hidden">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-forest-green flex items-center justify-center shadow-lg shadow-forest-green/20 shrink-0">
               <MapPin className="w-5 h-5 md:w-6 md:h-6 text-white" />
             </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Bin Finder</h1>
-              <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-0.5 md:mt-1">Locate nearest e-waste collection points</p>
+            <div className="min-w-0">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white truncate">Bin Finder</h1>
+              <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-0.5 md:mt-1 truncate">Locate nearest e-waste collection points</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
 
             <ModeToggle />
           </div>

@@ -13,7 +13,10 @@ import { useTheme } from "next-themes";
 function ChangeView({ center, zoom }: { center: [number, number]; zoom: number }) {
     const map = useMap();
     useEffect(() => {
-        map.setView(center, zoom);
+        const rafId = requestAnimationFrame(() => {
+            map.setView(center, zoom);
+        });
+        return () => cancelAnimationFrame(rafId);
     }, [center, zoom, map]);
     return null;
 }
@@ -138,7 +141,12 @@ export default function AdminMap({ bins: initialBins, onBinClick }: AdminMapProp
 
     return (
         <div className="h-full w-full rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm relative z-0">
-            <MapContainer center={center} zoom={14} style={{ height: "100%", width: "100%" }}>
+            <MapContainer
+                key={`${isDarkMode ? 'dark' : 'light'}-map`}
+                center={center}
+                zoom={14}
+                style={{ height: "100%", width: "100%" }}
+            >
                 <ChangeView center={center} zoom={14} />
 
                 <TileLayer

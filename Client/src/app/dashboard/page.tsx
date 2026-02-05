@@ -188,8 +188,8 @@ export default function DashboardPage() {
                 >
                     <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Recent Deposited Items</h2>
                     {user?.history && user.history.length > 0 ? (
-                        <div className="space-y-4">
-                            {user.history.slice(0, 5).map((item: any, i: number) => {
+                        <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                            {user.history.slice(0, 50).map((item: any, i: number) => {
                                 // Dynamic Icon Logic
                                 let Icon = Recycle;
                                 const lowerType = item.itemType ? item.itemType.toLowerCase() : '';

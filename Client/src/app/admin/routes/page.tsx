@@ -29,9 +29,9 @@ export default function RoutesPage() {
     };
 
     return (
-        <div className="flex h-[calc(100vh-100px)] gap-6">
+        <div className="flex flex-col lg:flex-row h-[calc(100vh-100px)] gap-6">
             {/* Sidebar Controls */}
-            <div className="w-96 bg-white dark:bg-[#111] rounded-2xl border border-gray-200 dark:border-gray-800 flex flex-col shadow-sm">
+            <div className="w-full lg:w-96 h-[45%] lg:h-auto bg-white dark:bg-[#111] rounded-2xl border border-gray-200 dark:border-gray-800 flex flex-col shadow-sm">
                 <div className="p-6 border-b border-gray-100 dark:border-gray-800">
                     <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <Truck className="w-6 h-6 text-emerald-600" /> Route Optimizer

@@ -25,7 +25,7 @@ export function Sidebar({ className }: { className?: string }) {
     const filteredItems = sidebarItems;
 
     const handleLogout = async () => {
-        await signOut({ callbackUrl: "/login" });
+        await signOut({ callbackUrl: "/" });
     };
 
     // Get user initials for avatar
@@ -54,14 +54,14 @@ export function Sidebar({ className }: { className?: string }) {
         <motion.aside
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className={cn("h-screen w-20 md:w-56 bg-forest-green text-white fixed left-0 top-0 flex-col justify-between py-6 z-50 shadow-xl", className)}
+            className={cn("h-screen w-20 md:w-20 lg:w-56 bg-forest-green text-white fixed left-0 top-0 flex-col justify-between py-6 z-50 shadow-xl", className)}
         >
             {/* Logo */}
             <Link href="/" className="px-6 flex items-center gap-3 hover:opacity-80 transition-opacity">
                 <div className="w-10 h-10 flex items-center justify-center shrink-0">
                     <img src="/logo.svg" alt="Logo" className="w-full h-full object-contain" />
                 </div>
-                <span className="font-bold text-xl hidden md:block text-white tracking-wide">
+                <span className="font-bold text-xl hidden lg:block text-white tracking-wide">
                     Punarchakra
                 </span>
             </Link>
@@ -82,7 +82,7 @@ export function Sidebar({ className }: { className?: string }) {
                             )}
                         >
                             <item.icon className={cn("w-5 h-5 transition-colors", isActive ? "text-fresh-green" : "text-white/70 group-hover:text-white")} />
-                            <span className="hidden md:block text-sm">{item.label}</span>
+                            <span className="hidden lg:block text-sm">{item.label}</span>
 
                             {isActive && (
                                 <div className="absolute left-0 w-1 h-6 bg-fresh-green rounded-r-full" />
@@ -99,7 +99,7 @@ export function Sidebar({ className }: { className?: string }) {
                     className="flex items-center gap-4 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white w-full transition-colors group"
                 >
                     <LogOut className="w-5 h-5" />
-                    <span className="hidden md:block text-sm font-medium">Logout</span>
+                    <span className="hidden lg:block text-sm font-medium">Logout</span>
                 </button>
 
                 <div className="flex items-center gap-3 px-3 pt-3 border-t border-white/10 shrink-0">
@@ -110,7 +110,7 @@ export function Sidebar({ className }: { className?: string }) {
                             </span>
                         </div>
                     </div>
-                    <div className="hidden md:block min-w-0">
+                    <div className="hidden lg:block min-w-0">
                         <p className="text-xs font-semibold text-white truncate">
                             {user?.name || getRoleDisplay(user?.role)}
                         </p>

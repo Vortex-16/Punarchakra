@@ -17,7 +17,7 @@ export function VoiceAssistant() {
     };
 
     return (
-        <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end pointer-events-none">
+        <div className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-[100] flex flex-col items-end pointer-events-none">
             {/* Transcript / Feedback Overlay */}
             <AnimatePresence>
                 {(transcript || feedback) && (
@@ -31,7 +31,7 @@ export function VoiceAssistant() {
                         <div className="relative overflow-hidden rounded-2xl bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-white/20 shadow-2xl p-4">
                             {/* Animated Gradient Border Effect */}
                             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 animate-gradient-xy pointer-events-none" />
-                            
+
                             <p className="relative z-10 text-sm font-medium text-gray-800 dark:text-gray-100 leading-relaxed">
                                 {feedback || `"${transcript}"`}
                             </p>
@@ -46,7 +46,7 @@ export function VoiceAssistant() {
                 <AnimatePresence>
                     {isListening && (
                         <>
-                             <motion.div
+                            <motion.div
                                 initial={{ opacity: 0, scale: 1 }}
                                 animate={{ opacity: 0.4, scale: 2 }}
                                 exit={{ opacity: 0, scale: 1 }}
@@ -72,12 +72,11 @@ export function VoiceAssistant() {
                     className="relative z-10 w-16 h-16 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.2)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] transition-shadow duration-300"
                 >
                     {/* Orb Background with Gradient for idle/active states */}
-                    <div 
-                        className={`absolute inset-0 rounded-full transition-all duration-500 ${
-                            isListening 
-                            ? "bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 animate-pulse-slow" 
-                            : "bg-gradient-to-br from-neutral-800 to-neutral-900 border border-white/10"
-                        }`} 
+                    <div
+                        className={`absolute inset-0 rounded-full transition-all duration-500 ${isListening
+                                ? "bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 animate-pulse-slow"
+                                : "bg-gradient-to-br from-neutral-800 to-neutral-900 border border-white/10"
+                            }`}
                     />
 
                     {/* Inner Glass Reflection */}
@@ -85,17 +84,17 @@ export function VoiceAssistant() {
 
                     {/* Icon */}
                     <div className="relative z-20">
-                         {isListening ? (
+                        {isListening ? (
                             <div className="flex gap-1 h-6 items-center justify-center">
                                 {[1, 2, 3, 4].map((i) => (
                                     <motion.div
                                         key={i}
                                         animate={{ height: [6, 18, 6] }}
-                                        transition={{ 
-                                            repeat: Infinity, 
-                                            duration: 0.6, 
+                                        transition={{
+                                            repeat: Infinity,
+                                            duration: 0.6,
                                             ease: "easeInOut",
-                                            delay: i * 0.1 
+                                            delay: i * 0.1
                                         }}
                                         className="w-1 bg-white/90 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"
                                     />
