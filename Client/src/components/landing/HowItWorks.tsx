@@ -1,6 +1,5 @@
 "use client";
 import React, { useRef } from "react";
-import { Search, Camera, CreditCard, Recycle } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,32 +8,32 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const steps = [
     {
-        icon: Search,
-        title: "Find a Bin",
-        description: "Use the interactive map to find the nearest Punarchakra smart bin in your area.",
-        color: "bg-blue-500",
-        hoverBorder: "group-hover:border-blue-500",
+        image: "/assets/images/step1-locate.png",
+        title: "Locate",
+        description: "Find a bin near you with our app",
+        color: "bg-emerald-500/10",
+        hoverBorder: "group-hover:border-emerald-500",
     },
     {
-        icon: Camera,
-        title: "Scan Item",
-        description: "Open the scanner at the bin and point your camera at the e-waste item for instant AI identification.",
-        color: "bg-purple-500",
-        hoverBorder: "group-hover:border-purple-500",
+        image: "/assets/images/step2-scan.png",
+        title: "Scan & Drop",
+        description: "Scan the bin & Deposit Your Item",
+        color: "bg-emerald-500/10",
+        hoverBorder: "group-hover:border-emerald-500",
     },
     {
-        icon: CreditCard,
-        title: "Get Value",
-        description: "The AI calculates the recyclable value. Confirm the deposit and see your rewards instantly.",
-        color: "bg-orange-500",
-        hoverBorder: "group-hover:border-orange-500",
+        image: "/assets/images/step3-verify.png",
+        title: "AI Verification",
+        description: "Our Secure AI Instantly Identify and values your item",
+        color: "bg-emerald-500/10",
+        hoverBorder: "group-hover:border-emerald-500",
     },
     {
-        icon: Recycle,
-        title: "Impact Made",
-        description: "Track your CO2 savings and earn points for your contribution to a circular economy.",
-        color: "bg-green-500",
-        hoverBorder: "group-hover:border-green-500",
+        image: "/assets/images/step4-earn.png",
+        title: "Earn",
+        description: "Receive Points Instantly to redeem your rewards",
+        color: "bg-emerald-500/10",
+        hoverBorder: "group-hover:border-emerald-500",
     },
 ];
 
@@ -67,34 +66,42 @@ export default function HowItWorks() {
             const stepItems = stepsRef.current.querySelectorAll(".step-item");
             stepItems.forEach((step, index) => {
                 const isEven = index % 2 === 0;
-                
+
                 // Set initial state for clip-path to work
-                gsap.set(step, { 
-                    clipPath: isEven ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)",
-                    webkitClipPath: isEven ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)"
+                // Even (0, 2) is Row (Image Left, Content Right) -> Slide from Left
+                // Odd (1, 3) is Row-Reverse (Image Right, Content Left) -> Slide from Right
+
+                // Correction: The layout logic is:
+                // index % 2 !== 0 ? 'md:flex-row-reverse' (Image Right) : '' (Image Left)
+                // Actually, let's keep it simple: Odd indices slide from right, Even from left.
+
+                const slideFromRight = index % 2 !== 0;
+
+                // Explicitly set initial state before scroll trigger
+                gsap.set(step, {
+                    clipPath: slideFromRight ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)",
+                    webkitClipPath: slideFromRight ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)",
+                    x: slideFromRight ? 100 : -100, // Increased distance for smoother feel
+                    opacity: 0
                 });
 
-                gsap.fromTo(step,
-                    { 
-                        x: isEven ? -50 : 50, 
-                        opacity: 0,
-                    },
-                    {
-                        x: 0,
-                        opacity: 1,
-                        clipPath: "inset(0 0% 0 0)",
-                        webkitClipPath: "inset(0 0% 0 0)",
-                        ease: "power3.inOut",
-                        scrollTrigger: {
-                            trigger: step,
-                            start: "top 80%",
-                            end: "center center",
-                            scrub: 1
-                        }
+                gsap.to(step, {
+                    x: 0,
+                    opacity: 1,
+                    clipPath: "inset(0 0% 0 0)",
+                    webkitClipPath: "inset(0 0% 0 0)",
+                    ease: "power2.out", // Softer ease
+                    duration: 1, // Explicit duration
+                    scrollTrigger: {
+                        trigger: step,
+                        start: "top 80%", // Start earlier
+                        end: "top 30%", // End later
+                        scrub: 1,
+                        toggleActions: "play none none reverse"
                     }
-                );
+                });
             });
-            
+
             // Animate Vertical Line Beam
             gsap.fromTo(beamRef.current,
                 { height: "0%" },
@@ -129,41 +136,53 @@ export default function HowItWorks() {
                 <div ref={stepsRef} className="relative">
                     {/* Vertical Line for Desktop */}
                     <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-800 -translate-x-1/2">
-                         <div 
+                        <div
                             ref={beamRef}
                             className="absolute top-0 left-0 w-full bg-gradient-to-b from-transparent via-green-400 to-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.8)]"
-                         >
+                        >
                             {/* Glowing Head */}
                             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_25px_rgba(255,255,255,1)] z-20" />
                             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-8 h-8 bg-green-500/40 rounded-full blur-md z-10" />
                             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-12 h-12 bg-green-400/20 rounded-full blur-lg z-0" />
-                         </div>
+                        </div>
                     </div>
 
                     <div className="space-y-12 lg:space-y-0">
                         {steps.map((step, index) => (
-                            <div key={index} className="step-item relative flex flex-col lg:flex-row items-center opacity-0">
-                                {/* Desktop Indexing */}
-                                <div className={`flex-1 w-full lg:w-1/2 ${index % 2 === 0 ? "lg:text-right lg:pr-16" : "lg:order-last lg:pl-16"}`}>
-                                    <div className={`p-8 bg-white dark:bg-neutral-900 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-800 ${step.hoverBorder} hover:shadow-xl transition-all duration-300 group`}>
-                                        <div className={`w-14 h-14 ${step.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg ${index % 2 === 0 ? "lg:ml-auto" : ""}`}>
-                                            <step.icon className="w-7 h-7 text-white" />
+                            <div key={index} className="step-item relative flex justify-center opacity-0 w-full">
+                                <div className="w-full max-w-4xl relative">
+                                    {/* Central Node for Desktop (Optional visual anchor) */}
+                                    <div className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-forest-green border-[4px] border-white dark:border-neutral-950 shadow-lg z-20" />
+
+                                    {/* Alternating Layout: Row for Even, Row-Reverse for Odd */}
+                                    <div className={`relative overflow-hidden bg-white dark:bg-neutral-900 rounded-[2.5rem] shadow-lg border border-gray-100 dark:border-gray-800 ${step.hoverBorder} hover:shadow-2xl transition-all duration-500 group flex flex-col md:flex-row ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
+
+                                        {/* Content Side */}
+                                        <div className="flex-1 p-8 md:p-12 flex flex-col justify-center relative z-10">
+                                            <div className="mb-6 inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-forest-green/10 text-forest-green font-black text-lg shadow-inner">
+                                                {index + 1}
+                                            </div>
+                                            <h3 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-6 tracking-tight group-hover:text-forest-green transition-colors">
+                                                {step.title}
+                                            </h3>
+                                            <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-lg font-medium">
+                                                {step.description}
+                                            </p>
                                         </div>
-                                        <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">
-                                            {step.title}
-                                        </h3>
-                                        <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-                                            {step.description}
-                                        </p>
+
+                                        {/* Image Side */}
+                                        <div className={`flex-1 relative min-h-[300px] md:min-h-[400px] overflow-hidden ${step.color}`}>
+                                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/20 to-transparent opacity-50" />
+                                            <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl" />
+
+                                            <img
+                                                src={step.image}
+                                                alt={step.title}
+                                                className="absolute inset-0 w-full h-full object-contain p-12 transform group-hover:scale-110 group-hover:-rotate-2 transition-transform duration-700 ease-out drop-shadow-2xl"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-
-                                {/* Center Dot */}
-                                <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-white dark:bg-neutral-950 border-4 border-forest-green shadow-lg z-10 items-center justify-center">
-                                    <span className="text-xs font-black text-forest-green">{index + 1}</span>
-                                </div>
-
-                                <div className="hidden lg:block flex-1" />
                             </div>
                         ))}
                     </div>

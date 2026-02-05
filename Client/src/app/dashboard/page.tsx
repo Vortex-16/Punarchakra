@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import { ModeToggle } from "@/components/mode-toggle";
+import { ImpactChart } from "@/components/dashboard/ImpactChart";
 import Link from "next/link";
 import { useBinStats, useBins } from "@/hooks/useBins";
 import UserMenu from "@/components/UserMenu";
@@ -223,38 +224,9 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Nearby Bins Map Preview */}
-                <div className="bg-green-50 dark:bg-neutral-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors overflow-hidden flex flex-col h-full min-h-[400px]">
-                    <div className="p-4 md:p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm">
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white transition-colors">Find Bins Nearby</h2>
-                        <Link href="/map" className="text-xs font-semibold text-forest-green hover:underline flex items-center gap-1">
-                            Use Map <ExternalLink className="w-3 h-3" />
-                        </Link>
-                    </div>
-                    <Link href="/map" className="flex-1 relative group cursor-pointer block">
-                        <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                            <div className="absolute inset-0 opacity-20 dark:opacity-10" style={{
-                                backgroundImage: `radial-gradient(circle at 1px 1px, #059669 1px, transparent 0)`,
-                                backgroundSize: '20px 20px'
-                            }}></div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-gray-100/50 to-transparent dark:from-gray-900/50"></div>
-                            {/* User sees all bins, but mostly for finding them */}
-                            {bins.slice(0, 3).map((bin, idx) => (
-                                <div
-                                    key={bin._id}
-                                    className="absolute w-4 h-4 rounded-full border-2 border-white bg-forest-green shadow-lg animate-bounce"
-                                    style={{
-                                        top: `${30 + idx * 20}%`,
-                                        left: `${30 + idx * 15}%`,
-                                        animationDelay: `${idx * 0.2}s`
-                                    }}
-                                />
-                            ))}
-                        </div>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="bg-white/80 dark:bg-black/80 backdrop-blur px-4 py-2 rounded-full text-sm font-bold shadow-lg">Tap to View Map</span>
-                        </div>
-                    </Link>
+                {/* Sustainability Impact Graph */}
+                <div className="h-full min-h-[400px]">
+                    <ImpactChart history={user?.history} />
                 </div>
 
                 {/* Recent Activity / Tips */}

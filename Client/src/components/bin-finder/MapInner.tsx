@@ -28,64 +28,121 @@ function MapController({ center, zoom }: { center: [number, number]; zoom: numbe
 
 // Create custom bin icon based on fill level and status
 function createBinIcon(bin: Bin) {
-  let bgColor = "#10B981"; // green
-  let shadowColor = "rgba(16, 185, 129, 0.4)";
+  const isCritical = bin.status === "Full" || bin.fillLevel > 80;
+  const isAmber = !isCritical && bin.fillLevel > 50;
+  const isClosed = bin.status === "Closed";
 
-  if (bin.status === "Closed") {
-    bgColor = "#6B7280"; // gray
-    shadowColor = "rgba(107, 114, 128, 0.4)";
-  } else if (bin.status === "Full" || bin.fillLevel > 80) {
-    bgColor = "#EF4444"; // red
-    shadowColor = "rgba(239, 68, 68, 0.4)";
-  } else if (bin.fillLevel > 50) {
-    bgColor = "#F59E0B"; // amber
-    shadowColor = "rgba(245, 158, 11, 0.4)";
-  }
+  let mainColor = "#10B981"; // green
+  if (isClosed) mainColor = "#6B7280";
+  if (isCritical) mainColor = "#EF4444";
+  if (isAmber) mainColor = "#F59E0B";
+
+  const glowClass = isCritical ? "critical-glow" : (isAmber ? "amber-glow" : "");
 
   const html = `
-    <div style="position: relative;">
-      <div style="
-        width: 36px;
-        height: 36px;
-        background: ${bgColor};
-        border-radius: 50%;
-        border: 3px solid white;
-        box-shadow: 0 4px 12px ${shadowColor};
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-      ">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 6h18"/>
-          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-          <line x1="10" x2="10" y1="11" y2="17"/>
-          <line x1="14" x2="14" y1="11" y2="17"/>
-        </svg>
+    <div class="bin-marker-wrapper ${glowClass}">
+      <div class="bin-3d">
+        <div class="bin-head"></div>
+        <div class="bin-body">
+          <div class="bin-label">${bin.fillLevel}%</div>
+        </div>
+        <div class="bin-side"></div>
       </div>
-      <div style="
-        position: absolute;
-        bottom: -4px;
-        right: -4px;
-        background: white;
-        border-radius: 50%;
-        padding: 2px 6px;
-        font-size: 9px;
-        font-weight: bold;
-        color: ${bgColor};
-        border: 2px solid ${bgColor};
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      ">${bin.fillLevel}%</div>
+      <style>
+        .bin-marker-wrapper {
+          position: relative;
+          width: 40px;
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        @keyframes glow-pulse {
+          0% { transform: scale(1); opacity: 0.6; }
+          50% { transform: scale(1.5); opacity: 0.3; }
+          100% { transform: scale(1); opacity: 0.6; }
+        }
+
+        .critical-glow::before {
+          content: '';
+          position: absolute;
+          width: 60px;
+          height: 60px;
+          background: radial-gradient(circle, rgba(239, 68, 68, 0.8) 0%, rgba(239, 68, 68, 0) 70%);
+          border-radius: 50%;
+          z-index: -1;
+          animation: glow-pulse 2s infinite ease-in-out;
+        }
+
+        .amber-glow::before {
+          content: '';
+          position: absolute;
+          width: 50px;
+          height: 50px;
+          background: radial-gradient(circle, rgba(245, 158, 11, 0.6) 0%, rgba(245, 158, 11, 0) 70%);
+          border-radius: 50%;
+          z-index: -1;
+        }
+
+        .bin-3d {
+          position: relative;
+          width: 24px;
+          height: 36px;
+          background: #f3f4f6;
+          border-radius: 4px;
+          box-shadow: inset -4px 0 0 rgba(0,0,0,0.1), 2px 4px 8px rgba(0,0,0,0.2);
+          border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .bin-head {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 8px;
+          background: #1f2937;
+          border-radius: 3px 3px 0 0;
+        }
+
+        .bin-body {
+           height: 100%;
+           display: flex;
+           align-items: flex-end;
+           justify-content: center;
+           padding-bottom: 4px;
+        }
+
+        .bin-label {
+          font-size: 8px;
+          font-weight: 900;
+          color: ${mainColor};
+          background: white;
+          padding: 1px 3px;
+          border-radius: 2px;
+          border: 1px solid ${mainColor}44;
+        }
+
+        .bin-side {
+          position: absolute;
+          right: -2px;
+          top: 4px;
+          width: 4px;
+          height: 28px;
+          background: #374151;
+          border-radius: 0 2px 2px 0;
+          transform: skewY(5deg);
+        }
+      </style>
     </div>
   `;
 
   return L.divIcon({
-    className: 'custom-bin-marker',
+    className: 'custom-bin-marker-v2',
     html: html,
-    iconSize: [36, 36],
-    iconAnchor: [18, 36],
-    popupAnchor: [0, -36]
+    iconSize: [40, 50],
+    iconAnchor: [20, 45],
+    popupAnchor: [0, -45]
   });
 }
 

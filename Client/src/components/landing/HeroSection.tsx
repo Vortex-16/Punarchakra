@@ -32,7 +32,7 @@ export default function HeroSection() {
         gsap.to(".hero-scramble", {
             duration: 1.5,
             text: {
-                value: "Recycle Smarter,",
+                value: "Turn Your Old Tech",
                 delimiter: ""
             },
             ease: "none",
@@ -42,7 +42,7 @@ export default function HeroSection() {
         gsap.to(".hero-scramble-2", {
             duration: 1.5,
             text: {
-                value: "Live Greener.",
+                value: "into New Possibilities.",
                 delimiter: ""
             },
             ease: "none",
@@ -91,14 +91,14 @@ export default function HeroSection() {
                             </div>
 
                             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 dark:text-white tracking-tighter leading-[1.05] drop-shadow-sm min-h-[3.3em] lg:min-h-[2.2em] opacity-0">
-                                <span className="hero-scramble block">R3cycl3 Sm4rt3r,</span>
+                                <span className="hero-scramble block">Turn Your Old Tech</span>
                                 <span className="hero-scramble-2 text-transparent bg-clip-text bg-gradient-to-r from-forest-green via-emerald-500 to-teal-500 animate-gradient-x block">
-                                    L1ve Gr33n3r.
+                                    into New Possibilities.
                                 </span>
                             </h1>
 
                             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-lg leading-relaxed font-medium opacity-0">
-                                Transform your e-waste into rewards with our AI-powered disposal system. Join the revolution for a cleaner planet.
+                                Locate a smart bin, deposit e-waste with AI-powered ease, and earn real rewards. Simple. Secure. Sustainable.
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center gap-4 pt-2 opacity-0">
@@ -108,7 +108,7 @@ export default function HeroSection() {
                                 >
                                     <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
                                     <span className="relative z-10 flex items-center gap-2">
-                                        {isMounted && isAuthenticated ? 'Open App' : 'Get Started'} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        {isMounted && isAuthenticated ? 'Open App' : 'Start App'} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                     </span>
                                 </Link>
                                 <button className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-white/5 text-gray-900 dark:text-white rounded-2xl font-bold flex items-center justify-center gap-2 border-2 border-transparent hover:border-gray-200 dark:hover:border-neutral-700 hover:bg-gray-50 dark:hover:bg-white/10 transition-all backdrop-blur-md">
@@ -131,40 +131,35 @@ export default function HeroSection() {
 
                         {/* Visual Right */}
                         <div ref={visualRef} className="relative hidden lg:block perspective-1000 opacity-0">
-                            <div className="relative z-10 w-full aspect-square max-w-[480px] mx-auto">
-                                {/* Glass Card Stack */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 dark:from-white/5 dark:to-transparent backdrop-blur-2xl rounded-[2.5rem] border border-white/20 dark:border-white/10 shadow-2xl transform rotate-[-6deg] translate-y-4"></div>
-                                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 dark:from-white/5 dark:to-transparent backdrop-blur-2xl rounded-[2.5rem] border border-white/20 dark:border-white/10 shadow-2xl transform rotate-[-3deg] translate-y-2"></div>
+                            <div className="relative z-10 w-full aspect-[4/5] max-w-[420px] mx-auto group">
+                                {/* Glow Effect */}
+                                <div className="absolute -inset-4 bg-emerald-500/20 blur-[60px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/10 to-transparent rounded-[2.5rem] -z-10" />
 
-                                <div className="relative h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-neutral-800 dark:to-neutral-900 rounded-[2.5rem] p-2 shadow-2xl overflow-hidden group transform transition-transform duration-700 hover:rotate-y-6 hover:rotate-x-6 border border-white/50 dark:border-white/10">
-                                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1597423244036-ef5020e83f3c?q=80&w=1974&auto=format&fit=crop')] bg-cover bg-center opacity-90 mix-blend-overlay transition-opacity duration-700 group-hover:opacity-75" />
-                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
+                                <div className="relative h-full w-full rounded-[2.5rem] overflow-hidden shadow-2xl transition-transform duration-700 group-hover:scale-[1.02] group-hover:rotate-y-2">
+                                    <img
+                                        src="/assets/images/smart-bin-hero.png"
+                                        alt="Smart Bin"
+                                        className="w-full h-full object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                                </div>
 
-                                    <div className="relative h-full flex flex-col justify-end p-8">
-                                        <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-3xl mb-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 shadow-xl">
-                                            <div className="flex items-center gap-4 mb-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-forest-green flex items-center justify-center text-white shadow-lg shadow-forest-green/30">
-                                                    <Recycle className="w-6 h-6" />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-white font-bold text-lg leading-tight">Smart Recycling</h3>
-                                                    <p className="text-gray-300 text-xs font-medium">AI-Powered Detection</p>
-                                                </div>
-                                            </div>
-                                            <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                                                <div className="h-full w-[75%] bg-forest-green rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                                            </div>
-                                        </div>
+                                {/* Floating Badge */}
+                                <div className="absolute -bottom-6 -right-6 bg-white dark:bg-neutral-900 p-4 rounded-3xl shadow-2xl border border-gray-100 dark:border-white/10 flex items-center gap-3 floating-item z-20">
+                                    <div className="w-10 h-10 rounded-xl bg-forest-green flex items-center justify-center text-white">
+                                        <Zap className="w-5 h-5 fill-current" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase text-gray-400">Scan Speed</p>
+                                        <p className="text-sm font-bold text-gray-900 dark:text-white">Under 2 Sec</p>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Floating Elements */}
-                            <div className="absolute top-10 -left-8 w-24 h-24 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex items-center justify-center border border-white/50 dark:border-white/10 floating-item z-20">
-                                <Leaf className="w-10 h-10 text-emerald-500 drop-shadow-lg" />
-                            </div>
-                            <div className="absolute bottom-24 -right-8 w-20 h-20 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-xl rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex items-center justify-center border border-white/50 dark:border-white/10 floating-item z-20" style={{ animationDelay: "1s" }}>
-                                <Zap className="w-8 h-8 text-yellow-500 drop-shadow-lg" />
+                            {/* Additional Floating Element */}
+                            <div className="absolute top-10 -left-12 w-20 h-20 bg-emerald-500/10 backdrop-blur-3xl rounded-3xl flex items-center justify-center border border-white/20 floating-item z-20" style={{ animationDelay: "1.5s" }}>
+                                <Leaf className="w-8 h-8 text-emerald-500" />
                             </div>
                         </div>
                     </div>
