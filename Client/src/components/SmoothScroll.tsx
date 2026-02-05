@@ -18,6 +18,7 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
         pathname?.startsWith("/dashboard") ||
         pathname?.startsWith("/login") ||
         pathname?.startsWith("/register") ||
+        pathname?.startsWith("/analytics") ||
         pathname?.startsWith("/rewards") ||
         pathname?.startsWith("/admin") ||
         pathname?.startsWith("/smartBin") ||
