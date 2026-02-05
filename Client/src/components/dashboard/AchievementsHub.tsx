@@ -1,17 +1,18 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Download, Loader2, Award, Lock, CheckCircle2, CircuitBoard } from "lucide-react";
+import { Download, Loader2, Award, Lock, CheckCircle2, Share2, Trophy, Star } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useSession } from "@/hooks/useSession";
 import { QRCodeCanvas } from "qrcode.react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const MILESTONES = [
-    { id: 'starter', title: 'Eco Starter', points: 10, co2: '1kg', description: 'For taking the first step towards a greener future.', color: 'text-emerald-500' },
-    { id: 'bronze', title: 'Carbon Crusher', points: 250, co2: '25kg', description: 'For significantly reducing carbon footprint.', color: 'text-orange-500' },
-    { id: 'silver', title: 'Waste Warrior', points: 500, co2: '50kg', description: 'Half a ton of impact! A true guardian of nature.', color: 'text-gray-400' },
-    { id: 'gold', title: 'Planet Savior', points: 1000, co2: '100kg', description: 'Legendary status. Your impact is monumental.', color: 'text-yellow-500' }
+    { id: 'starter', title: 'Eco Starter', points: 10, co2: '1kg', description: 'For taking the first step towards a greener future.', color: 'from-emerald-400 to-green-500', icon: Star },
+    { id: 'bronze', title: 'Carbon Crusher', points: 250, co2: '25kg', description: 'For significantly reducing carbon footprint.', color: 'from-orange-400 to-amber-600', icon: Award },
+    { id: 'silver', title: 'Waste Warrior', points: 500, co2: '50kg', description: 'Half a ton of impact! A true guardian of nature.', color: 'from-gray-300 to-slate-500', icon: Trophy },
+    { id: 'gold', title: 'Planet Savior', points: 1000, co2: '100kg', description: 'Legendary status. Your impact is monumental.', color: 'from-yellow-300 to-yellow-600', icon: Trophy }
 ];
 
 export function AchievementsHub() {
@@ -22,6 +23,26 @@ export function AchievementsHub() {
 
     const isUnlocked = (milestonePoints: number) => (user?.points || 0) >= milestonePoints;
 
+    const handleShare = async (milestone: typeof MILESTONES[0]) => {
+        const shareData = {
+            title: 'Punarchakra Achievement Unlocked!',
+            text: `I just unlocked the "${milestone.title}" achievement on Punarchakra! I've saved ${milestone.co2} of CO2. Join me in recycling e-waste!`,
+            url: 'https://punarchakra.com'
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareData.text)}&url=${encodeURIComponent(shareData.url)}`;
+                window.open(twitterUrl, '_blank');
+            }
+        } catch (err) {
+            console.error('Error sharing:', err);
+        }
+    };
+
     const generatePDF = async (milestone: typeof MILESTONES[0]) => {
         setSelectedCert(milestone);
         setLoading(milestone.id);
@@ -30,16 +51,14 @@ export function AchievementsHub() {
             if (!certificateRef.current) return;
 
             try {
-                // Ensure fonts are loaded/rendering
                 await document.fonts.ready;
 
                 const canvas = await html2canvas(certificateRef.current, {
-                    scale: 2, // High resolution
+                    scale: 2,
                     backgroundColor: "#ffffff",
                     useCORS: true,
                     logging: false,
                     onclone: (clonedDoc) => {
-                        // Fix for some font rendering issues in clone
                         const element = clonedDoc.querySelector('.certificate-container') as HTMLElement;
                         if (element) {
                             element.style.fontFeatureSettings = '"liga" 0';
@@ -62,64 +81,98 @@ export function AchievementsHub() {
                 setLoading(null);
                 setSelectedCert(null);
             }
-        }, 500); // 500ms delay to ensure QR code renders
+        }, 500);
     };
 
     return (
-        <div className="bg-white dark:bg-neutral-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 h-full flex flex-col relative overflow-hidden">
-            <div className="flex items-center gap-2 mb-6">
-                <div className="bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-lg text-emerald-600 dark:text-emerald-400">
+        <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 h-full flex flex-col relative group overflow-hidden p-6">
+            {/* Dynamic Background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-white dark:from-purple-900/20 dark:via-pink-900/10 dark:to-black transition-colors duration-500" />
+
+            {/* Header */}
+            <div className="relative z-10 flex items-center gap-3 mb-6">
+                <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-lg text-purple-600 dark:text-purple-300 shadow-sm backdrop-blur-sm border border-white/20">
                     <Award className="w-5 h-5" />
                 </div>
-                <h3 className="font-bold text-gray-900 dark:text-white">Achievements & Certificates</h3>
+                <div>
+                    <h3 className="font-bold text-gray-900 dark:text-white text-lg">Achievements</h3>
+                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-widest">
+                        Your Eco Milestones
+                    </p>
+                </div>
             </div>
 
-            <div className="space-y-4 flex-1 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
-                {MILESTONES.map((milestone) => {
-                    const unlocked = isUnlocked(milestone.points);
+            {/* Scrollable Content */}
+            <div className="relative z-10 flex-1 overflow-y-auto space-y-4 custom-scrollbar max-h-[300px] pr-2">
+                <AnimatePresence>
+                    {MILESTONES.map((milestone, index) => {
+                        const unlocked = isUnlocked(milestone.points);
+                        const Icon = milestone.icon as any; // Quick fix for icon type
 
-                    return (
-                        <div
-                            key={milestone.id}
-                            className={`p-4 rounded-xl border transition-all ${unlocked
-                                ? "bg-white dark:bg-neutral-800 border-gray-100 dark:border-gray-700 shadow-sm"
-                                : "bg-gray-50 dark:bg-neutral-900/50 border-gray-100 dark:border-gray-800 opacity-70"
-                                }`}
-                        >
-                            <div className="flex justify-between items-start mb-2">
-                                <div className="flex items-center gap-3">
-                                    <div className={`p-2 rounded-full ${unlocked ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600" : "bg-gray-200 dark:bg-gray-800 text-gray-400"}`}>
-                                        {unlocked ? <CheckCircle2 className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
+                        return (
+                            <motion.div
+                                key={milestone.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                                className={`relative p-0.5 rounded-2xl transition-all duration-300 ${unlocked
+                                    ? "bg-gradient-to-r " + milestone.color + " shadow-sm"
+                                    : "bg-gray-100 dark:bg-white/5 opacity-70"
+                                    }`}
+                            >
+                                <div className={`h-full w-full p-4 rounded-[14px] flex flex-col gap-3 ${unlocked
+                                    ? "bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl"
+                                    : "bg-gray-50 dark:bg-neutral-900/50"
+                                    }`}>
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`p-2 rounded-full ring-2 ring-offset-2 dark:ring-offset-neutral-900 ${unlocked
+                                                ? `bg-gradient-to-br ${milestone.color} text-white ring-transparent shadow-md`
+                                                : "bg-gray-200 dark:bg-white/5 text-gray-400 ring-transparent"
+                                                }`}>
+                                                {unlocked ? <Icon className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                                            </div>
+                                            <div>
+                                                <h4 className={`font-bold text-sm ${unlocked ? "text-gray-900 dark:text-white" : "text-gray-500"}`}>
+                                                    {milestone.title}
+                                                </h4>
+                                                <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                                                    {milestone.points} pts • {milestone.co2} CO₂
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h4 className={`font-bold ${unlocked ? "text-gray-900 dark:text-white" : "text-gray-500"}`}>
-                                            {milestone.title}
-                                        </h4>
-                                        <p className="text-xs text-gray-400 dark:text-gray-500">
-                                            {milestone.points} Points / Saves {milestone.co2} CO₂
-                                        </p>
-                                    </div>
+
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                                        {milestone.description}
+                                    </p>
+
+                                    {unlocked && (
+                                        <div className="flex items-center gap-2 mt-1 pt-3 border-t border-gray-100 dark:border-white/5">
+                                            <button
+                                                onClick={() => generatePDF(milestone)}
+                                                disabled={loading === milestone.id}
+                                                className="flex-1 text-xs bg-gray-50 dark:bg-white/5 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 py-1.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 group/btn"
+                                            >
+                                                {loading === milestone.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />}
+                                                Certificate
+                                            </button>
+                                            <button
+                                                onClick={() => handleShare(milestone)}
+                                                className="text-xs bg-gray-50 dark:bg-white/5 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-1.5 px-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 group/share"
+                                            >
+                                                <Share2 className="w-3.5 h-3.5 group-hover/share:rotate-12 transition-transform" />
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
-                                {unlocked && (
-                                    <button
-                                        onClick={() => generatePDF(milestone)}
-                                        disabled={loading === milestone.id}
-                                        className="text-xs bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 px-3 py-1.5 rounded-lg font-medium hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors flex items-center gap-1 cursor-pointer"
-                                    >
-                                        {loading === milestone.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
-                                        PDF
-                                    </button>
-                                )}
-                            </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 pl-12">
-                                {milestone.description}
-                            </p>
-                        </div>
-                    );
-                })}
+                            </motion.div>
+                        );
+                    })}
+                </AnimatePresence>
             </div>
 
-            {/* --- HIDDEN DYNAMIC CERTIFICATE TEMPLATE (V5: Modern Tech) --- */}
+            {/* --- HIDDEN DYNAMIC CERTIFICATE TEMPLATE --- */}
             {selectedCert && (
                 <div className="fixed top-[-9999px] left-[-9999px] z-[-100]">
                     <div
