@@ -7,12 +7,14 @@ const {
     updateBin,
     deleteBin,
     getBinStats,
-    depositItem
+    depositItem,
+    getBinAnalytics
 } = require('../controllers/binController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Stats route (must be before /:id to avoid conflict)
 router.get('/stats', getBinStats);
+router.get('/analytics', getBinAnalytics);
 
 // Public routes
 router.get('/', getBins);

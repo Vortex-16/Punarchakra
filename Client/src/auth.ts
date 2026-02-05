@@ -37,17 +37,17 @@ export const {
                     });
 
                     const responseText = await res.text();
-                    
+
                     try {
                         const user = JSON.parse(responseText);
                         if (res.ok && user) {
-                            return user; 
+                            return user;
                         }
                         console.error("Login failed (Server):", user);
                     } catch (jsonError) {
                         console.error("Login failed (Non-JSON response):", responseText);
                     }
-                    
+
                     return null;
                 } catch (error) {
                     console.error("Login connection error:", error);
@@ -79,8 +79,8 @@ export const {
                     try {
                         backendUser = JSON.parse(responseText);
                     } catch (e) {
-                         console.error("Google Auth: Non-JSON response:", responseText);
-                         return false;
+                        console.error("Google Auth: Non-JSON response:", responseText);
+                        return false;
                     }
 
                     if (res.ok && backendUser) {
@@ -102,20 +102,25 @@ export const {
             return true;
         },
         async jwt({ token, user, trigger, session }) {
-            // Initial sign in
+            // Initial sign in: Persist the user (including backend token) to the JWT
             if (user) {
-                token.user = user;
-                // @ts-ignore
-                token.accessToken = user.token;
+                return {
+                    ...token,
+                    user: user, // Store the whole user including .token
+                    accessToken: (user as any).token
+                };
+            }
+            // Trigger update (e.g. points change)
+            if (trigger === "update" && session?.user) {
+                return { ...token, user: session.user };
             }
             return token;
         },
         async session({ session, token }) {
+            // Forward the user data from JWT to the client Session
             if (token?.user) {
-                // @ts-ignore
-                session.user = token.user;
-                // @ts-ignore
-                session.accessToken = token.accessToken;
+                session.user = token.user as any;
+                (session as any).accessToken = token.accessToken;
             }
             return session;
         },
