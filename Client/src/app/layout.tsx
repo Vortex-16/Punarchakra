@@ -9,6 +9,7 @@ import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import AuthProvider from "@/components/AuthProvider";
 import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import { VoiceAssistant } from "@/components/ai/VoiceAssistant";
+import { VoiceProvider } from "@/contexts/VoiceContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,13 +50,15 @@ export default function RootLayout({
           >
             <ToastProvider>
               <FavoritesProvider>
-                <SmoothScroll>
-                  <LayoutWrapper>
-                    {children}
-                  </LayoutWrapper>
-                  <OfflineBanner />
-                  <VoiceAssistant />
-                </SmoothScroll>
+                <VoiceProvider>
+                  <SmoothScroll>
+                    <LayoutWrapper>
+                      {children}
+                    </LayoutWrapper>
+                    <OfflineBanner />
+                    <VoiceAssistant />
+                  </SmoothScroll>
+                </VoiceProvider>
               </FavoritesProvider>
             </ToastProvider>
           </ThemeProvider>
