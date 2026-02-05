@@ -13,6 +13,8 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import { ModeToggle } from "@/components/mode-toggle";
 import { ImpactChart } from "@/components/dashboard/ImpactChart";
+import { FactsQuizCard } from "@/components/dashboard/FactsQuizCard";
+import { AchievementsHub } from "@/components/dashboard/AchievementsHub";
 import { HistorySummaryCard } from "@/components/dashboard/HistorySummaryCard";
 import Link from "next/link";
 import { useBinStats, useBins } from "@/hooks/useBins";
@@ -277,9 +279,15 @@ export default function DashboardPage() {
                 </motion.div>
             </div>
 
+            {/* Educational & Achievements Grid (Moved to Bottom) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FactsQuizCard />
+                <AchievementsHub />
+            </div>
+
             {/* Scan History (Real DB Data) */}
             <div className="w-full">
-                 <HistorySummaryCard />
+                <HistorySummaryCard />
             </div>
         </div>
     );
