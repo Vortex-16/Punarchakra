@@ -27,13 +27,17 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Punarchakra Admin",
-  description: "Admin Dashboard for Smart E-Waste Bin System",
+  title: "Punarchakra | Smart E-Waste Management",
+  description: "AI-powered e-waste management platform. Turn your old tech into new possibilities.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/logo.svg",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
+  themeColor: "#10b981",
 };
 
 export default function RootLayout({

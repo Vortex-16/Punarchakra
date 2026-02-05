@@ -64,15 +64,18 @@ export default function NavigationHeader() {
 
                     {/* 1. Logo Section (Left) */}
                     <Link href="/" className="flex items-center gap-3 group relative w-fit justify-self-start">
-                        <div className="relative h-10 w-40">
+                        <div className="relative h-12 w-12 group-hover:scale-110 transition-transform duration-300">
                             <Image
-                                src="/punarchakra_logo.png"
+                                src="/logo.svg"
                                 alt="Punarchakra"
                                 fill
-                                className="object-contain object-left"
+                                className="object-contain"
                                 priority
                             />
                         </div>
+                        <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-forest-green bg-clip-text text-transparent hidden sm:block">
+                            Punarchakra
+                        </span>
                     </Link>
 
                     {/* 2. Navigation Links (Center) - Only visible on Desktop */}

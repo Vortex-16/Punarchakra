@@ -1,0 +1,37 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="chakra_gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="glow_gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#059669" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer Glow -->
+  <circle cx="256" cy="256" r="240" fill="url(#glow_gradient)" />
+  
+  <!-- Main Chakra Ring -->
+  <path d="M256 40C136.7 40 40 136.7 40 256C40 375.3 136.7 472 256 472C375.3 472 472 375.3 472 256C472 136.7 375.3 40 256 40ZM256 432C158.8 432 80 353.2 80 256C80 158.8 158.8 80 256 80C353.2 80 432 158.8 432 256C432 353.2 353.2 432 256 432Z" fill="url(#chakra_gradient)" />
+  
+  <!-- Tech Pattern 1 -->
+  <circle cx="256" cy="80" r="12" fill="#10b981" />
+  <circle cx="256" cy="432" r="12" fill="#059669" />
+  <circle cx="80" cy="256" r="12" fill="#10b981" />
+  <circle cx="432" cy="256" r="12" fill="#059669" />
+  
+  <!-- Stylized Recycling Arrows / Leaf Mix -->
+  <path d="M256 160C202.9 160 159.9 203 159.9 256H120L180 340L240 256H200C200 225.1 225.1 200 256 200C286.9 200 312 225.1 312 256C312 286.9 286.9 312 256 312V352C309.1 352 352.1 309 352.1 256C352.1 202.9 309.1 160 256 160Z" fill="url(#chakra_gradient)" />
+  
+  <!-- Circuit Connectors -->
+  <rect x="250" y="100" width="12" height="60" rx="6" fill="url(#chakra_gradient)" opacity="0.6"/>
+  <rect x="250" y="352" width="12" height="60" rx="6" fill="url(#chakra_gradient)" opacity="0.6"/>
+  <rect x="100" y="250" width="60" height="12" rx="6" fill="url(#chakra_gradient)" opacity="0.6"/>
+  <rect x="352" y="250" width="60" height="12" rx="6" fill="url(#chakra_gradient)" opacity="0.6"/>
+  
+  <!-- Center Core -->
+  <circle cx="256" cy="256" r="28" fill="#ffffff" />
+  <circle cx="256" cy="256" r="18" fill="url(#chakra_gradient)" />
+</svg>

@@ -58,8 +58,8 @@ export function Sidebar({ className }: { className?: string }) {
         >
             {/* Logo */}
             <Link href="/" className="px-6 flex items-center gap-3 hover:opacity-80 transition-opacity">
-                <div className="w-8 h-8 rounded-full bg-fresh-green flex items-center justify-center shrink-0">
-                    <span className="text-forest-green font-bold text-lg">P</span>
+                <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                    <img src="/logo.svg" alt="Logo" className="w-full h-full object-contain" />
                 </div>
                 <span className="font-bold text-xl hidden md:block text-white tracking-wide">
                     Punarchakra

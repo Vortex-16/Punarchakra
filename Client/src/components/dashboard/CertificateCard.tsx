@@ -68,13 +68,15 @@ export function CertificateCard() {
                     className="w-[800px] h-[600px] bg-white relative flex flex-col items-center justify-center text-center p-12 border-[20px] border-double border-emerald-800"
                     style={{ fontFamily: "serif" }}
                 >
-                    {/* Watermark */}
-                    <Leaf className="absolute w-[400px] h-[400px] text-emerald-50 opacity-20 center-absolute" />
+                    {/* Watermark Logo */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
+                        <img src="/logo.svg" alt="" className="w-[400px] h-[400px]" />
+                    </div>
 
                     {/* Header */}
                     <div className="relative z-10 flex flex-col items-center">
-                        <div className="text-emerald-600 mb-4">
-                            <Leaf size={64} />
+                        <div className="mb-4">
+                            <img src="/logo.svg" alt="Punarchakra" className="w-20 h-20" />
                         </div>
                         <h1 className="text-6xl font-bold text-emerald-900 mb-2 uppercase tracking-widest">Certificate</h1>
                         <h2 className="text-2xl font-light text-emerald-700 mb-12 uppercase tracking-widest">of Environmental Stewardship</h2>
