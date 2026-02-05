@@ -10,15 +10,17 @@ export default function ThemeToggle() {
     const isDark = theme === "dark";
 
     const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const newTheme = isDark ? "light" : "dark";
+
         // @ts-ignore - StartViewTransition is not yet in all TS types
         if (!document.startViewTransition) {
-            setTheme(isDark ? "light" : "dark");
+            setTheme(newTheme);
             return;
         }
 
         const button = e.currentTarget;
         const rect = button.getBoundingClientRect();
-        
+
         // Get button center
         const x = rect.left + rect.width / 2;
         const y = rect.top + rect.height / 2;
@@ -29,30 +31,12 @@ export default function ThemeToggle() {
             Math.max(y, innerHeight - y)
         );
 
-        // Determine direction: 
-        // If current is Dark, we go to Light -> Contract expanding darkness (reverse) OR just contract the old Dark layer?
-        // Plan: 
-        // Light -> Dark (Expand): New(Dark) layer expands from 0 to Full.
-        // Dark -> Light (Contract): Old(Dark) layer contracts from Full to 0. (Revealing Light underneath).
-        
-        // Current theme is 'isDark'.
-        // if isDark (true) -> Going to Light. We want "Darkness" to contract. 
-        // "Darkness" is the OLD view. So we animate Old View: Clip Full -> 0.
-        // And we need Old View on TOP. (handled by .contract-transition in CSS)
-        
-        // if !isDark (false) -> Going to Dark. We want "Darkness" to expand.
-        // "Darkness" is the NEW view. So we animate New View: Clip 0 -> Full.
-        // New View is usually on TOP.
-
-        if (isDark) {
-            document.documentElement.classList.add("contract-transition");
-        } else {
-            document.documentElement.classList.remove("contract-transition");
-        }
+        // Always remove contracting class to simplify logic
+        document.documentElement.classList.remove("contract-transition");
 
         // @ts-ignore
         const transition = document.startViewTransition(() => {
-            setTheme(isDark ? "light" : "dark");
+            setTheme(newTheme);
         });
 
         transition.ready.then(() => {
@@ -61,32 +45,16 @@ export default function ThemeToggle() {
                 `circle(${endRadius}px at ${x}px ${y}px)`,
             ];
 
-            const isContracting = isDark; // We are contracting the "Darkness" (Old View)
-
-            // Animation Config
-            // Expand: New View grows from 0 to Full.
-            // Contract: Old View shrinks from Full to 0. (So we run the clipPath in reverse? or use different keyframes?)
-            
-            // If Expanding: New View, 0 -> Radius
-            // If Contracting: Old View, Radius -> 0.
-
             document.documentElement.animate(
                 {
-                    clipPath: isContracting ? [...clipPath].reverse() : clipPath,
+                    clipPath: clipPath,
                 },
                 {
-                    duration: 1500, // Increased duration as requested
+                    duration: 700, // Reduced duration for snappier feel
                     easing: "ease-in-out",
-                    pseudoElement: isContracting
-                        ? "::view-transition-old(root)"
-                        : "::view-transition-new(root)",
+                    pseudoElement: "::view-transition-new(root)",
                 }
             );
-        });
-        
-        // Cleanup class after transition
-        transition.finished.then(() => {
-             document.documentElement.classList.remove("contract-transition");
         });
     };
 
@@ -119,12 +87,12 @@ export default function ThemeToggle() {
             <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
                 {/* Clouds (Light Mode) */}
                 <motion.div
-                     animate={{ 
-                         y: isDark ? 20 : 0,
-                         opacity: isDark ? 0 : 1 
-                     }}
-                     transition={{ duration: 1.5, ease: "easeInOut" }}
-                     className="absolute inset-0"
+                    animate={{
+                        y: isDark ? 20 : 0,
+                        opacity: isDark ? 0 : 1
+                    }}
+                    transition={{ duration: 1.5, ease: "easeInOut" }}
+                    className="absolute inset-0"
                 >
                     <Cloud className="absolute top-1 left-2 w-4 h-4 text-white fill-white opacity-90" />
                     <Cloud className="absolute bottom-1 left-8 w-5 h-5 text-white fill-white opacity-80" />
@@ -132,17 +100,17 @@ export default function ThemeToggle() {
                 </motion.div>
 
                 {/* Stars (Dark Mode) */}
-                 <motion.div
-                     animate={{ 
-                         y: isDark ? 0 : -20,
-                         opacity: isDark ? 1 : 0 
-                     }}
-                     transition={{ duration: 1.5, ease: "easeInOut" }}
-                     className="absolute inset-0"
+                <motion.div
+                    animate={{
+                        y: isDark ? 0 : -20,
+                        opacity: isDark ? 1 : 0
+                    }}
+                    transition={{ duration: 1.5, ease: "easeInOut" }}
+                    className="absolute inset-0"
                 >
                     <Star className="absolute top-2 left-3 w-2 h-2 text-yellow-100 fill-yellow-100 opacity-80 animate-pulse" />
                     <Star className="absolute bottom-3 left-7 w-1.5 h-1.5 text-white fill-white opacity-60" />
-                    <Star className="absolute top-1 right-8 w-2.5 h-2.5 text-yellow-100 fill-yellow-100 opacity-90 animate-pulse" style={{ animationDelay: "0.5s" }} /> 
+                    <Star className="absolute top-1 right-8 w-2.5 h-2.5 text-yellow-100 fill-yellow-100 opacity-90 animate-pulse" style={{ animationDelay: "0.5s" }} />
                     <Star className="absolute bottom-2 right-3 w-1 h-1 text-white fill-white opacity-50" />
                 </motion.div>
             </div>
@@ -153,7 +121,7 @@ export default function ThemeToggle() {
                 animate={{
                     x: isDark ? 48 : 0,
                     // Rotation removed to emphasize the rising/setting vertical motion
-                    rotate: isDark ? 0 : 0 
+                    rotate: isDark ? 0 : 0
                 }}
                 transition={{
                     type: "spring",
@@ -164,32 +132,32 @@ export default function ThemeToggle() {
                     // Or switch to tween for perfect sync. Let's try tween.
                 }}
                 // switching to tween for perfect sync with the circular wipe
-                
+
                 className="relative w-9 h-9 rounded-full shadow-lg flex items-center justify-center z-10 bg-transparent overflow-hidden"
             >
                 {/* Sun Face */}
-                 <motion.div
-                     // Sun sets (goes down) when dark, rises (comes up) when light
-                     animate={{ opacity: isDark ? 0 : 1, y: isDark ? 20 : 0 }}
-                     transition={{ duration: 1.5, ease: "easeInOut" }}
-                     className="absolute inset-0 bg-yellow-400 rounded-full flex items-center justify-center"
+                <motion.div
+                    // Sun sets (goes down) when dark, rises (comes up) when light
+                    animate={{ opacity: isDark ? 0 : 1, y: isDark ? 20 : 0 }}
+                    transition={{ duration: 1.5, ease: "easeInOut" }}
+                    className="absolute inset-0 bg-yellow-400 rounded-full flex items-center justify-center"
                 >
-                   {/* Simple Sun Glow/Rays */}
+                    {/* Simple Sun Glow/Rays */}
                 </motion.div>
 
                 {/* Moon Face */}
                 <motion.div
-                     // Moon rises (comes up) when dark, sets (goes down) when light
-                     animate={{ opacity: isDark ? 1 : 0, y: isDark ? 0 : 20 }}
-                     transition={{ duration: 1.5, ease: "easeInOut" }}
-                     className="absolute inset-0 bg-slate-200 rounded-full flex items-center justify-center"
+                    // Moon rises (comes up) when dark, sets (goes down) when light
+                    animate={{ opacity: isDark ? 1 : 0, y: isDark ? 0 : 20 }}
+                    transition={{ duration: 1.5, ease: "easeInOut" }}
+                    className="absolute inset-0 bg-slate-200 rounded-full flex items-center justify-center"
                 >
-                     {/* Craters */}
-                     <div className="absolute top-2 right-2 w-2 h-2 bg-slate-400/30 rounded-full" />
-                     <div className="absolute bottom-2 left-3 w-1.5 h-1.5 bg-slate-400/30 rounded-full" />
-                     <div className="absolute top-4 left-2 w-2.5 h-2.5 bg-slate-400/30 rounded-full" />
+                    {/* Craters */}
+                    <div className="absolute top-2 right-2 w-2 h-2 bg-slate-400/30 rounded-full" />
+                    <div className="absolute bottom-2 left-3 w-1.5 h-1.5 bg-slate-400/30 rounded-full" />
+                    <div className="absolute top-4 left-2 w-2.5 h-2.5 bg-slate-400/30 rounded-full" />
                 </motion.div>
-                
+
             </motion.div>
 
         </button>

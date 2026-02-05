@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useSession } from "@/hooks/useSession";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     QrCode,
@@ -44,6 +45,7 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useToast } from "../../components/ui/use-toast";
+import { ModeToggle } from "@/components/mode-toggle";
 
 // --- TYPES ---
 interface SmartBin {
@@ -180,6 +182,56 @@ function SmartBinContent() {
     const [userXP, setUserXP] = useState(0);
     const searchParams = useSearchParams();
     const { toast } = useToast();
+    const { session, isLoading } = useSession();
+    const router = useRouter();
+
+    // --- REDIRECT LOGIC REMOVED: Render User View instead ---
+    /* 
+    useEffect(() => {
+        if (!isLoading && !session?.user) {
+             router.push("/login?callbackUrl=/smart-bin");
+        }
+    }, [session, isLoading, router]);
+    */
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                    <p className="text-emerald-500 font-bold animate-pulse uppercase tracking-[0.2em]">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // --- USER VIEW FOR NON-ADMINS ---
+    if (session?.user?.role !== "admin") {
+        return (
+            <div className="min-h-screen bg-background p-8 flex flex-col items-center justify-center text-center space-y-8">
+                <div className="max-w-2xl space-y-6">
+                    <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Smartphone className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <h1 className="text-4xl font-black text-foreground">Smart Bin Locator</h1>
+                    <p className="text-xl text-muted-foreground">
+                        Find, Scan, and Earn. Use our specialized Kiosk interface to interact with physical bins.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                        <Link href="/smart-bin/kiosk" className="p-6 bg-emerald-600 text-white rounded-2xl hover:bg-emerald-700 transition-all flex flex-col items-center gap-4 shadow-lg active:scale-95 group">
+                            <Scan className="w-12 h-12 group-hover:scale-110 transition-transform" />
+                            <span className="font-bold text-lg uppercase tracking-wider">Open Kiosk Mode</span>
+                        </Link>
+                        <Link href="/map" className="p-6 bg-white dark:bg-neutral-800 text-foreground border-2 border-light-grey dark:border-neutral-700 rounded-2xl hover:border-emerald-500 transition-all flex flex-col items-center gap-4 shadow-sm active:scale-95 group">
+                            <MapPin className="w-12 h-12 text-emerald-500 group-hover:scale-110 transition-transform" />
+                            <span className="font-bold text-lg uppercase tracking-wider">Find Nearest Bin</span>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     // --- INITIAL SYNC: LOAD PARAMS & XP ---
     useEffect(() => {
@@ -275,7 +327,10 @@ function SmartBinContent() {
                     </p>
                 </div>
 
+
+
                 <div className="flex items-center gap-4">
+                    <ModeToggle />
                     <div className="hidden sm:flex flex-col items-end mr-2">
                         <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Your Account</span>
                         <span className="text-sm font-black text-foreground flex items-center gap-2 mt-0.5">
