@@ -1,12 +1,13 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
-import { User, LogOut, ChevronDown } from "lucide-react";
+import { useSession } from "@/hooks/useSession";
+import { signOut } from "next-auth/react";
+import { User, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 export default function UserMenu() {
-    const { data: session, status } = useSession();
+    const { session, status } = useSession();
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -57,10 +58,13 @@ export default function UserMenu() {
                 <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
                     <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                         <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                            {session.user?.name}
+                            {session?.user?.name}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                            {session.user?.email}
+                        <p className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mt-0.5">
+                            {session?.user?.role || "User"}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
+                            {session?.user?.email}
                         </p>
                     </div>
 
@@ -72,6 +76,14 @@ export default function UserMenu() {
                         >
                             <User className="w-4 h-4" />
                             My Profile
+                        </Link>
+                        <Link
+                            href="/admin"
+                            className="flex items-center gap-3 px-4 py-2 text-sm text-emerald-600 dark:text-emerald-400 font-bold hover:bg-emerald-50 dark:hover:bg-emerald-900/10 transition-colors border-y border-emerald-100 dark:border-emerald-900/30"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            <LayoutDashboard className="w-4 h-4" />
+                            Admin Panel
                         </Link>
                     </div>
 

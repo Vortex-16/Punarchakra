@@ -23,8 +23,15 @@ const api = {
             headers,
         });
 
-        if (!response.ok) {
-            throw new Error(`API Error: ${response.statusText}`);
+        if (!response.ok && response.status !== 304) {
+            const errorBody = await response.json().catch(() => ({}));
+            console.error(`API Error [${response.status}] ${url}:`, errorBody);
+            throw new Error(errorBody.message || `API Error: ${response.status} ${response.statusText}`);
+        }
+
+        // Handle 304 or empty success responses
+        if (response.status === 204 || response.status === 304) {
+            return null;
         }
 
         return response.json();

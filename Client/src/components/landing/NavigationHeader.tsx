@@ -4,10 +4,13 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
+import { useSession } from "@/hooks/useSession";
+import { LayoutDashboard } from "lucide-react";
 
 export default function NavigationHeader() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const { user, isAuthenticated, isAdmin } = useSession();
 
     useEffect(() => {
         let ticking = false;
@@ -86,19 +89,40 @@ export default function NavigationHeader() {
                         <ThemeToggle />
 
                         <div className="flex items-center gap-4 pl-5 border-l border-gray-200 dark:border-white/10 h-8">
-                            <Link
-                                href="/dashboard"
-                                className="text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-forest-green dark:hover:text-emerald-400 transition-colors"
-                            >
-                                Login
-                            </Link>
-                            <Link
-                                href="/dashboard"
-                                className="relative px-5 py-2.5 bg-forest-green text-white rounded-xl text-sm font-bold shadow-lg shadow-forest-green/25 hover:shadow-forest-green/40 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden group"
-                            >
-                                <span className="relative z-10">Sign Up</span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-forest-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            </Link>
+                            {isAuthenticated ? (
+                                <>
+                                    <Link
+                                        href="/admin"
+                                        className="text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 flex items-center gap-1.5"
+                                    >
+                                        <LayoutDashboard className="w-4 h-4" />
+                                        Admin Panel
+                                    </Link>
+                                    <Link
+                                        href="/dashboard"
+                                        className="relative px-5 py-2.5 bg-forest-green text-white rounded-xl text-sm font-bold shadow-lg shadow-forest-green/25 hover:shadow-forest-green/40 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden group"
+                                    >
+                                        <span className="relative z-10">Dashboard</span>
+                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-forest-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    </Link>
+                                </>
+                            ) : (
+                                <>
+                                    <Link
+                                        href="/dashboard"
+                                        className="text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-forest-green dark:hover:text-emerald-400 transition-colors"
+                                    >
+                                        Login
+                                    </Link>
+                                    <Link
+                                        href="/dashboard"
+                                        className="relative px-5 py-2.5 bg-forest-green text-white rounded-xl text-sm font-bold shadow-lg shadow-forest-green/25 hover:shadow-forest-green/40 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden group"
+                                    >
+                                        <span className="relative z-10">Sign Up</span>
+                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-forest-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -141,18 +165,29 @@ export default function NavigationHeader() {
                                 </button>
                             ))}
                             <div className="pt-4 grid grid-cols-2 gap-4">
-                                <Link
-                                    href="/dashboard"
-                                    className="flex items-center justify-center py-3 text-gray-700 dark:text-gray-300 font-bold hover:text-forest-green bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10"
-                                >
-                                    Login
-                                </Link>
-                                <Link
-                                    href="/dashboard"
-                                    className="flex items-center justify-center py-3 bg-forest-green text-white rounded-xl font-bold shadow-lg shadow-forest-green/20"
-                                >
-                                    Sign Up
-                                </Link>
+                                {isAuthenticated ? (
+                                    <Link
+                                        href="/dashboard"
+                                        className="col-span-2 flex items-center justify-center py-3 bg-forest-green text-white rounded-xl font-bold shadow-lg shadow-forest-green/20"
+                                    >
+                                        Go to Dashboard
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <Link
+                                            href="/dashboard"
+                                            className="flex items-center justify-center py-3 text-gray-700 dark:text-gray-300 font-bold hover:text-forest-green bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10"
+                                        >
+                                            Login
+                                        </Link>
+                                        <Link
+                                            href="/dashboard"
+                                            className="flex items-center justify-center py-3 bg-forest-green text-white rounded-xl font-bold shadow-lg shadow-forest-green/20"
+                                        >
+                                            Sign Up
+                                        </Link>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </motion.div>
