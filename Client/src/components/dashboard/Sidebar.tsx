@@ -93,24 +93,6 @@ export function Sidebar({ className }: { className?: string }) {
 
             {/* Bottom Actions */}
             <div className="px-4 pb-4 space-y-2 mt-auto">
-                <Link
-                    href="/settings"
-                    className="flex items-center gap-4 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white w-full transition-colors group"
-                >
-                    <Settings className="w-5 h-5" />
-                    <span className="hidden md:block text-sm font-medium">Settings</span>
-                </Link>
-
-                {isAuthenticated && (
-                    <Link
-                        href="/admin"
-                        className="flex items-center gap-4 px-3 py-2.5 rounded-xl text-white/70 hover:bg-emerald-500/20 hover:text-white w-full transition-colors group border border-white/5 hover:border-emerald-500/30"
-                    >
-                        <LayoutDashboard className="w-5 h-5 text-fresh-green" />
-                        <span className="hidden md:block text-xs font-bold">Admin Panel</span>
-                    </Link>
-                )}
-
                 <button
                     onClick={handleLogout}
                     className="flex items-center gap-4 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white w-full transition-colors group"

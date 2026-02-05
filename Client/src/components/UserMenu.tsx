@@ -77,14 +77,16 @@ export default function UserMenu() {
                             <User className="w-4 h-4" />
                             My Profile
                         </Link>
-                        <Link
-                            href="/admin"
-                            className="flex items-center gap-3 px-4 py-2 text-sm text-emerald-600 dark:text-emerald-400 font-bold hover:bg-emerald-50 dark:hover:bg-emerald-900/10 transition-colors border-y border-emerald-100 dark:border-emerald-900/30"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            <LayoutDashboard className="w-4 h-4" />
-                            Admin Panel
-                        </Link>
+                        {session?.user?.role === 'admin' && (
+                            <Link
+                                href="/admin"
+                                className="flex items-center gap-3 px-4 py-2 text-sm text-emerald-600 dark:text-emerald-400 font-bold hover:bg-emerald-50 dark:hover:bg-emerald-900/10 transition-colors border-y border-emerald-100 dark:border-emerald-900/30"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                <LayoutDashboard className="w-4 h-4" />
+                                Admin Panel
+                            </Link>
+                        )}
                     </div>
 
                     <div className="border-t border-gray-100 dark:border-gray-700 pt-2">

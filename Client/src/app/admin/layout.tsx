@@ -17,7 +17,6 @@ const sidebarItems = [
     { icon: Map, label: "Live Map", href: "/admin/map", color: "text-emerald-500" },
     { icon: Truck, label: "Route Optimization", href: "/admin/routes", color: "text-orange-500" },
     { icon: Bell, label: "Alerts & Incidents", href: "/admin/alerts", color: "text-red-500" },
-    { icon: Settings, label: "System Settings", href: "/admin/settings", color: "text-gray-500" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

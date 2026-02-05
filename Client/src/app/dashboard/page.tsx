@@ -71,7 +71,7 @@ export default function DashboardPage() {
                     <p className="text-gray-500 dark:text-gray-400 mt-1 transition-colors">Welcome back, {getUserGreeting()}. Keep recycling!</p>
                 </div>
                 <div className="flex gap-3 items-center">
-                    {isAuthenticated && (
+                    {isAuthenticated && user?.role === 'admin' && (
                         <Link href="/admin" className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all flex items-center gap-2">
                             <LayoutDashboard className="w-4 h-4" />
                             Admin Panel

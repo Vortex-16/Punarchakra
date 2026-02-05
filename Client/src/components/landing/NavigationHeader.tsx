@@ -91,13 +91,15 @@ export default function NavigationHeader() {
                         <div className="flex items-center gap-4 pl-5 border-l border-gray-200 dark:border-white/10 h-8">
                             {isAuthenticated ? (
                                 <>
-                                    <Link
-                                        href="/admin"
-                                        className="text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 flex items-center gap-1.5"
-                                    >
-                                        <LayoutDashboard className="w-4 h-4" />
-                                        Admin Panel
-                                    </Link>
+                                    {isAdmin && (
+                                        <Link
+                                            href="/admin"
+                                            className="text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 flex items-center gap-1.5"
+                                        >
+                                            <LayoutDashboard className="w-4 h-4" />
+                                            Admin Panel
+                                        </Link>
+                                    )}
                                     <Link
                                         href="/dashboard"
                                         className="relative px-5 py-2.5 bg-forest-green text-white rounded-xl text-sm font-bold shadow-lg shadow-forest-green/25 hover:shadow-forest-green/40 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden group"
