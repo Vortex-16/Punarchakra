@@ -34,8 +34,8 @@ export function StatsCard({ title, value, trend, trendUp, icon: Icon, color = "t
         el.addEventListener("mouseleave", () => hover.reverse());
 
         return () => {
-             el.removeEventListener("mouseenter", () => hover.play());
-             el.removeEventListener("mouseleave", () => hover.reverse());
+            el.removeEventListener("mouseenter", () => hover.play());
+            el.removeEventListener("mouseleave", () => hover.reverse());
         };
     }, { scope: containerRef }); // Scope is good practice with @gsap/react
 

@@ -2,8 +2,8 @@ import { useRef, useState, useEffect } from 'react';
 import { Camera, Upload, X, RefreshCw, ScanLine, Image as ImageIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-interface CameraInputProps {
-  onCapture: (file: File) => void;
+export interface CameraInputProps {
+  onCapture: (file: File, additionalInfo?: { weight?: string; size?: string }) => void;
   isScanning: boolean;
 }
 
@@ -116,9 +116,9 @@ export function CameraInput({ onCapture, isScanning }: CameraInputProps) {
     stopCamera();
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = (weight: string = '', size: string = '') => {
     if (selectedFile) {
-      onCapture(selectedFile);
+      onCapture(selectedFile, { weight, size });
     }
   };
 
@@ -180,27 +180,63 @@ export function CameraInput({ onCapture, isScanning }: CameraInputProps) {
         </div>
       ) : preview ? (
         <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/5] bg-gray-900 group border border-gray-800">
-          <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+          <img src={preview} alt="Preview" className="w-full h-full object-cover opacity-60" />
 
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-black/40 backdrop-blur-[2px]">
-            {!isScanning && (
-              <div className="w-full flex flex-col gap-4 mt-auto max-w-sm">
-                <button
-                  onClick={handleConfirm}
-                  className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-emerald-500/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-3 backdrop-blur-sm"
-                >
-                  <ScanLine className="w-6 h-6" />
-                  Identify Item
-                </button>
-                <button
-                  onClick={clearImage}
-                  className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-medium backdrop-blur-md transition-colors flex items-center justify-center gap-2 border border-white/10"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  Retake Photo
-                </button>
-              </div>
-            )}
+          {/* New Inputs Overlay */}
+          <div className="absolute inset-0 flex flex-col p-6 z-10">
+             <div className="mt-auto space-y-3 w-full max-w-sm mx-auto">
+                 {!isScanning && (
+                   <div className="space-y-3 bg-black/60 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                      <div className="grid grid-cols-2 gap-3">
+                         <div>
+                            <label className="text-xs text-gray-400 font-medium ml-1 mb-1 block">Est. Weight (kg)</label>
+                            <input 
+                               type="number" 
+                               placeholder="0.5" 
+                               id="weight-input"
+                               className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white placeholder:text-gray-500 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                            />
+                         </div>
+                         <div>
+                             <label className="text-xs text-gray-400 font-medium ml-1 mb-1 block">Size</label>
+                             <select 
+                                id="size-input"
+                                className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 transition-colors appearance-none"
+                             >
+                                <option value="" className="bg-gray-900 text-gray-400">Select...</option>
+                                <option value="Small" className="bg-gray-900">Small (Phone)</option>
+                                <option value="Medium" className="bg-gray-900">Medium (Laptop)</option>
+                                <option value="Large" className="bg-gray-900">Large (TV)</option>
+                                <option value="Bulk" className="bg-gray-900">Bulk</option>
+                             </select>
+                         </div>
+                      </div>
+                   </div>
+                 )}
+
+                {!isScanning && (
+                  <div className="flex flex-col gap-3">
+                    <button
+                      onClick={(e) => {
+                          const weight = (document.getElementById('weight-input') as HTMLInputElement)?.value;
+                          const size = (document.getElementById('size-input') as HTMLSelectElement)?.value;
+                          handleConfirm(weight, size);
+                      }}
+                      className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-emerald-500/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-3 backdrop-blur-sm"
+                    >
+                      <ScanLine className="w-6 h-6" />
+                      Identify Item
+                    </button>
+                    <button
+                      onClick={clearImage}
+                      className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-medium backdrop-blur-md transition-colors flex items-center justify-center gap-2 border border-white/10"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                      Retake Photo
+                    </button>
+                  </div>
+                )}
+             </div>
           </div>
         </div>
       ) : (

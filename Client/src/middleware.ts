@@ -27,19 +27,20 @@ export default async function middleware(request: NextRequest) {
     }
 
     // 2. Authenticated User trying to access Public Auth Routes (Login/Register)
-    // Redirect them to dashboard instead of showing login form again
-    if (session && (pathname === "/login" || pathname === "/register")) {
+    if (session && (pathname === "/login" || pathname === "/register" || pathname === "/")) {
+        // Redirect based on role
+        if (session?.user?.role === "admin") {
+            return NextResponse.redirect(new URL("/admin", request.url));
+        }
         return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
     // 3. Admin Route Protection
     const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route));
-    // Temporarily disabled for demo/debugging purposes so user can access /admin
-    /*
+
     if (isAdminRoute && session?.user?.role !== "admin") {
         return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-    */
 
     return NextResponse.next();
 }
@@ -54,6 +55,6 @@ export const config = {
          * - favicon.ico (favicon file)
          * - public files (images, etc.)
          */
-        "/((?!api|_next/static|_next/image|favicon.ico|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.svg|.*\\.gif).*)",
+        "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|eot)).*)",
     ],
 };

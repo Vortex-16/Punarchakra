@@ -13,6 +13,10 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import { ModeToggle } from "@/components/mode-toggle";
 import { ImpactChart } from "@/components/dashboard/ImpactChart";
+import { FactsQuizCard } from "@/components/dashboard/FactsQuizCard";
+import { AchievementsHub } from "@/components/dashboard/AchievementsHub";
+import { CommunityChallenges } from "@/components/dashboard/CommunityChallenges";
+import { HistorySummaryCard } from "@/components/dashboard/HistorySummaryCard";
 import Link from "next/link";
 import { useBinStats, useBins } from "@/hooks/useBins";
 import UserMenu from "@/components/UserMenu";
@@ -68,11 +72,17 @@ export default function DashboardPage() {
                     <p className="text-gray-500 dark:text-gray-400 mt-1 transition-colors">Welcome back, {getUserGreeting()}. Keep recycling!</p>
                 </div>
                 <div className="flex gap-3 items-center">
-                    {isAuthenticated && (
-                        <Link href="/admin" className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all flex items-center gap-2">
-                            <LayoutDashboard className="w-4 h-4" />
-                            Admin Panel
-                        </Link>
+                    {isAuthenticated && user?.role === 'admin' && (
+                        <>
+                            <Link href="/admin" className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all flex items-center gap-2">
+                                <LayoutDashboard className="w-4 h-4" />
+                                Admin Panel
+                            </Link>
+                            <Link href="/analytics" className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-purple-500/20 hover:bg-purple-700 transition-all flex items-center gap-2">
+                                <BarChart3 className="w-4 h-4" />
+                                Analytics
+                            </Link>
+                        </>
                     )}
                     <ModeToggle />
                     <UserMenu />
@@ -116,6 +126,22 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Recent Activity / Tips */}
+                <div className="h-full">
+                    <CommunityChallenges />
+                </div>
+            </div>
+
+            {/* Educational & Achievements Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <FactsQuizCard />
+                <AchievementsHub />
+            </div>
+
+            {/* Scan History & Recent Activity Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+                <HistorySummaryCard />
+
+                {/* Recent Activity (Moved) */}
                 <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -127,7 +153,7 @@ export default function DashboardPage() {
                             {user.history.slice(0, 5).map((item: any, i: number) => {
                                 // Dynamic Icon Logic
                                 let Icon = Recycle;
-                                const lowerType = item.itemType.toLowerCase();
+                                const lowerType = item.itemType ? item.itemType.toLowerCase() : '';
                                 if (lowerType.includes('laptop')) Icon = Laptop;
                                 else if (lowerType.includes('monitor') || lowerType.includes('display') || lowerType.includes('tv') || lowerType.includes('screen')) Icon = Monitor;
                                 else if (lowerType.includes('cpu') || lowerType.includes('pc') || lowerType.includes('computer')) Icon = Cpu;

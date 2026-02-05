@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -9,6 +9,7 @@ import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import AuthProvider from "@/components/AuthProvider";
 import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import { VoiceAssistant } from "@/components/ai/VoiceAssistant";
+import { VoiceProvider } from "@/contexts/VoiceContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,8 +27,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Smart E-Waste Admin",
+  title: "Punarchakra Admin",
   description: "Admin Dashboard for Smart E-Waste Bin System",
+  manifest: "/manifest.json",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
@@ -49,13 +55,15 @@ export default function RootLayout({
           >
             <ToastProvider>
               <FavoritesProvider>
-                <SmoothScroll>
-                  <LayoutWrapper>
-                    {children}
-                  </LayoutWrapper>
-                  <OfflineBanner />
-                  <VoiceAssistant />
-                </SmoothScroll>
+                <VoiceProvider>
+                  <SmoothScroll>
+                    <LayoutWrapper>
+                      {children}
+                    </LayoutWrapper>
+                    <OfflineBanner />
+                    <VoiceAssistant />
+                  </SmoothScroll>
+                </VoiceProvider>
               </FavoritesProvider>
             </ToastProvider>
           </ThemeProvider>

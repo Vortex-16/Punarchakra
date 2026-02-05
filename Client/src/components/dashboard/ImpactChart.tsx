@@ -142,8 +142,8 @@ export function ImpactChart({ history = [] }: ImpactChartProps) {
                         <CartesianGrid
                             strokeDasharray="3 3"
                             vertical={false}
-                            stroke="currentColor"
-                            className="text-gray-100/50 dark:text-gray-900/50"
+                            stroke="#888888"
+                            strokeOpacity={0.2}
                         />
                         <XAxis
                             dataKey="name"
@@ -181,7 +181,7 @@ export function ImpactChart({ history = [] }: ImpactChartProps) {
                         <span className="text-[10px] font-bold text-gray-500 uppercase">kg CO2</span>
                     </div>
                 </div>
-                <button className="px-4 py-2 bg-gray-50 dark:bg-emerald-500/5 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 text-gray-400 dark:text-emerald-500/80 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-transparent hover:border-emerald-500/20 shadow-sm active:scale-95">
+                <button className="px-4 py-2 bg-gray-50 dark:bg-emerald-500/5 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 text-gray-400 dark:text-emerald-500/80 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-transparent hover:border-emerald-500/20 shadow-sm active:scale-95 cursor-pointer">
                     Get Details
                 </button>
             </div>

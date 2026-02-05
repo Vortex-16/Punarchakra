@@ -44,7 +44,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useToast } from "../../components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
+
 import { ModeToggle } from "@/components/mode-toggle";
 
 // --- TYPES ---
@@ -176,6 +177,8 @@ function PriorityIndicator({ priority }: { priority: SmartBin["aiPriority"] }) {
 function SmartBinContent() {
     const [bins, setBins] = useState<SmartBin[]>(INITIAL_BINS);
     const [selectedBin, setSelectedBin] = useState<SmartBin | null>(null);
+    const [isMaintenance, setIsMaintenance] = useState(false);
+
     const [filter, setFilter] = useState("All");
     const [lastDepositAlert, setLastDepositAlert] = useState<any>(null);
     const [liveHistory, setLiveHistory] = useState<Record<string, { time: string, event: string }[]>>({});
@@ -219,7 +222,7 @@ function SmartBinContent() {
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                        <Link href="/smart-bin/kiosk" className="p-6 bg-emerald-600 text-white rounded-2xl hover:bg-emerald-700 transition-all flex flex-col items-center gap-4 shadow-lg active:scale-95 group">
+                        <Link href="/smartBin" className="p-6 bg-emerald-600 text-white rounded-2xl hover:bg-emerald-700 transition-all flex flex-col items-center gap-4 shadow-lg active:scale-95 group">
                             <Scan className="w-12 h-12 group-hover:scale-110 transition-transform" />
                             <span className="font-bold text-lg uppercase tracking-wider">Open Kiosk Mode</span>
                         </Link>
@@ -363,7 +366,7 @@ function SmartBinContent() {
 
             {/* --- FLOATING DEMO NAVIGATION --- */}
             <div className="fixed bottom-8 right-8 z-[110] flex gap-3">
-                <Link href="/smart-bin/kiosk" className="px-8 py-5 bg-emerald-600 text-white rounded-[2rem] flex items-center gap-3 font-black uppercase text-sm shadow-[0_15px_30px_rgba(16,185,129,0.3)] hover:bg-emerald-500 transition-all active:scale-95 group">
+                <Link href="/smartBin" className="px-8 py-5 bg-emerald-600 text-white rounded-[2rem] flex items-center gap-3 font-black uppercase text-sm shadow-[0_15px_30px_rgba(16,185,129,0.3)] hover:bg-emerald-500 transition-all active:scale-95 group">
                     <Scan className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                     Open Kiosk Demo
                 </Link>

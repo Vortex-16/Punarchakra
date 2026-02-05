@@ -6,6 +6,7 @@ import {
     LayoutDashboard, Map, Truck, Bell, Settings, LogOut,
     Menu, X, ChevronRight, Recycle
 } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -17,7 +18,6 @@ const sidebarItems = [
     { icon: Map, label: "Live Map", href: "/admin/map", color: "text-emerald-500" },
     { icon: Truck, label: "Route Optimization", href: "/admin/routes", color: "text-orange-500" },
     { icon: Bell, label: "Alerts & Incidents", href: "/admin/alerts", color: "text-red-500" },
-    { icon: Settings, label: "System Settings", href: "/admin/settings", color: "text-gray-500" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -39,12 +39,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {/* Logo Area */}
                 <div className="h-20 flex items-center justify-between px-6 border-b border-white/10">
                     <Link href="/dashboard" className={cn("flex items-center gap-3 overflow-hidden", !isSidebarOpen && "justify-center")}>
-                        <div className="w-9 h-9 bg-fresh-green rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/20">
-                            <Recycle className="w-5 h-5 text-forest-green" />
+                        <div className="relative w-9 h-9 shrink-0">
+                            <Image src="/punarchakra_logo.png" alt="Punarchakra Logo" fill className="object-contain" />
                         </div>
                         {isSidebarOpen && (
                             <span className="font-bold text-xl tracking-wide text-white whitespace-nowrap">
-                                Eco<span className="text-fresh-green">Bin</span><span className="text-[10px] ml-1.5 px-1.5 py-0.5 bg-white/10 text-fresh-green rounded font-bold align-top">PRO</span>
+                                Punar<span className="text-fresh-green">Chakra</span><span className="text-[10px] ml-1.5 px-1.5 py-0.5 bg-white/10 text-fresh-green rounded font-bold align-top">Admin</span>
                             </span>
                         )}
                     </Link>
@@ -131,10 +131,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Mobile Header (Visible only on small screens) */}
             <div className="md:hidden fixed top-0 w-full z-30 bg-white/80 dark:bg-[#111]/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 px-4 h-16 flex items-center justify-between">
                 <Link href="/admin" className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
-                        <Recycle className="w-5 h-5 text-white" />
+                    <div className="relative w-8 h-8 shrink-0">
+                        <Image src="/punarchakra_logo.png" alt="Punarchakra Logo" fill className="object-contain" />
                     </div>
-                    <span className="font-bold text-lg text-gray-900 dark:text-white">EcoBin Admin</span>
+                    <span className="font-bold text-lg text-gray-900 dark:text-white">PunarChakra Admin</span>
                 </Link>
                 <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 text-gray-600 dark:text-gray-300">
                     {isSidebarOpen ? <X /> : <Menu />}

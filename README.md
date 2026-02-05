@@ -77,6 +77,13 @@ NEXTAUTH_SECRET=your_nextauth_secret
 NEXTAUTH_URL=http://localhost:3000
 ```
 
+### 🔑 Admin Credentials
+Use these to log in and access the Admin Dashboard:
+
+Email: [admin@ewaste.com]
+Password: [admin123]
+
+
 ### 3. Run the App
 Open two terminals:
 

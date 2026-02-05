@@ -2,11 +2,12 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, Camera, RefreshCw, AlertTriangle, CheckCircle, Loader2, X, Zap, Box, Recycle, QrCode, Globe, Battery, Wifi } from "lucide-react";
+import { Upload, Camera, RefreshCw, AlertTriangle, CheckCircle, Loader2, X, Zap, Box, Recycle, QrCode, Globe, Battery, Wifi, Truck } from "lucide-react";
 import { detectWaste } from "@/app/actions/detectWaste";
 import { useSession } from "@/hooks/useSession";
 import { depositWasteItem } from "@/lib/api";
 import { useToast } from "@/components/ui/use-toast";
+import { SchedulePickup } from "@/components/smart-bin/SchedulePickup";
 
 // Quick helper to convert file to base64
 const fileToBase64 = (file: File): Promise<string> => {
@@ -108,6 +109,7 @@ export default function SmartBinMachine() {
     const [language, setLanguage] = useState<Language>('en');
     const [fillLevel, setFillLevel] = useState(45); // Start at 45%
     const [isMaintenance, setIsMaintenance] = useState(false);
+    const [showSchedule, setShowSchedule] = useState(false);
 
     const t = TRANSLATIONS[language];
 
@@ -332,6 +334,13 @@ export default function SmartBinMachine() {
 
                         {/* Language Toggle (Floating) */}
                         <div className="absolute top-4 right-4 z-50 flex gap-2">
+                            <button
+                                onClick={() => setShowSchedule(true)}
+                                className="w-8 h-8 rounded-full bg-neutral-800 text-[#FFD700] border border-[#FFD700] flex items-center justify-center hover:bg-[#FFD700] hover:text-black transition-colors group"
+                                title="Schedule Pickup"
+                            >
+                                <Truck className="w-4 h-4" />
+                            </button>
                             {(['en', 'hi', 'es'] as Language[]).map(lang => (
                                 <button
                                     key={lang}
@@ -587,6 +596,11 @@ export default function SmartBinMachine() {
                                 </motion.div>
                             )}
 
+                        </AnimatePresence>
+
+                        {/* Scheduling Overlay */}
+                        <AnimatePresence>
+                            {showSchedule && <SchedulePickup onClose={() => setShowSchedule(false)} />}
                         </AnimatePresence>
                     </div>
 

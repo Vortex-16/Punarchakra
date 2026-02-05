@@ -39,7 +39,11 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Bin'
         }
-    }]
+    }],
+    pushSubscription: {
+        type: Object, // Stores endpoint, keys (p256dh, auth)
+        default: null
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

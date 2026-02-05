@@ -8,6 +8,8 @@ import { Navigation, Trash2, Battery, Activity, AlertTriangle, PenTool } from "l
 import { cn } from "@/lib/utils";
 
 // Helper to update map view
+import { useTheme } from "next-themes";
+
 function ChangeView({ center, zoom }: { center: [number, number]; zoom: number }) {
     const map = useMap();
     useEffect(() => {
@@ -69,9 +71,70 @@ const createAdminBinIcon = (bin: Bin) => {
     });
 };
 
-export default function AdminMap({ bins, onBinClick }: AdminMapProps) {
-    // Default to London or existing data center, assumes data has lat/lng
-    const center: [number, number] = bins.length > 0 ? [bins[0].location.lat, bins[0].location.lng] : [22.5726, 88.3639]; // Default Kolkata / Demo
+
+
+import { generateMockRecyclers, generateAdminMockBins, Recycler, AdminBin } from "@/lib/recycler-data";
+import { Factory } from "lucide-react";
+
+// ... (existing imports)
+
+export default function AdminMap({ bins: initialBins, onBinClick }: AdminMapProps) {
+    const { theme, resolvedTheme } = useTheme();
+    const isDarkMode = theme === "dark" || resolvedTheme === "dark";
+    const [adminLocation, setAdminLocation] = useState<[number, number] | null>(null);
+
+    // Recycler & Mock Bin State
+    const [recyclers, setRecyclers] = useState<Recycler[]>([]);
+    const [showRecyclers, setShowRecyclers] = useState(false);
+    const [mockBins, setMockBins] = useState<AdminBin[]>([]);
+
+    useEffect(() => {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const loc: [number, number] = [position.coords.latitude, position.coords.longitude];
+                    setAdminLocation(loc);
+
+                    // Generate recyclers near admin
+                    setRecyclers(generateMockRecyclers({ lat: loc[0], lng: loc[1] }));
+                    // Generate mock bins near admin
+                    setMockBins(generateAdminMockBins({ lat: loc[0], lng: loc[1] }, 8));
+                },
+                (error) => {
+                    console.error("Error getting admin location:", error);
+                    // Fallback generation if location fails
+                    const fallbackLoc = { lat: 12.9716, lng: 77.5946 };
+                    setRecyclers(generateMockRecyclers(fallbackLoc));
+                    setMockBins(generateAdminMockBins(fallbackLoc, 8));
+                }
+            );
+        } else {
+            const fallbackLoc = { lat: 12.9716, lng: 77.5946 };
+            setRecyclers(generateMockRecyclers(fallbackLoc));
+            setMockBins(generateAdminMockBins(fallbackLoc, 8));
+        }
+    }, []);
+
+    // Combine real bins from API and our generated mock bins
+    // Cast initialBins to AdminBin[] if types slightly mismatch, or rely on compatibility
+    const allBins = [...initialBins, ...mockBins] as unknown as AdminBin[];
+
+    // Priority: Admin Live Location -> First Bin Location -> Default Bengaluru
+    const center: [number, number] = adminLocation
+        ? adminLocation
+        : (initialBins.length > 0 ? [initialBins[0].location.lat, initialBins[0].location.lng] : [12.9716, 77.5946]);
+
+    const recyclerIcon = new DivIcon({
+        className: 'bg-transparent',
+        html: `
+            <div class="w-8 h-8 bg-purple-600 rounded-lg shadow-lg flex items-center justify-center text-white border-2 border-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7-5-7 5v12Z"/><path d="M17 18h2"/><path d="M12 18h1"/><path d="M17 14h2"/><path d="m17 10 2 1"/><path d="M12 14h1"/><path d="m12 10 1 1"/><path d="M7 14h1"/><path d="m7 10 1 1"/><path d="M7 18h2"/></svg>
+            </div>
+        `,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    });
 
     return (
         <div className="h-full w-full rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm relative z-0">
@@ -79,12 +142,65 @@ export default function AdminMap({ bins, onBinClick }: AdminMapProps) {
                 <ChangeView center={center} zoom={14} />
 
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                    className="dark:invert dark:grayscale dark:contrast-75" // Dark mode map hack
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                    url={isDarkMode
+                        ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                        : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                    }
                 />
 
-                {bins.map((bin) => (
+                {/* Admin Live Location Marker */}
+                {adminLocation && (
+                    <Marker
+                        position={adminLocation}
+                        icon={new DivIcon({
+                            className: "bg-transparent",
+                            html: `
+                                <div style="position: relative; width: 20px; height: 20px;">
+                                    <div style="position: absolute; width: 20px; height: 20px; background: #3B82F6; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);"></div>
+                                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; background: white; border-radius: 50%;"></div>
+                                </div>
+                            `,
+                            iconSize: [20, 20],
+                            iconAnchor: [10, 10]
+                        })}
+                    >
+                        <Popup className="custom-popup">
+                            <div className="font-bold text-xs">You (Admin HQ)</div>
+                        </Popup>
+                    </Marker>
+                )}
+
+                {/* Recyclers Markers */}
+                {showRecyclers && recyclers.map((recycler) => (
+                    <Marker
+                        key={recycler.id}
+                        position={[recycler.location.lat, recycler.location.lng]}
+                        icon={recyclerIcon}
+                    >
+                        <Popup className="custom-popup">
+                            <div className="p-2 min-w-[200px]">
+                                <h3 className="font-bold text-purple-700 dark:text-purple-400 mb-1 flex items-center gap-1">
+                                    <Factory className="w-3 h-3" /> {recycler.name}
+                                </h3>
+                                <p className="text-xs text-gray-500 mb-2">{recycler.location.address}</p>
+                                <div className="flex flex-wrap gap-1 mb-2">
+                                    {recycler.types.map(t => (
+                                        <span key={t} className="text-[10px] bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded border border-purple-100">{t}</span>
+                                    ))}
+                                </div>
+                                <div className="flex justify-between items-center text-xs">
+                                    <span className={cn("font-bold", recycler.status === 'Open' ? "text-green-600" : "text-red-500")}>
+                                        {recycler.status}
+                                    </span>
+                                    <a href={`tel:${recycler.contact}`} className="text-blue-500 hover:underline">{recycler.contact}</a>
+                                </div>
+                            </div>
+                        </Popup>
+                    </Marker>
+                ))}
+
+                {allBins.map((bin) => (
                     <Marker
                         key={bin._id}
                         position={[bin.location.lat, bin.location.lng]}
@@ -101,6 +217,22 @@ export default function AdminMap({ bins, onBinClick }: AdminMapProps) {
                 ))}
             </MapContainer>
 
+            {/* Controls Layer */}
+            <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-2">
+                <button
+                    onClick={() => setShowRecyclers(!showRecyclers)}
+                    className={cn(
+                        "p-3 rounded-xl shadow-lg border transition-all flex items-center justify-center",
+                        showRecyclers
+                            ? "bg-purple-600 text-white border-purple-700"
+                            : "bg-white dark:bg-black/90 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-white/10"
+                    )}
+                    title="Toggle Recycling Centers"
+                >
+                    <Factory className="w-5 h-5" />
+                </button>
+            </div>
+
             {/* Legend */}
             <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-black/90 backdrop-blur p-3 rounded-lg shadow-lg border border-gray-100 dark:border-gray-800 text-xs z-[1000]">
                 <div className="font-bold mb-2 text-gray-900 dark:text-white">Bin Status</div>
@@ -110,6 +242,11 @@ export default function AdminMap({ bins, onBinClick }: AdminMapProps) {
                     <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-600 animate-pulse"></div> Critical / Full</div>
                     <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-orange-500"></div> Maintenance</div>
                     <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-gray-500"></div> Offline</div>
+                    {showRecyclers && (
+                        <div className="flex items-center gap-2 border-t pt-1.5 mt-1.5 border-gray-200 dark:border-gray-700">
+                            <div className="w-3 h-3 rounded bg-purple-600 border border-white"></div> Recycler
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
