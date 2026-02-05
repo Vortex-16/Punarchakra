@@ -8,6 +8,7 @@ import L from "leaflet";
 import { useEffect } from "react";
 import { Navigation, MapPin, Trash2 } from "lucide-react";
 import MapControls from "./MapControls";
+import { useTheme } from "next-themes";
 
 interface MapInnerProps {
   userLocation: { lat: number; lng: number } | null;
@@ -147,6 +148,8 @@ function createBinIcon(bin: Bin) {
 }
 
 export default function MapInner({ userLocation, bins, selectedBin, onSelectBin, onLocateUser }: MapInnerProps) {
+  const { theme, resolvedTheme } = useTheme();
+  const isDarkMode = theme === "dark" || resolvedTheme === "dark";
   const defaultCenter: [number, number] = [12.9716, 77.5946]; // Bengaluru default
   const center = selectedBin
     ? [selectedBin.location.lat, selectedBin.location.lng] as [number, number]
@@ -200,8 +203,11 @@ export default function MapInner({ userLocation, bins, selectedBin, onSelectBin,
       zoomControl={false}
     >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url={isDarkMode
+          ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        }
       />
 
       <MapController center={center} zoom={zoom} />

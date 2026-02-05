@@ -43,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         </div>
                         {isSidebarOpen && (
                             <span className="font-bold text-xl tracking-wide text-white whitespace-nowrap">
-                                Eco<span className="text-fresh-green">Bin</span><span className="text-[10px] ml-1.5 px-1.5 py-0.5 bg-white/10 text-fresh-green rounded font-bold align-top">PRO</span>
+                                Punar<span className="text-fresh-green">Chakra</span><span className="text-[10px] ml-1.5 px-1.5 py-0.5 bg-white/10 text-fresh-green rounded font-bold align-top">Admin</span>
                             </span>
                         )}
                     </Link>
@@ -133,7 +133,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
                         <Recycle className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-bold text-lg text-gray-900 dark:text-white">EcoBin Admin</span>
+                    <span className="font-bold text-lg text-gray-900 dark:text-white">PunarChakra Admin</span>
                 </Link>
                 <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 text-gray-600 dark:text-gray-300">
                     {isSidebarOpen ? <X /> : <Menu />}
