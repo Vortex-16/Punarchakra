@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { detectWaste } from '@/app/actions/detectWaste';
+import { useSession } from '@/hooks/useSession';
 
 export type DetectionStatus = 'idle' | 'scanning' | 'analyzing' | 'success' | 'error';
 
@@ -13,11 +14,12 @@ export interface DetectionResult {
 }
 
 export function useWasteDetection() {
+  const { user } = useSession();
   const [status, setStatus] = useState<DetectionStatus>('idle');
   const [result, setResult] = useState<DetectionResult | null>(null);
   const [debugImage, setDebugImage] = useState<string | null>(null);
 
-  const startDetection = useCallback(async (imageFile: File | null) => {
+  const startDetection = useCallback(async (imageFile: File | null, additionalInfo?: { weight?: string; size?: string }) => {
     if (!imageFile) return;
 
     setStatus('scanning');
@@ -40,7 +42,7 @@ export function useWasteDetection() {
       setStatus('analyzing');
 
       // Use Server Action directly
-      const response = await detectWaste(base64Image);
+      const response = await detectWaste(base64Image, additionalInfo);
 
       if (response.error) {
         throw new Error(response.error);
@@ -57,21 +59,42 @@ export function useWasteDetection() {
         'false': 'other'
       };
 
-      setResult({
+      const resultData = {
         id: Date.now().toString(),
         item: data.label || 'Unknown Item',
-        category: data.recyclable ? 'electronic' : 'other', // Simplified mapping based on prompt logic
-        confidence: (data.confidence_score || 0) / 100, // prompt returns 0-100
+        category: data.recyclable ? 'electronic' : 'other',
+        confidence: (data.confidence_score || 0) / 100,
         value: data.estimated_credit || 0,
         message: data.reasoning || data.material || 'Analysis complete.',
-      });
+      };
+
+      setResult(resultData as any);
+
+      // Save to History
+      if (user?._id) {
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api'}/history/add`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  userId: user._id,
+                  imageUrl: base64Image, // Warning: Large payload
+                  itemLabel: resultData.item,
+                  category: resultData.category,
+                  confidence: resultData.confidence,
+                  value: resultData.value,
+                  weight: additionalInfo?.weight,
+                  size: additionalInfo?.size,
+                  message: resultData.message
+              })
+          }).catch(err => console.error("Failed to save history:", err));
+      }
 
       setStatus('success');
     } catch (error) {
       console.error("Detection Error:", error);
       setStatus('error');
     }
-  }, []);
+  }, [user]);
 
   const resetDetection = useCallback(() => {
     setStatus('idle');

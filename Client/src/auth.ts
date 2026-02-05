@@ -22,8 +22,10 @@ export const {
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
 
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+
                 try {
-                    const res = await fetch("http://localhost:5000/api/auth/login", {
+                    const res = await fetch(`${apiUrl}/auth/login`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -34,14 +36,21 @@ export const {
                         }),
                     });
 
-                    const user = await res.json();
-
-                    if (res.ok && user) {
-                        return user; // Return user object provided by backend
+                    const responseText = await res.text();
+                    
+                    try {
+                        const user = JSON.parse(responseText);
+                        if (res.ok && user) {
+                            return user; 
+                        }
+                        console.error("Login failed (Server):", user);
+                    } catch (jsonError) {
+                        console.error("Login failed (Non-JSON response):", responseText);
                     }
+                    
                     return null;
                 } catch (error) {
-                    console.error("Login error:", error);
+                    console.error("Login connection error:", error);
                     return null;
                 }
             },
@@ -50,8 +59,9 @@ export const {
     callbacks: {
         async signIn({ user, account }) {
             if (account?.provider === "google") {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
                 try {
-                    const res = await fetch("http://localhost:5000/api/auth/google", {
+                    const res = await fetch(`${apiUrl}/auth/google`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -63,7 +73,15 @@ export const {
                         }),
                     });
 
-                    const backendUser = await res.json();
+                    const responseText = await res.text();
+                    let backendUser;
+
+                    try {
+                        backendUser = JSON.parse(responseText);
+                    } catch (e) {
+                         console.error("Google Auth: Non-JSON response:", responseText);
+                         return false;
+                    }
 
                     if (res.ok && backendUser) {
                         // Attach backend token to the user object so it persists in the JWT

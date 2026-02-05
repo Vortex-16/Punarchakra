@@ -56,13 +56,24 @@ export function AnalysisOverlay({ status }: AnalysisOverlayProps) {
         animate={{ opacity: 1, y: 0 }}
         className="mt-8 text-center relative z-20 max-w-xs"
       >
-        <h3 className="text-2xl font-bold text-white mb-2 flex items-center justify-center gap-2">
-          {status === 'scanning' ? 'Scanning...' : 'Analyzing AI Model'}
-          {status === 'analyzing' && <Loader2 className="w-5 h-5 animate-spin text-blue-500" />}
+        <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-emerald-400 mb-2 flex items-center justify-center gap-2">
+          {status === 'scanning' ? 'Scanning Object...' : 'Processing AI Model'}
+          {status === 'analyzing' && <Loader2 className="w-5 h-5 animate-spin text-emerald-500" />}
         </h3>
-        <p className="text-white/60 text-sm font-medium">
-          {status === 'scanning' ? 'Identifying object structure and dimensions' : 'Determining material composition and value'}
-        </p>
+        <div className="text-white/70 text-sm font-mono space-y-1">
+          {status === 'scanning' ? (
+             <>
+                <p className="animate-pulse">Locating boundaries...</p>
+                <p className="opacity-50">Measuring volume...</p>
+             </>
+          ) : (
+             <>
+                <p className="text-emerald-400">Analysis complete.</p>
+                <p className="animate-pulse">Matching database...</p>
+                <p className="opacity-50">Estimating carbon footprint...</p>
+             </>
+          )}
+        </div>
       </motion.div>
     </div>
   );

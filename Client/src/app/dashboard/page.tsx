@@ -13,6 +13,7 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import { ModeToggle } from "@/components/mode-toggle";
 import { ImpactChart } from "@/components/dashboard/ImpactChart";
+import { HistorySummaryCard } from "@/components/dashboard/HistorySummaryCard";
 import Link from "next/link";
 import { useBinStats, useBins } from "@/hooks/useBins";
 import UserMenu from "@/components/UserMenu";
@@ -241,7 +242,7 @@ export default function DashboardPage() {
                             {user.history.slice(0, 5).map((item: any, i: number) => {
                                 // Dynamic Icon Logic
                                 let Icon = Recycle;
-                                const lowerType = item.itemType.toLowerCase();
+                                const lowerType = item.itemType ? item.itemType.toLowerCase() : '';
                                 if (lowerType.includes('laptop')) Icon = Laptop;
                                 else if (lowerType.includes('monitor') || lowerType.includes('display') || lowerType.includes('tv') || lowerType.includes('screen')) Icon = Monitor;
                                 else if (lowerType.includes('cpu') || lowerType.includes('pc') || lowerType.includes('computer')) Icon = Cpu;
@@ -274,6 +275,11 @@ export default function DashboardPage() {
                         </div>
                     )}
                 </motion.div>
+            </div>
+
+            {/* Scan History (Real DB Data) */}
+            <div className="w-full">
+                 <HistorySummaryCard />
             </div>
         </div>
     );

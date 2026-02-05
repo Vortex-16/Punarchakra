@@ -16,8 +16,8 @@ export default function WasteDetectionPage() {
   const { status, result, startDetection, resetDetection } = useWasteDetection();
   const [isVerificationOpen, setIsVerificationOpen] = useState(false);
 
-  const handleCapture = (file: File) => {
-    startDetection(file);
+  const handleCapture = (file: File, additionalInfo?: { weight?: string; size?: string }) => {
+    startDetection(file, additionalInfo);
   };
 
   const handleManualVerification = (item: string) => {
@@ -92,6 +92,29 @@ export default function WasteDetectionPage() {
                 onVerification={() => setIsVerificationOpen(true)}
               />
             </motion.div>
+          )}
+
+          {status === 'error' && (
+             <motion.div
+               key="error"
+               initial={{ opacity: 0, scale: 0.9 }}
+               animate={{ opacity: 1, scale: 1 }}
+               className="bg-red-50 dark:bg-red-900/20 p-8 rounded-3xl text-center max-w-md border border-red-100 dark:border-red-900/50"
+             >
+               <div className="w-16 h-16 bg-red-100 dark:bg-red-900/50 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+                  <Sparkles className="w-8 h-8 rotate-45" /> 
+               </div>
+               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Detection Failed</h3>
+               <p className="text-gray-500 dark:text-gray-400 mb-6">
+                 We couldn't identify the item. Please ensure the image is clear and centered.
+               </p>
+               <button
+                 onClick={resetDetection}
+                 className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold shadow-lg shadow-red-500/20 transition-all flex items-center gap-2 mx-auto"
+               >
+                 Try Again
+               </button>
+             </motion.div>
           )}
         </AnimatePresence>
 

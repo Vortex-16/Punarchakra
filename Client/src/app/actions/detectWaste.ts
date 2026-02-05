@@ -4,7 +4,7 @@ import Groq from "groq-sdk";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-export async function detectWaste(imageBase64: string) {
+export async function detectWaste(imageBase64: string, additionalInfo?: { weight?: string; size?: string }) {
     if (!imageBase64) {
         return { error: "No image provided" };
     }
@@ -14,6 +14,12 @@ export async function detectWaste(imageBase64: string) {
         // but Groq/OpenAI usually expect the full URL or just the base64 part depending on implementation.
         // For vision, we usually pass the data URL directly in the content block).
 
+        let promptText = "Analyze this image. Is it ELECTRONIC WASTE (e-waste)? Return ONLY a JSON: { \"label\": \"Item Name\", \"material\": \"Material\", \"recyclable\": true/false, \"confidence_score\": 0-100, \"sustainability_score\": 1-10, \"estimated_credit\": 10-100, \"reasoning\": \"Why it is/isn't e-waste\" }. Set 'recyclable': true ONLY if it is e-waste (electronics, cables, circuit boards). Set 'recyclable': false for plastic bottles, paper, food, or general trash.";
+
+        if (additionalInfo?.weight || additionalInfo?.size) {
+            promptText += `\nAdditional Context Provided by User: ${additionalInfo.weight ? `Weight: ${additionalInfo.weight}kg. ` : ''}${additionalInfo.size ? `Size/Volume: ${additionalInfo.size}. ` : ''} Use this context to refine the estimated credit and sustainability score.`;
+        }
+
         const completion = await groq.chat.completions.create({
             messages: [
                 {
@@ -21,7 +27,7 @@ export async function detectWaste(imageBase64: string) {
                     content: [
                         {
                             type: "text",
-                            text: "Analyze this image. Is it ELECTRONIC WASTE (e-waste)? Return ONLY a JSON: { \"label\": \"Item Name\", \"material\": \"Material\", \"recyclable\": true/false, \"confidence_score\": 0-100, \"sustainability_score\": 1-10, \"estimated_credit\": 10-100, \"reasoning\": \"Why it is/isn't e-waste\" }. Set 'recyclable': true ONLY if it is e-waste (electronics, cables, circuit boards). Set 'recyclable': false for plastic bottles, paper, food, or general trash."
+                            text: promptText
                         },
                         {
                             type: "image_url",
