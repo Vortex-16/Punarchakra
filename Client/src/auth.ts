@@ -132,5 +132,17 @@ export const {
         strategy: "jwt",
     },
     trustHost: true,
-    debug: true, // Enable debug messages for development
+    secret: process.env.AUTH_SECRET,
+    debug: true,
+    logger: {
+        error(code, ...metadata) {
+            console.error(code, metadata);
+        },
+        warn(code) {
+            console.warn(code);
+        },
+        debug(code, ...metadata) {
+            console.log(code, metadata);
+        },
+    },
 });
