@@ -77,12 +77,12 @@ export default function AdminDashboardPage() {
     }, []);
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8 px-4 sm:px-0">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 pb-2">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Mission Control</h1>
-                    <p className="text-gray-500 dark:text-gray-400 font-medium">Real-time overview of city-wide waste management.</p>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Mission Control</h1>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 font-medium">Real-time overview of city-wide waste management.</p>
                 </div>
                 <div className="flex gap-4 items-center self-start md:self-auto">
                     <Link href="/admin/map" className="px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl font-bold hover:shadow-lg transition-all flex items-center gap-2 text-sm shadow-md">

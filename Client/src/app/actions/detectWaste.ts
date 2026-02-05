@@ -38,7 +38,7 @@ export async function detectWaste(imageBase64: string, additionalInfo?: { weight
                     ],
                 },
             ],
-            model: "meta-llama/llama-4-scout-17b-16e-instruct",
+            model: "llama-3.2-11b-vision-preview",
             temperature: 0.1,
             max_tokens: 300,
             top_p: 1,

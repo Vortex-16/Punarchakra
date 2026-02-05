@@ -48,15 +48,15 @@ export default function AdminMapPage() {
     }, []);
 
     return (
-        <div className="flex h-[calc(100vh-100px)] gap-6 relative">
+        <div className="flex h-[calc(100vh-64px)] md:h-[calc(100vh-100px)] gap-6 relative">
             <div className="flex-1 h-full w-full">
                 <AdminMap bins={bins} onBinClick={setSelectedBin} />
             </div>
 
             {/* Slide-over Detailed Panel */}
             <div className={cn(
-                "absolute top-4 right-4 bottom-4 w-96 bg-white dark:bg-[#111] rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 transform transition-transform duration-300 ease-in-out z-[1001] flex flex-col overflow-hidden",
-                selectedBin ? "translate-x-0" : "translate-x-[110%]"
+                "fixed sm:absolute inset-x-0 bottom-0 sm:inset-y-4 sm:right-4 w-full sm:w-96 h-[70vh] sm:h-auto bg-white dark:bg-[#111] rounded-t-3xl sm:rounded-2xl shadow-2xl border-t sm:border border-gray-200 dark:border-gray-800 transform transition-transform duration-300 ease-in-out z-[1001] flex flex-col overflow-hidden",
+                selectedBin ? "translate-y-0 sm:translate-x-0" : "translate-y-full sm:translate-x-[110%]"
             )}>
                 {selectedBin && (
                     <>

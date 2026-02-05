@@ -63,7 +63,7 @@ export default function RegisterPage() {
     }
 
     return (
-        <div className="h-screen w-full flex bg-white dark:bg-[#050505] overflow-hidden text-neutral-900 dark:text-white font-sans selection:bg-emerald-500/30 selection:text-emerald-500 transition-colors duration-500">
+        <div className="min-h-screen w-full flex bg-white dark:bg-[#050505] overflow-x-hidden text-neutral-900 dark:text-white font-sans selection:bg-emerald-500/30 selection:text-emerald-500 transition-colors duration-500">
 
             {/* Theme Toggle (Absolute) */}
             <div className="absolute top-6 right-6 z-50">
@@ -71,7 +71,7 @@ export default function RegisterPage() {
             </div>
 
             {/* --- LEFT SIDE: 3D INTERACTIVE (Fixed, 50% width) --- */}
-            <div className="hidden lg:flex w-1/2 relative flex-col items-center justify-center bg-gray-50 dark:bg-neutral-900 overflow-hidden transition-colors duration-500">
+            <div className="hidden lg:flex w-1/2 relative flex-col items-center justify-center bg-gray-50 dark:bg-neutral-900 overflow-hidden transition-colors duration-500 h-screen sticky top-0">
                 {/* 3D Canvas Container */}
                 <div className="absolute inset-0 z-0">
                     <SmartBin3D />
@@ -101,7 +101,7 @@ export default function RegisterPage() {
             </div>
 
             {/* --- RIGHT SIDE: Register Form (Fixed, 50% width) --- */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-[#0a0a0a] relative transition-colors duration-500">
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-6 py-12 md:p-8 bg-white dark:bg-[#0a0a0a] relative transition-colors duration-500 min-h-screen">
                 <div className="w-full max-w-[440px] space-y-8">
 
                     {/* Header */}

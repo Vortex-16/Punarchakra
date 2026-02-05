@@ -7,6 +7,7 @@ import {
     ShieldAlert, Zap, BatteryLow, WifiOff, MapPin, ChevronRight,
     ArrowUpRight, AlertCircle, RefreshCcw
 } from "lucide-react";
+import api from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { useSession } from "@/hooks/useSession";
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,12 +39,7 @@ export default function AlertsPage() {
         try {
             setLoading(true);
             const query = filter === 'all' ? '' : `?status=${filter}`;
-            const res = await fetch(`http://localhost:5000/api/alerts${query}`, {
-                headers: {
-                    'Authorization': `Bearer ${session.accessToken}`
-                }
-            });
-            const data = await res.json();
+            const data = await api.get(`/alerts${query}`, { token: session.accessToken });
 
             if (Array.isArray(data)) {
                 setAlerts(data);
@@ -68,7 +64,7 @@ export default function AlertsPage() {
         if (!session?.accessToken) return;
 
         try {
-            await fetch(`http://localhost:5000/api/alerts/${id}/resolve`, {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/alerts/${id}/resolve`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${session.accessToken}`
@@ -112,11 +108,11 @@ export default function AlertsPage() {
     };
 
     return (
-        <div className="space-y-8 pb-10">
+        <div className="space-y-6 sm:space-y-8 px-4 sm:px-0 pb-10">
             {/* Header Section */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Incident Reports</h1>
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tight">Incident Reports</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium flex items-center gap-2">
                         <ShieldAlert className="w-4 h-4 text-emerald-500" />
                         System Integrity & Operational Alerts
@@ -131,7 +127,7 @@ export default function AlertsPage() {
                             placeholder="Search incidents..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl w-full sm:w-64 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm font-medium"
+                            className="pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl w-full lg:w-64 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm font-medium"
                         />
                     </div>
                     <button
@@ -157,7 +153,7 @@ export default function AlertsPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="bg-white dark:bg-[#111] p-6 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all group"
+                        className="bg-white dark:bg-[#111] p-4 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all group"
                     >
                         <div className="flex items-center justify-between mb-4">
                             <div className={cn("p-3 rounded-2xl", {
@@ -179,7 +175,7 @@ export default function AlertsPage() {
             </div>
 
             {/* Filters Toggles */}
-            <div className="flex items-center gap-2 bg-gray-100/50 dark:bg-white/5 p-1.5 rounded-2xl w-fit border border-gray-200/50 dark:border-white/5">
+            <div className="flex items-center gap-2 bg-gray-100/50 dark:bg-white/5 p-1.5 rounded-2xl w-full sm:w-fit border border-gray-200/50 dark:border-white/5 overflow-x-auto no-scrollbar">
                 {[
                     { id: 'open', label: 'Active Logs', icon: ActivityIcon },
                     { id: 'resolved', label: 'Resolved Cases', icon: CheckCircle },
@@ -189,22 +185,22 @@ export default function AlertsPage() {
                         key={tab.id}
                         onClick={() => setFilter(tab.id as any)}
                         className={cn(
-                            "flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all",
+                            "flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap",
                             filter === tab.id
                                 ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-lg"
                                 : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
                         )}
                     >
-                        <tab.icon className="w-4 h-4" />
+                        <tab.icon className="w-3.5 h-3.5 sm:w-4 h-4" />
                         {tab.label}
                     </button>
                 ))}
             </div>
 
             {/* Alerts List */}
-            <div className="bg-white dark:bg-[#111] rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl overflow-hidden relative min-h-[400px]">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+            <div className="bg-white dark:bg-[#111] rounded-[1.5rem] sm:rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl overflow-hidden relative min-h-[400px]">
+                <div className="overflow-x-auto overflow-y-hidden">
+                    <table className="w-full text-left min-w-[800px] sm:min-w-0">
                         <thead>
                             <tr className="bg-gray-50/50 dark:bg-white/5 border-b border-gray-100 dark:border-white/5">
                                 <th className="px-8 py-6 text-xs font-black uppercase tracking-widest text-gray-400">Incident Details</th>

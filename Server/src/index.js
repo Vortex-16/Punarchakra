@@ -7,6 +7,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const binRoutes = require('./routes/binRoutes');
 const historyRoutes = require('./routes/historyRoutes');
+const alertRoutes = require('./routes/alertRoutes');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/bins', binRoutes);
 app.use('/api/history', historyRoutes);
+app.use('/api/alerts', alertRoutes);
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 
 app.get('/', (req, res) => {

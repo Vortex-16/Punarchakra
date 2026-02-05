@@ -79,7 +79,7 @@ export default function HeroSection() {
         <section className="relative w-full overflow-hidden bg-white dark:bg-[#050505]">
             <AuroraBackground className="h-full pt-20 pb-12 lg:pt-32 lg:pb-24">
                 <div ref={containerRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-                    <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
+                    <div className="flex flex-col-reverse lg:grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
                         {/* Content Left */}
                         <div ref={contentRef} className="text-left space-y-8">
                             <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-forest-green/20 rounded-full shadow-sm hover:shadow-md transition-all cursor-default opacity-0">
@@ -90,7 +90,7 @@ export default function HeroSection() {
                                 <span className="text-xs font-bold text-forest-green tracking-wide uppercase">The Future of E-Waste Management</span>
                             </div>
 
-                            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 dark:text-white tracking-tighter leading-[1.05] drop-shadow-sm min-h-[3.3em] lg:min-h-[2.2em] opacity-0">
+                            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-gray-900 dark:text-white tracking-tighter leading-[1.05] drop-shadow-sm min-h-[3.3em] lg:min-h-[2.2em] opacity-0">
                                 <span className="hero-scramble block">Turn Your Old Tech</span>
                                 <span className="hero-scramble-2 text-transparent bg-clip-text bg-gradient-to-r from-forest-green via-emerald-500 to-teal-500 animate-gradient-x block">
                                     into New Possibilities.
@@ -130,8 +130,8 @@ export default function HeroSection() {
                         </div>
 
                         {/* Visual Right */}
-                        <div ref={visualRef} className="relative hidden lg:block perspective-1000 opacity-0">
-                            <div className="relative z-10 w-full aspect-[4/5] max-w-[420px] mx-auto group">
+                        <div ref={visualRef} className="relative block perspective-1000 opacity-0 w-full max-w-[420px] mx-auto lg:mx-0">
+                            <div className="relative z-10 w-full aspect-[4/5] group">
                                 {/* Glow Effect */}
                                 <div className="absolute -inset-4 bg-emerald-500/20 blur-[60px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/10 to-transparent rounded-[2.5rem] -z-10" />
