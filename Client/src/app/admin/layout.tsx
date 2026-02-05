@@ -40,7 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <div className="h-20 flex items-center justify-between px-6 border-b border-white/10">
                     <Link href="/dashboard" className={cn("flex items-center gap-3 overflow-hidden", !isSidebarOpen && "justify-center")}>
                         <div className="relative w-9 h-9 shrink-0">
-                            <Image src="/punarchakra_logo.png" alt="Punarchakra Logo" fill className="object-contain" />
+                            <Image src="/logo.svg" alt="Punarchakra Logo" fill className="object-contain" />
                         </div>
                         {isSidebarOpen && (
                             <span className="font-bold text-xl tracking-wide text-white whitespace-nowrap">
@@ -132,7 +132,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="md:hidden fixed top-0 w-full z-30 bg-white/80 dark:bg-[#111]/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 px-4 h-16 flex items-center justify-between">
                 <Link href="/admin" className="flex items-center gap-2">
                     <div className="relative w-8 h-8 shrink-0">
-                        <Image src="/punarchakra_logo.png" alt="Punarchakra Logo" fill className="object-contain" />
+                        <Image src="/logo.svg" alt="Punarchakra Logo" fill className="object-contain" />
                     </div>
                     <span className="font-bold text-lg text-gray-900 dark:text-white">PunarChakra Admin</span>
                 </Link>
