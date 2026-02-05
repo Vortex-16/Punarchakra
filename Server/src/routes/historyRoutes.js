@@ -35,6 +35,51 @@ router.post('/add', async (req, res) => {
         });
 
         const savedScan = await newScan.save();
+
+        // Update User Points and Send Notification
+        const User = require('../models/User');
+        const webpush = require('web-push');
+
+        const pointsToAdd = Math.floor(value || 10); // Default 10 points if value missing
+        
+        const user = await User.findById(userId);
+        if (user) {
+            user.points += pointsToAdd;
+            // Add to user history array as well if needed (schema has it)
+            user.history.push({
+                itemType: itemLabel,
+                pointsEarned: pointsToAdd,
+                date: Date.now()
+            });
+            await user.save();
+
+            // Check if user has push subscription
+            if (user.pushSubscription) {
+                try {
+                    const payload = JSON.stringify({
+                        title: 'Points Earned! 🎉',
+                        body: `You earned ${pointsToAdd} points for recycling ${itemLabel}! Total: ${user.points}`,
+                        url: '/rewards'
+                    });
+                    
+                    // web-push config should be set globally in index.js or notificationController
+                    // We need to set it here if not set, or ensuring index.js sets it.
+                    // safely set it again or assume it's set if we require the controller to init it? 
+                    // Better validation: set it here to be safe or import config.
+                    // For now, I'll set it here to ensure it works.
+                    webpush.setVapidDetails(
+                        process.env.VAPID_SUBJECT,
+                        process.env.VAPID_PUBLIC_KEY,
+                        process.env.VAPID_PRIVATE_KEY
+                    );
+
+                    await webpush.sendNotification(user.pushSubscription, payload);
+                } catch (pushErr) {
+                    console.error("Failed to send push notification", pushErr);
+                }
+            }
+        }
+
         res.json(savedScan);
     } catch (err) {
         console.error(err.message);

@@ -14,6 +14,7 @@ const sidebarItems = [
     { icon: Scan, label: "AI Waste Scanner", href: "/scan" },
     { icon: Map, label: "Bin Map", href: "/map" },
     { icon: Award, label: "Rewards", href: "/rewards" },
+    { icon: Settings, label: "Settings", href: "/settings" },
 ];
 
 export function Sidebar({ className }: { className?: string }) {

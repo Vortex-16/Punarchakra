@@ -22,6 +22,7 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/bins', binRoutes);
 app.use('/api/history', historyRoutes);
+app.use('/api/notifications', require('./routes/notificationRoutes'));
 
 app.get('/', (req, res) => {
     res.send('Punarchakra Server is running...');

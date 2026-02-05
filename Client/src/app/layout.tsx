@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -29,6 +29,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Smart E-Waste Admin",
   description: "Admin Dashboard for Smart E-Waste Bin System",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
