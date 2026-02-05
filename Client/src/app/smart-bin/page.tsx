@@ -317,48 +317,54 @@ function SmartBinContent() {
 
             {/* --- HEADER SECTION --- */}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-                <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-600/20">
-                            <Navigation className="text-white w-5 h-5" />
+                <div className="w-full lg:w-auto">
+                    <div className="flex items-center justify-between lg:justify-start gap-3 mb-2">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-600/20">
+                                <Navigation className="text-white w-5 h-5" />
+                            </div>
+                            <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight">Control <span className="text-emerald-600">Center</span></h1>
                         </div>
-                        <h1 className="text-3xl font-black text-foreground tracking-tight">Control <span className="text-emerald-600">Center</span></h1>
+                        <div className="lg:hidden flex items-center gap-3">
+                            <ModeToggle />
+                            <div className="w-10 h-10 bg-light-grey rounded-xl flex items-center justify-center border-2 border-background">
+                                <UserCheck className="w-5 h-5 text-muted-foreground" />
+                            </div>
+                        </div>
                     </div>
-                    <p className="text-muted-foreground font-medium text-sm flex items-center gap-2">
+                    <p className="text-muted-foreground font-medium text-xs sm:text-sm flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                         Smart City Waste Monitoring System • Live v4.5
                     </p>
                 </div>
 
-
-
-                <div className="flex items-center gap-4">
+                <div className="hidden lg:flex items-center gap-4 bg-off-white/50 dark:bg-neutral-900/50 p-2 rounded-2xl border border-light-grey backdrop-blur-sm">
                     <ModeToggle />
-                    <div className="hidden sm:flex flex-col items-end mr-2">
-                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Your Account</span>
-                        <span className="text-sm font-black text-foreground flex items-center gap-2 mt-0.5">
-                            <Zap className="w-4 h-4 text-emerald-500 fill-emerald-500" />
+                    <div className="flex flex-col items-end px-2">
+                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Account Status</span>
+                        <span className="text-sm font-black text-foreground flex items-center gap-2 mt-0.5 text-emerald-600">
+                            <Zap className="w-4 h-4 fill-emerald-500" />
                             {userXP} XP
                         </span>
                     </div>
-                    <div className="w-12 h-12 bg-light-grey rounded-2xl flex items-center justify-center border-2 border-background shadow-sm">
-                        <UserCheck className="w-6 h-6 text-muted-foreground" />
+                    <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-600/20">
+                        <UserCheck className="w-5 h-5" />
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full lg:w-auto">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 w-full lg:w-auto">
                     {[
                         { label: "Active Bins", val: stats.total, icon: MapPin, color: "text-blue-600" },
                         { label: "Critical", val: stats.critical, icon: AlertTriangle, color: "text-rose-600" },
                         { label: "Diversion", val: stats.diversion, icon: Leaf, color: "text-emerald-600" },
-                        { label: "System Health", val: stats.uptime, icon: Activity, color: "text-violet-600" }
+                        { label: "Health", val: stats.uptime, icon: Activity, color: "text-violet-600" }
                     ].map((s) => (
-                        <div key={s.label} className="bg-off-white p-4 rounded-2xl border border-light-grey shadow-sm flex flex-col group hover:border-emerald-500/30 transition-colors">
+                        <div key={s.label} className="bg-off-white dark:bg-neutral-900/40 p-3 sm:p-4 rounded-2xl border border-light-grey shadow-sm flex flex-col group hover:border-emerald-500/30 transition-colors">
                             <div className="flex items-center gap-2 mb-1">
                                 <s.icon className={cn("w-3 h-3", s.color)} />
-                                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">{s.label}</span>
+                                <span className="text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-wider">{s.label}</span>
                             </div>
-                            <span className="text-xl font-black text-foreground">{s.val}</span>
+                            <span className="text-lg sm:text-xl font-black text-foreground">{s.val}</span>
                         </div>
                     ))}
                 </div>
@@ -481,7 +487,7 @@ function SmartBinContent() {
                 </div>
             </div>
 
-            {/* --- DETAIL PANEL (SLIDE OVER) --- */}
+            {/* --- DETAIL PANEL (SLIDE OVER / BOTTOM SHEET) --- */}
             <AnimatePresence>
                 {selectedBin && (
                     <>
@@ -493,123 +499,133 @@ function SmartBinContent() {
                             className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100]"
                         />
                         <motion.div
-                            initial={{ x: "100%" }}
-                            animate={{ x: 0 }}
-                            exit={{ x: "100%" }}
-                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed right-0 top-0 bottom-0 w-full max-w-xl bg-off-white shadow-2xl z-[101] flex flex-col p-8 overflow-y-auto border-l border-light-grey"
+                            initial={window.innerWidth < 1024 ? { y: "100%" } : { x: "100%" }}
+                            animate={window.innerWidth < 1024 ? { y: 0 } : { x: 0 }}
+                            exit={window.innerWidth < 1024 ? { y: "100%" } : { x: "100%" }}
+                            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+                            className={cn(
+                                "fixed z-[101] bg-off-white dark:bg-neutral-900 shadow-2xl flex flex-col border-light-grey dark:border-white/10",
+                                "inset-x-0 bottom-0 h-[85vh] rounded-t-[2.5rem] border-t lg:inset-y-0 lg:right-0 lg:left-auto lg:w-full lg:max-w-xl lg:h-full lg:rounded-none lg:border-l"
+                            )}
                         >
-                            <button onClick={() => setSelectedBin(null)} className="absolute top-6 left-6 p-2 hover:bg-light-grey rounded-full transition-colors group">
+                            {/* Drag Handle for Mobile */}
+                            <div className="lg:hidden w-full flex justify-center p-4">
+                                <div className="w-12 h-1.5 bg-light-grey dark:bg-white/10 rounded-full" />
+                            </div>
+
+                            <button onClick={() => setSelectedBin(null)} className="absolute top-6 left-6 p-2 hover:bg-light-grey dark:hover:bg-white/5 rounded-full transition-colors group z-50">
                                 <XCircle className="w-7 h-7 text-muted-foreground/30 group-hover:text-muted-foreground" />
                             </button>
 
-                            <div className="mt-12 space-y-10">
-                                {/* Header */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <StatusBadge status={selectedBin.status} />
-                                            <PriorityIndicator priority={selectedBin.aiPriority} />
-                                        </div>
-                                        <h2 className="text-4xl font-black text-foreground uppercase tracking-tight">{selectedBin.name}</h2>
-                                        <p className="text-muted-foreground font-bold uppercase tracking-widest text-sm flex items-center gap-2 mt-2">
-                                            <MapPin className="w-4 h-4 text-emerald-500" /> {selectedBin.location}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* AI Intelligence Insight Card */}
-                                <div className="bg-foreground text-background rounded-[2.5rem] p-8 relative overflow-hidden shadow-xl">
-                                    <div className="absolute top-0 right-0 p-8 opacity-5">
-                                        <Cpu className="w-24 h-24 rotate-12" />
-                                    </div>
-                                    <div className="relative z-10 space-y-6">
+                            <div className="flex-1 overflow-y-auto custom-scrollbar p-6 sm:p-8 pt-10 sm:pt-12">
+                                <div className="space-y-8 sm:space-y-10">
+                                    {/* Header */}
+                                    <div className="space-y-4">
                                         <div>
-                                            <span className="px-3 py-1 bg-emerald-500 text-white rounded-full text-[9px] font-black uppercase tracking-widest mb-4 inline-block">AI PREDICTION MODEL</span>
-                                            <h4 className="text-3xl font-black leading-tight text-emerald-400">
-                                                {selectedBin.fill > 90 ? "CRITICAL: IMMEDIATE PICKUP" :
-                                                    selectedBin.fill > 75 ? "CAPACITY ALERT: 2H REMAINING" :
-                                                        "STATUS: OPTIMAL EFFICIENCY"}
-                                            </h4>
-                                            <p className="opacity-40 text-xs mt-3 uppercase font-bold tracking-widest text-background">Confidence Score: 98.4%</p>
+                                            <div className="flex flex-wrap items-center gap-3 mb-3">
+                                                <StatusBadge status={selectedBin.status} />
+                                                <PriorityIndicator priority={selectedBin.aiPriority} />
+                                            </div>
+                                            <h2 className="text-3xl sm:text-4xl font-black text-foreground uppercase tracking-tight">{selectedBin.name}</h2>
+                                            <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs sm:text-sm flex items-center gap-2 mt-2">
+                                                <MapPin className="w-4 h-4 text-emerald-500" /> {selectedBin.location}
+                                            </p>
                                         </div>
-                                        <div className="h-px bg-background/10 w-full" />
-                                        <p className="opacity-80 text-sm leading-relaxed font-medium">
-                                            {selectedBin.fill > 90
-                                                ? "Sensors report overflow threshold reached. AI has auto-prioritized this unit for the next available collection vehicle (Route A-4)."
-                                                : `Current usage patterns suggest this unit will remain stable for another ${Math.floor((100 - selectedBin.fill) / 5)} hours. No immediate action required.`}
-                                        </p>
                                     </div>
-                                </div>
 
-                                {/* Sensor Specs */}
-                                <div className="grid grid-cols-3 gap-4">
-                                    {[
-                                        { label: "Internal Temp", val: `${selectedBin.sensors.temp}°C`, icon: Thermometer, color: "bg-red-500/10 text-red-500" },
-                                        { label: "Moisture", val: `${selectedBin.sensors.humidity}%`, icon: Droplets, color: "bg-blue-500/10 text-blue-500" },
-                                        { label: "Latency", val: `${selectedBin.sensors.latency}ms`, icon: Radio, color: "bg-light-grey text-muted-foreground" }
-                                    ].map((s) => (
-                                        <div key={s.label} className="p-5 rounded-3xl border border-light-grey flex flex-col items-center text-center space-y-3">
-                                            <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center", s.color)}>
-                                                <s.icon className="w-5 h-5" />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{s.label}</p>
-                                                <p className="text-sm font-black text-foreground">{s.val}</p>
-                                            </div>
+                                    {/* AI Intelligence Insight Card */}
+                                    <div className="bg-foreground text-background rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 relative overflow-hidden shadow-xl">
+                                        <div className="absolute top-0 right-0 p-8 opacity-5">
+                                            <Cpu className="w-24 h-24 rotate-12" />
                                         </div>
-                                    ))}
-                                </div>
-
-                                {/* History Timeline */}
-                                <div className="space-y-6 pt-4 border-t border-light-grey">
-                                    <h5 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                                        <Clock className="w-3 h-3" /> Recent Activity Log
-                                    </h5>
-                                    <div className="space-y-6 relative ml-4 border-l-2 border-light-grey pl-8">
-                                        {(liveHistory[selectedBin.id] || []).map((e, idx) => (
-                                            <div key={`live-${idx}`} className="relative">
-                                                <div className="absolute -left-[37px] top-1.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-background shadow-sm" />
-                                                <p className="text-[9px] font-black text-emerald-500 uppercase mb-1">{e.time}</p>
-                                                <p className="text-sm font-bold text-foreground leading-tight">{e.event}</p>
+                                        <div className="relative z-10 space-y-4 sm:space-y-6">
+                                            <div>
+                                                <span className="px-3 py-1 bg-emerald-500 text-white rounded-full text-[9px] font-black uppercase tracking-widest mb-4 inline-block">AI PREDICTION MODEL</span>
+                                                <h4 className="text-2xl sm:text-3xl font-black leading-tight text-emerald-400">
+                                                    {selectedBin.fill > 90 ? "CRITICAL: IMMEDIATE PICKUP" :
+                                                        selectedBin.fill > 75 ? "CAPACITY ALERT: 2H REMAINING" :
+                                                            "STATUS: OPTIMAL EFFICIENCY"}
+                                                </h4>
+                                                <p className="opacity-40 text-[10px] sm:text-xs mt-3 uppercase font-bold tracking-widest text-background dark:text-white">Confidence Score: 98.4%</p>
                                             </div>
-                                        ))}
+                                            <div className="h-px bg-background/10 dark:bg-white/10 w-full" />
+                                            <p className="opacity-80 text-xs sm:text-sm leading-relaxed font-medium">
+                                                {selectedBin.fill > 90
+                                                    ? "Sensors report overflow threshold reached. AI has auto-prioritized this unit for collection."
+                                                    : `Current usage patterns suggest this unit will remain stable for another ${Math.floor((100 - selectedBin.fill) / 5)} hours.`}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Sensor Specs */}
+                                    <div className="grid grid-cols-3 gap-3 sm:gap-4">
                                         {[
-                                            { time: "08:45 AM", event: "routine system integrity check passed", type: "check" },
-                                            { time: "yesterday", event: "maintenance reset by admin", type: "admin" }
-                                        ].map((e, idx) => (
-                                            <div key={idx} className="relative opacity-40">
-                                                <div className="absolute -left-[37px] top-1.5 w-3 h-3 rounded-full bg-light-grey border-2 border-background shadow-sm" />
-                                                <p className="text-[9px] font-black text-muted-foreground uppercase mb-1">{e.time}</p>
-                                                <p className="text-sm font-bold text-foreground leading-tight uppercase">{e.event}</p>
+                                            { label: "Temp", val: `${selectedBin.sensors.temp}°C`, icon: Thermometer, color: "bg-red-500/10 text-red-500" },
+                                            { label: "Humidity", val: `${selectedBin.sensors.humidity}%`, icon: Droplets, color: "bg-blue-500/10 text-blue-500" },
+                                            { label: "Latency", val: `${selectedBin.sensors.latency}ms`, icon: Radio, color: "bg-light-grey dark:bg-white/5 text-muted-foreground" }
+                                        ].map((s) => (
+                                            <div key={s.label} className="p-3 sm:p-5 rounded-2xl sm:rounded-3xl border border-light-grey dark:border-white/10 flex flex-col items-center text-center space-y-2 sm:space-y-3">
+                                                <div className={cn("w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center", s.color)}>
+                                                    <s.icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                                                </div>
+                                                <div className="space-y-0.5 sm:space-y-1">
+                                                    <p className="text-[8px] sm:text-[9px] font-black text-muted-foreground uppercase tracking-widest">{s.label}</p>
+                                                    <p className="text-xs sm:text-sm font-black text-foreground">{s.val}</p>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
-                                </div>
 
-                                {/* Actions */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-auto">
-                                    <button
-                                        onClick={() => {
-                                            const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedBin.coords.lat},${selectedBin.coords.lng}`;
-                                            window.open(url, "_blank");
-                                        }}
-                                        className="py-6 bg-blue-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 active:scale-95 flex items-center justify-center gap-3"
-                                    >
-                                        <Navigation className="w-5 h-5" /> Start Navigation
-                                    </button>
-                                    <button
-                                        onClick={() => handleAction(selectedBin.id, "Collect")}
-                                        className="py-6 bg-emerald-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 active:scale-95 flex items-center justify-center gap-3"
-                                    >
-                                        <Trash2 className="w-5 h-5" /> Dispatch Collection
-                                    </button>
-                                    <button
-                                        onClick={() => handleAction(selectedBin.id, "Restart")}
-                                        className="py-6 bg-foreground text-background rounded-[2rem] font-black uppercase tracking-widest text-xs hover:opacity-90 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-3 sm:col-span-2"
-                                    >
-                                        <RefreshCcw className="w-5 h-5" /> Reset System Sensors
-                                    </button>
+                                    {/* History Timeline */}
+                                    <div className="space-y-6 pt-4 border-t border-light-grey dark:border-white/10">
+                                        <h5 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                                            <Clock className="w-3 h-3" /> Recent Activity Log
+                                        </h5>
+                                        <div className="space-y-6 relative ml-4 border-l-2 border-light-grey dark:border-white/10 pl-8">
+                                            {(liveHistory[selectedBin.id] || []).map((e, idx) => (
+                                                <div key={`live-${idx}`} className="relative">
+                                                    <div className="absolute -left-[37px] top-1.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-background shadow-sm" />
+                                                    <p className="text-[9px] font-black text-emerald-500 uppercase mb-1">{e.time}</p>
+                                                    <p className="text-xs sm:text-sm font-bold text-foreground leading-tight">{e.event}</p>
+                                                </div>
+                                            ))}
+                                            {[
+                                                { time: "08:45 AM", event: "routine system integrity check passed", type: "check" },
+                                                { time: "yesterday", event: "maintenance reset by admin", type: "admin" }
+                                            ].map((e, idx) => (
+                                                <div key={idx} className="relative opacity-40">
+                                                    <div className="absolute -left-[37px] top-1.5 w-3 h-3 rounded-full bg-light-grey dark:bg-white/10 border-2 border-background shadow-sm" />
+                                                    <p className="text-[9px] font-black text-muted-foreground uppercase mb-1">{e.time}</p>
+                                                    <p className="text-xs sm:text-sm font-bold text-foreground leading-tight uppercase">{e.event}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pb-8">
+                                        <button
+                                            onClick={() => {
+                                                const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedBin.coords.lat},${selectedBin.coords.lng}`;
+                                                window.open(url, "_blank");
+                                            }}
+                                            className="p-4 sm:py-6 bg-blue-600 text-white rounded-2xl sm:rounded-[2rem] font-black uppercase tracking-widest text-[10px] sm:text-xs hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 active:scale-95 flex items-center justify-center gap-3"
+                                        >
+                                            <Navigation className="w-5 h-5" /> Start Navigation
+                                        </button>
+                                        <button
+                                            onClick={() => handleAction(selectedBin.id, "Collect")}
+                                            className="p-4 sm:py-6 bg-emerald-600 text-white rounded-2xl sm:rounded-[2rem] font-black uppercase tracking-widest text-[10px] sm:text-xs hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 active:scale-95 flex items-center justify-center gap-3"
+                                        >
+                                            <Trash2 className="w-5 h-5" /> Dispatch Collection
+                                        </button>
+                                        <button
+                                            onClick={() => handleAction(selectedBin.id, "Restart")}
+                                            className="p-4 sm:py-6 bg-foreground dark:bg-white dark:text-black text-background rounded-2xl sm:rounded-[2rem] font-black uppercase tracking-widest text-[10px] sm:text-xs hover:opacity-90 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-3 sm:col-span-2"
+                                        >
+                                            <RefreshCcw className="w-5 h-5" /> Reset System Sensors
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>

@@ -95,26 +95,36 @@ export default function DashboardPage() {
     return (
         <div className="space-y-8" ref={containerRef}>
             {/* Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors">My Dashboard</h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-1 transition-colors">Welcome back, {getUserGreeting()}. Keep recycling!</p>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                <div className="space-y-1">
+                    <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight transition-colors">
+                        My Dashboard
+                    </h1>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">
+                        Welcome back, <span className="text-emerald-600 dark:text-emerald-400 font-bold">{getUserGreeting()}</span>. Keep recycling!
+                    </p>
                 </div>
-                <div className="flex gap-3 items-center">
-                    {isAuthenticated && user?.role === 'admin' && (
-                        <>
-                            <Link href="/admin" className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all flex items-center gap-2">
-                                <LayoutDashboard className="w-4 h-4" />
-                                Admin Panel
-                            </Link>
-                            <Link href="/analytics" className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-purple-500/20 hover:bg-purple-700 transition-all flex items-center gap-2">
-                                <BarChart3 className="w-4 h-4" />
-                                Analytics
-                            </Link>
-                        </>
-                    )}
-                    <ModeToggle />
-                    <UserMenu />
+
+                <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-4 sm:pt-0 border-gray-100 dark:border-white/5">
+                    <div className="flex items-center gap-3">
+                        {isAuthenticated && user?.role === 'admin' && (
+                            <div className="flex gap-2">
+                                <Link href="/admin" className="p-2 sm:px-4 sm:py-2 bg-emerald-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all flex items-center gap-2 group">
+                                    <LayoutDashboard className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                    <span className="hidden xs:block">Admin</span>
+                                </Link>
+                                <Link href="/analytics" className="p-2 sm:px-4 sm:py-2 bg-purple-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-purple-500/20 hover:bg-purple-700 transition-all flex items-center gap-2 group">
+                                    <BarChart3 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                    <span className="hidden xs:block">Analytics</span>
+                                </Link>
+                            </div>
+                        )}
+                        <ModeToggle />
+                    </div>
+
+                    <div className="flex items-center gap-3 pl-4 border-l border-gray-100 dark:border-white/10 shrink-0">
+                        <UserMenu />
+                    </div>
                 </div>
             </div>
 

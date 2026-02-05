@@ -106,11 +106,11 @@ export default function RegisterPage() {
 
                     {/* Header */}
                     <div className="space-y-2">
-                        <div className="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-500 mb-2">
+                        <div className="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 mb-2">
                             <Leaf size={20} />
                         </div>
-                        <h2 className="text-3xl font-bold text-neutral-900 dark:text-white tracking-tight transition-colors duration-300">Create Account</h2>
-                        <p className="text-neutral-500 dark:text-neutral-400 transition-colors duration-300">Start your sustainable journey today.</p>
+                        <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-white tracking-tight transition-colors duration-300">Create Account</h2>
+                        <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400 transition-colors duration-300">Start your sustainable journey today.</p>
                     </div>
 
                     {/* Form */}
