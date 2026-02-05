@@ -73,10 +73,16 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex gap-3 items-center">
                     {isAuthenticated && user?.role === 'admin' && (
-                        <Link href="/admin" className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all flex items-center gap-2">
-                            <LayoutDashboard className="w-4 h-4" />
-                            Admin Panel
-                        </Link>
+                        <>
+                            <Link href="/admin" className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all flex items-center gap-2">
+                                <LayoutDashboard className="w-4 h-4" />
+                                Admin Panel
+                            </Link>
+                            <Link href="/analytics" className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-purple-500/20 hover:bg-purple-700 transition-all flex items-center gap-2">
+                                <BarChart3 className="w-4 h-4" />
+                                Analytics
+                            </Link>
+                        </>
                     )}
                     <ModeToggle />
                     <UserMenu />
