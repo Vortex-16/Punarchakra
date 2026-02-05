@@ -8,18 +8,18 @@ import { cn } from "@/lib/utils";
 import { useSession } from "@/hooks/useSession";
 import { signOut } from "next-auth/react";
 
-const sidebarItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: Smartphone, label: "Smart Bin", href: "/smartBin" },
-    { icon: Scan, label: "AI Waste Scanner", href: "/scan" },
-    { icon: Map, label: "Bin Map", href: "/map" },
-    { icon: Award, label: "Rewards", href: "/rewards" },
-    { icon: Settings, label: "Settings", href: "/settings" },
-];
-
 export function Sidebar({ className }: { className?: string }) {
     const pathname = usePathname();
     const { user, isAuthenticated } = useSession();
+
+    const sidebarItems = [
+        { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+        { icon: Smartphone, label: "Smart Bin", href: "/smartBin" },
+        { icon: Scan, label: "AI Waste Scanner", href: "/scan" },
+        { icon: Map, label: "Bin Map", href: "/map" },
+        { icon: Award, label: "Rewards", href: "/rewards" },
+        { icon: Settings, label: "Settings", href: "/settings" },
+    ];
 
     // Filter items based on role
     const filteredItems = sidebarItems;

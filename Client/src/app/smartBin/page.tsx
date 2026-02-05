@@ -284,7 +284,7 @@ export default function SmartBinMachine() {
     return (
         <div className="min-h-screen bg-neutral-900 flex items-center justify-center p-4 font-mono select-none">
             {/* --- INDUSTRIAL MACHINE CONTAINER --- */}
-            <div className="relative w-full max-w-5xl bg-[#FFD700] rounded-[2.5rem] border-[8px] border-black shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col transition-transform duration-500">
+            <div className="relative w-full max-w-lg bg-[#FFD700] rounded-[2.5rem] border-[8px] border-black shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col transition-transform duration-500">
 
                 {/* 1. Header Plate */}
                 <div className="bg-black p-4 flex justify-between items-center border-b-4 border-black/20">
