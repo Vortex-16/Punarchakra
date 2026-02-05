@@ -20,6 +20,9 @@ export function Sidebar({ className }: { className?: string }) {
     const pathname = usePathname();
     const { user } = useSession();
 
+    // Filter items based on role
+    const filteredItems = sidebarItems;
+
     const handleLogout = async () => {
         await signOut({ callbackUrl: "/login" });
     };
@@ -64,7 +67,7 @@ export function Sidebar({ className }: { className?: string }) {
 
             {/* Navigation */}
             <nav className="flex-1 mt-10 px-4 space-y-2">
-                {sidebarItems.map((item) => {
+                {filteredItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
                         <Link

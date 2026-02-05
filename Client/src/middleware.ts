@@ -12,20 +12,29 @@ export default async function middleware(request: NextRequest) {
     const session = await auth();
     const { pathname } = request.nextUrl;
 
-    // Check if the route is public
-    const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(route));
+    // Strict equality for root, startsWith for others if needed (e.g. /login/forgot-password)
+    // For now, we stick to exact paths or specific subpaths if defined.
+    const isPublicRoute = publicRoutes.includes(pathname);
 
-    // If not authenticated and trying to access protected route
+    // 1. Unauthenticated User trying to access Protected Route
     if (!session && !isPublicRoute) {
         const loginUrl = new URL("/login", request.url);
-        loginUrl.searchParams.set("callbackUrl", pathname);
+        // Add callbackUrl only if it's not the root (to avoid loops or redundancy)
+        if (pathname !== "/") {
+            loginUrl.searchParams.set("callbackUrl", pathname);
+        }
         return NextResponse.redirect(loginUrl);
     }
 
-    // Check admin access for admin routes
+    // 2. Authenticated User trying to access Public Auth Routes (Login/Register)
+    // Redirect them to dashboard instead of showing login form again
+    if (session && (pathname === "/login" || pathname === "/register")) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
+    // 3. Admin Route Protection
     const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route));
     if (isAdminRoute && session?.user?.role !== "admin") {
-        // Redirect non-admin users trying to access admin pages
         return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 

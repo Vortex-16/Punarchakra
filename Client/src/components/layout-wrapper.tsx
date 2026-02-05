@@ -10,9 +10,9 @@ export default function LayoutWrapper({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const isLandingPage = pathname === "/" || pathname === "/home";
+    const isPublicPage = pathname === "/" || pathname === "/home" || pathname === "/login" || pathname === "/register";
 
-    if (isLandingPage) {
+    if (isPublicPage) {
         return <div className="min-h-screen bg-background">{children}</div>;
     }
 

@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 
 export const {
     handlers: { GET, POST },
@@ -8,6 +9,10 @@ export const {
     signOut,
 } = NextAuth({
     providers: [
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        }),
         CredentialsProvider({
             name: "Credentials",
             credentials: {
@@ -32,8 +37,7 @@ export const {
                     const user = await res.json();
 
                     if (res.ok && user) {
-                        // Return user object including the token
-                        return user;
+                        return user; // Return user object provided by backend
                     }
                     return null;
                 } catch (error) {
@@ -44,6 +48,41 @@ export const {
         }),
     ],
     callbacks: {
+        async signIn({ user, account }) {
+            if (account?.provider === "google") {
+                try {
+                    const res = await fetch("http://localhost:5000/api/auth/google", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            name: user.name,
+                            email: user.email,
+                            googleId: account.providerAccountId,
+                        }),
+                    });
+
+                    const backendUser = await res.json();
+
+                    if (res.ok && backendUser) {
+                        // Attach backend token to the user object so it persists in the JWT
+                        // @ts-ignore
+                        user.token = backendUser.token;
+                        // @ts-ignore
+                        user.role = backendUser.role;
+                        // @ts-ignore
+                        user._id = backendUser._id;
+                        return true;
+                    }
+                    return false;
+                } catch (error) {
+                    console.error("Google Auth Backend Sync Error:", error);
+                    return false;
+                }
+            }
+            return true;
+        },
         async jwt({ token, user, trigger, session }) {
             // Initial sign in
             if (user) {

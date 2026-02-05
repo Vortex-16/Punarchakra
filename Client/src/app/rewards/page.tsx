@@ -6,6 +6,7 @@ import { useSession } from "@/hooks/useSession";
 import { useEffect, useState } from "react";
 import api, { redeemReward } from "@/lib/api";
 import { useToast } from "@/components/ui/use-toast";
+import { ModeToggle } from "@/components/mode-toggle";
 
 // Mock Data for Rewards (Still static as they are products)
 const rewards = [
@@ -142,15 +143,20 @@ export default function RewardsPage() {
 
     return (
         <div className="space-y-8">
+
+
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Rewards & Impact</h1>
                     <p className="text-gray-500 dark:text-gray-400">Track your contribution and redeem earned points.</p>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-forest-green/10 text-forest-green rounded-xl font-bold">
-                    <Gift className="w-5 h-5" />
-                    <span>{points} Points Available</span>
+                <div className="flex items-center gap-3">
+                    <ModeToggle />
+                    <div className="flex items-center gap-2 px-4 py-2 bg-forest-green/10 text-forest-green rounded-xl font-bold">
+                        <Gift className="w-5 h-5" />
+                        <span>{points} Points Available</span>
+                    </div>
                 </div>
             </div>
 

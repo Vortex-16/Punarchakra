@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { Camera, Upload, X, RefreshCw, ScanLine } from 'lucide-react';
+import { Camera, Upload, X, RefreshCw, ScanLine, Image as ImageIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface CameraInputProps {
@@ -30,7 +30,7 @@ export function CameraInput({ onCapture, isScanning }: CameraInputProps) {
     reader.onloadend = () => {
       setPreview(reader.result as string);
       setSelectedFile(file); // Store file but don't capture yet
-      stopCamera(); 
+      stopCamera();
     };
     reader.readAsDataURL(file);
   };
@@ -58,8 +58,8 @@ export function CameraInput({ onCapture, isScanning }: CameraInputProps) {
   // Webcam Handling
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
       });
       setActiveStream(stream);
       setIsStreaming(true);
@@ -73,7 +73,7 @@ export function CameraInput({ onCapture, isScanning }: CameraInputProps) {
   // Effect to attach stream to video element when it becomes available
   useEffect(() => {
     if (isStreaming && activeStream && videoRef.current) {
-        videoRef.current.srcObject = activeStream;
+      videoRef.current.srcObject = activeStream;
     }
   }, [isStreaming, activeStream]);
 
@@ -128,7 +128,7 @@ export function CameraInput({ onCapture, isScanning }: CameraInputProps) {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-xl mx-auto py-4">
       <input
         type="file"
         accept="image/*"
@@ -136,7 +136,7 @@ export function CameraInput({ onCapture, isScanning }: CameraInputProps) {
         ref={fileInputRef}
         onChange={handleFileChange}
       />
-      
+
       <input
         type="file"
         accept="image/*"
@@ -147,97 +147,111 @@ export function CameraInput({ onCapture, isScanning }: CameraInputProps) {
       />
 
       {isStreaming ? (
-        <div className="relative rounded-2xl overflow-hidden shadow-lg bg-black aspect-[4/3]">
-           <video 
-             ref={videoRef} 
-             autoPlay 
-             playsInline 
-             muted 
-             className="w-full h-full object-cover"
-           />
-           <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
-             <button
-               onClick={stopCamera}
-               className="p-3 bg-red-500/80 hover:bg-red-600 text-white rounded-full backdrop-blur-sm transition-colors"
-             >
-               <X className="w-6 h-6" />
-             </button>
-             <button
-               onClick={capturePhoto}
-               className="p-4 bg-white/90 hover:bg-white text-forest-green rounded-full shadow-lg transition-transform hover:scale-105"
-             >
-               <div className="w-6 h-6 rounded-full border-2 border-current" />
-             </button>
-           </div>
+        <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-black aspect-[4/5] border border-gray-800">
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/50 to-transparent" />
+          <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-8 items-center z-10">
+            <button
+              onClick={stopCamera}
+              className="p-3 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-md transition-all pointer-events-auto"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <button
+              onClick={capturePhoto}
+              className="p-1 rounded-full border-4 border-white/30 pointer-events-auto transition-transform active:scale-95"
+            >
+              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-white border-2 border-gray-300 rounded-full" />
+              </div>
+            </button>
+            <button // Placeholder for balance or toggle camera
+              className="p-3 bg-transparent text-transparent rounded-full"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
         </div>
       ) : preview ? (
-        <div className="relative rounded-2xl overflow-hidden shadow-lg aspect-square bg-gray-900 group">
-          <img src={preview} alt="Preview" className="w-full h-full object-cover opacity-80" />
-          
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-gradient-to-t from-black/80 via-transparent to-transparent">
-             {!isScanning && (
-               <div className="w-full flex flex-col gap-3 mt-auto">
-                  <button
-                    onClick={handleConfirm}
-                    className="w-full py-3 bg-forest-green hover:bg-green-700 text-white rounded-xl font-bold text-lg shadow-xl shadow-forest-green/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2"
-                  >
-                    <ScanLine className="w-5 h-5" />
-                    Identify Item
-                  </button>
-                  <button
-                    onClick={clearImage}
-                    className="w-full py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium backdrop-blur-md transition-colors flex items-center justify-center gap-2"
-                  >
-                    <RefreshCw className="w-4 h-4" />
-                    Retake
-                  </button>
-               </div>
-             )}
+        <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/5] bg-gray-900 group border border-gray-800">
+          <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-black/40 backdrop-blur-[2px]">
+            {!isScanning && (
+              <div className="w-full flex flex-col gap-4 mt-auto max-w-sm">
+                <button
+                  onClick={handleConfirm}
+                  className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-emerald-500/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-3 backdrop-blur-sm"
+                >
+                  <ScanLine className="w-6 h-6" />
+                  Identify Item
+                </button>
+                <button
+                  onClick={clearImage}
+                  className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-medium backdrop-blur-md transition-colors flex items-center justify-center gap-2 border border-white/10"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  Retake Photo
+                </button>
+              </div>
+            )}
           </div>
         </div>
       ) : (
         <motion.div
-            layout
-            className={`relative border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-colors aspect-[4/3] ${
-            dragActive
-                ? "border-forest-green bg-forest-green/5"
-                : "border-gray-300 dark:border-gray-700 hover:border-forest-green dark:hover:border-forest-green hover:bg-gray-50 dark:hover:bg-gray-800/50"
+          layout
+          className={`relative border border-dashed rounded-3xl p-10 flex flex-col items-center justify-center text-center cursor-pointer transition-all aspect-[4/3] group overflow-hidden ${dragActive
+            ? "border-emerald-500 bg-emerald-500/10 scale-[1.02]"
+            : "border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 hover:bg-gray-50 dark:hover:bg-gray-900 hover:border-emerald-500/50 dark:hover:border-emerald-500/50"
             }`}
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+          onClick={() => fileInputRef.current?.click()}
         >
-          <div className="w-16 h-16 mb-4 rounded-full bg-forest-green/10 flex items-center justify-center text-forest-green">
-            <Camera className="w-8 h-8" />
+          {/* Subtle grid background */}
+          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none"
+            style={{ backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '20px 20px' }}
+          />
+
+          <div className="w-20 h-20 mb-6 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+            <ScanLine className="w-10 h-10" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Scan e-waste
+
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            Upload Image
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-[200px]">
-            Take a photo or upload an image to identify your item
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-[240px] leading-relaxed">
+            Drag & drop an image here, or click to select from files
           </p>
-          <div className="flex gap-3">
-             <button 
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  startCamera();
-                }}
-                className="px-4 py-2 bg-forest-green text-white rounded-lg text-sm font-medium shadow-lg shadow-forest-green/20 hover:bg-opacity-90 transition-all flex items-center gap-2"
-             >
-                <Camera className="w-4 h-4" />
-                Open Camera
-             </button>
-             <button 
-                type="button"
-                onClick={triggerUpload}
-                className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-2"
-             >
-                <Upload className="w-4 h-4" />
-                Upload
-             </button>
+
+          <div className="flex gap-4 w-full max-w-xs relative z-10">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                startCamera();
+              }}
+              className="flex-1 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl text-sm font-bold shadow-lg hover:shadow-xl hover:translate-y-[-2px] transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Camera className="w-4 h-4" />
+              Camera
+            </button>
+            <button
+              type="button"
+              onClick={triggerUpload}
+              className="flex-1 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 rounded-xl text-sm font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <ImageIcon className="w-4 h-4" />
+              Browse
+            </button>
           </div>
         </motion.div>
       )}
