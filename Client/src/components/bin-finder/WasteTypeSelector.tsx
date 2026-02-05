@@ -13,7 +13,7 @@ export default function WasteTypeSelector({ selectedType, onSelect }: WasteTypeS
     <div className="w-full overflow-x-auto pb-4">
       <div className="flex gap-3 md:grid md:grid-cols-6 min-w-max md:min-w-0">
         {WASTE_TYPES.map((item) => {
-          const Icon = item.icon;
+          const Icon = item.icon as import("lucide-react").LucideIcon;
           const isSelected = selectedType === item.type;
 
           return (

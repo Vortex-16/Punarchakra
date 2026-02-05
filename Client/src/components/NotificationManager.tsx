@@ -17,12 +17,21 @@ export default function NotificationManager() {
     useEffect(() => {
         if ("serviceWorker" in navigator && "PushManager" in window) {
             setIsSupported(true);
-            registerServiceWorker();
+            // Register our custom service worker
+            navigator.serviceWorker.register('/sw.js')
+                .then((registration) => {
+                    console.log('Service Worker registered:', registration);
+                    registerServiceWorker();
+                })
+                .catch((error) => {
+                    console.error('Service Worker registration failed:', error);
+                });
         }
     }, []);
 
     const registerServiceWorker = async () => {
         try {
+            // Wait for next-pwa to register the service worker
             const registration = await navigator.serviceWorker.ready;
             const sub = await registration.pushManager.getSubscription();
             if (sub) {
@@ -30,44 +39,61 @@ export default function NotificationManager() {
                 setIsSubscribed(true);
             }
         } catch (error) {
-            console.error("Service Worker registration failed:", error);
+            console.error("Service Worker check failed:", error);
         }
     };
 
     const subscribeToPush = async () => {
         try {
-            const registration = await navigator.serviceWorker.ready;
-            
-            // Check current permission
-            if (Notification.permission === 'denied') {
-                toast({
-                    title: "Permission Denied",
-                    description: "Please enable notifications in your browser settings.",
-                    variant: "destructive"
-                });
-                return;
+            toast({ title: "Status", description: "Starting subscription process..." });
+
+            if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
+                throw new Error("VAPID public key is missing.");
             }
 
+            // 1. Request Permission
+            if (Notification.permission === 'default') {
+                toast({ title: "Permission", description: "Requesting notification permission..." });
+                const permission = await Notification.requestPermission();
+                if (permission === 'denied') {
+                    throw new Error("Permission denied by user.");
+                }
+            } else if (Notification.permission === 'denied') {
+                throw new Error("Notifications are blocked. Please enable them in browser settings.");
+            }
+
+            // 2. Service Worker Registration (handled by next-pwa)
+            toast({ title: "Status", description: "Waiting for Service Worker..." });
+            const registration = await navigator.serviceWorker.ready;
+
+            // 3. Subscribe
+            toast({ title: "Status", description: "Subscribing to Push Service..." });
             const sub = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!) as any
             });
 
+            console.log("Push Subscription successful:", sub);
             setSubscription(sub);
             setIsSubscribed(true);
             
-            // Send subscription to backend
+            // 4. Save to Backend
+            toast({ title: "Status", description: "Saving subscription to server..." });
             await saveSubscription(sub);
             
             toast({
-                title: "Subscribed!",
-                description: "You will now receive notifications about nearby bins and rewards.",
+                title: "Success! 🎉",
+                description: "You are now subscribed to notifications.",
             });
         } catch (error) {
             console.error("Failed to subscribe:", error);
+            let errorMessage = "Failed to subscribe.";
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            }
             toast({
                 title: "Error",
-                description: "Failed to subscribe to notifications.",
+                description: errorMessage,
                 variant: "destructive"
             });
         }
