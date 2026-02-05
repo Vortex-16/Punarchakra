@@ -198,7 +198,16 @@ const depositItem = async (req, res) => {
             message: 'Deposit successful',
             pointsAdded: points,
             totalPoints: user.points,
-            binFillLevel: bin ? bin.fillLevel : null
+            binFillLevel: bin ? bin.fillLevel : null,
+            // Return updated user data for session refresh
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                points: user.points,
+                history: user.history.slice(0, 10) // Return last 10 history items
+            }
         });
 
     } catch (error) {
@@ -243,7 +252,7 @@ const getBinAnalytics = async (req, res) => {
 const getBinPredictions = async (req, res) => {
     try {
         const binId = req.params.id;
-        
+
         if (binId) {
             // Get prediction for specific bin
             const prediction = await predictionService.predictFillTime(binId);
@@ -279,7 +288,7 @@ const getCollectionSchedule = async (req, res) => {
 const recordFillLevel = async (req, res) => {
     try {
         const { binId, fillLevel } = req.body;
-        
+
         if (!binId || fillLevel === undefined) {
             return res.status(400).json({ message: 'binId and fillLevel are required' });
         }
@@ -300,7 +309,7 @@ const recordFillLevel = async (req, res) => {
 
         // Record in history
         const record = await predictionService.recordFillLevel(binId, fillLevel, 'manual');
-        
+
         res.status(200).json({
             message: 'Fill level recorded',
             bin,

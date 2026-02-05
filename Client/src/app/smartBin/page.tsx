@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, Camera, RefreshCw, AlertTriangle, CheckCircle, Loader2, X, Zap, Box, Recycle, QrCode, Globe, Battery, Wifi, Truck } from "lucide-react";
 import { detectWaste } from "@/app/actions/detectWaste";
-import { useSession } from "@/hooks/useSession";
+import { useSession as useNextAuthSession } from "next-auth/react";
 import { depositWasteItem } from "@/lib/api";
 import { useToast } from "@/components/ui/use-toast";
 import { SchedulePickup } from "@/components/smart-bin/SchedulePickup";
@@ -97,7 +97,7 @@ const TRANSLATIONS = {
 };
 
 export default function SmartBinMachine() {
-    const { session } = useSession(); // Access user session
+    const { data: session, update: updateSession } = useNextAuthSession(); // Access user session with update
     const { toast } = useToast();
     const [status, setStatus] = useState<"locked" | "idle" | "camera" | "analyzing" | "result" | "error">("locked");
     const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -243,12 +243,13 @@ export default function SmartBinMachine() {
     };
 
     const handleConfirmDeposit = async () => {
-        if (!result || !session?.accessToken) return;
+        const accessToken = (session as any)?.accessToken;
+        if (!result || !accessToken) return;
 
         try {
             // Show loading or optimistic update?
             const depositRes = await depositWasteItem(
-                session.accessToken,
+                accessToken,
                 result.label,
                 result.estimated_credit,
                 result.sustainability_score
@@ -261,9 +262,17 @@ export default function SmartBinMachine() {
                 setFillLevel(depositRes.binFillLevel);
             }
 
+            // Refresh the NextAuth session with updated user data
+            if (depositRes.user) {
+                // Call updateSession with the new user data to refresh points and history
+                await updateSession({
+                    user: depositRes.user
+                });
+            }
+
             toast({
                 title: "Deposit Successful! 🎉",
-                description: `${result.estimated_credit} credits added to ${session.user?.email}`,
+                description: `${result.estimated_credit} credits added to ${session?.user?.email}`,
                 variant: "default"
             });
 

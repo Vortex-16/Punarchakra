@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { motion } from "framer-motion";
@@ -43,7 +43,36 @@ export default function DashboardPage() {
     const containerRef = useRef<HTMLDivElement>(null);
     const { stats, loading } = useBinStats();
     const { bins = [] } = useBins();
-    const { user, isAuthenticated, isLoading: sessionLoading } = useSession();
+    const { user: sessionUser, isAuthenticated, isLoading: sessionLoading, session } = useSession();
+    const [userData, setUserData] = useState<any>(null);
+
+    // Fetch fresh user data on mount
+    useEffect(() => {
+        const fetchUserData = async () => {
+            if (session?.accessToken) {
+                try {
+                    // Import api dynamically or use fetch if api helper isn't available in this file yet
+                    // checking imports... needs api import
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/auth/me`, {
+                        headers: { Authorization: `Bearer ${session.accessToken}` }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        setUserData(data);
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch user data", error);
+                }
+            }
+        };
+
+        if (session?.accessToken) {
+            fetchUserData();
+        }
+    }, [session]);
+
+    // Use userData if available, otherwise fall back to sessionUser
+    const user = userData || sessionUser;
 
     useGSAP(() => {
         gsap.from(".stats-card", {
@@ -147,7 +176,7 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, x: 0 }}
                     className="bg-white dark:bg-neutral-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800"
                 >
-                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Recent Activity</h2>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Recent Deposited Items</h2>
                     {user?.history && user.history.length > 0 ? (
                         <div className="space-y-4">
                             {user.history.slice(0, 5).map((item: any, i: number) => {
