@@ -131,5 +131,6 @@ export const {
     session: {
         strategy: "jwt",
     },
+    trustHost: true,
     debug: true, // Enable debug messages for development
 });

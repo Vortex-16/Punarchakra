@@ -8,10 +8,15 @@ The frontend is a Next.js application.
 
 1. **Connect to Vercel**: Import your repository into Vercel.
 2. **Environment Variables**: Add the following in Vercel Project Settings:
-   - `NEXT_PUBLIC_API_URL`: Your deployed backend URL (e.g., `https://punarchakra-api.onrender.com/api`)
+   - `NEXT_PUBLIC_API_URL`: `https://punarchakra.onrender.com/api`
    - `NEXT_PUBLIC_GROQ_API_KEY`: Your Groq API Key
-   - `NEXTAUTH_SECRET`: A random secure string (`openssl rand -base64 32`)
-   - `NEXTAUTH_URL`: Your deployed frontend URL (e.g., `https://punarchakra.vercel.app`)
+   - `AUTH_SECRET`: `Dozhl/1wYieU06duL60SSNDODBB9Pgaghp6EsbJ8g9Ps=` (This is the NEW name for `NEXTAUTH_SECRET`)
+   - `AUTH_TRUST_HOST`: `true` (Crucial for Vercel/proxies)
+   - `GOOGLE_CLIENT_ID`: Your Google client ID
+   - `GOOGLE_CLIENT_SECRET`: Your Google client secret
+
+> [!WARNING]
+> **Important**: Go to Vercel **Settings** > **Deployment Protection** and ensure **"Vercel Authentication"** is **Disabled**. If enabled, it will block your login API with a `401 Unauthorized` error.
 3. **Build Settings**:
    - Framework: Next.js
    - Build Command: `npm run build`
