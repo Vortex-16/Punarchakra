@@ -14,7 +14,13 @@ const app = express();
 connectDB();
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+    origin: [process.env.CLIENT_URL || 'http://localhost:3000', 'http://localhost:3001'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+};
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '50mb' })); // Increase limit for base64 images
 app.use(morgan('dev'));
 
