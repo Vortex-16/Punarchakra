@@ -54,10 +54,17 @@ export default function LandingFooter() {
                             Empowering communities to build a circular economy through AI-driven e-waste recycling solutions.
                         </p>
                         <div className="flex gap-4">
-                            {[Twitter, Instagram, Linkedin, Github].map((Icon, i) => (
+                            {[
+                                { Icon: Twitter, href: "#" },
+                                { Icon: Instagram, href: "#" },
+                                { Icon: Linkedin, href: "https://www.linkedin.com/company/alpha4coders" },
+                                { Icon: Github, href: "https://github.com/Vortex-16/Punarchakra" }
+                            ].map(({ Icon, href }, i) => (
                                 <Link
                                     key={i}
-                                    href="#"
+                                    href={href}
+                                    target={href !== "#" ? "_blank" : undefined}
+                                    rel={href !== "#" ? "noopener noreferrer" : undefined}
                                     className="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-forest-green transition-all duration-300 group"
                                 >
                                     <Icon className="w-5 h-5 group-hover:scale-110 transition-transform" />

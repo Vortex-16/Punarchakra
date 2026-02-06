@@ -103,17 +103,21 @@ export default function HeroSection() {
 
                             <div className="flex flex-col sm:flex-row items-center gap-4 pt-2 opacity-0">
                                 <Link
-                                    href="/dashboard"
+                                    href={isMounted && isAuthenticated ? "/dashboard" : "/login"}
                                     className="w-full sm:w-auto px-8 py-4 bg-forest-green hover:bg-[#0a3f30] text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-xl shadow-forest-green/30 hover:shadow-2xl hover:shadow-forest-green/40 hover:-translate-y-1 group relative overflow-hidden"
                                 >
                                     <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
                                     <span className="relative z-10 flex items-center gap-2">
-                                        {isMounted && isAuthenticated ? 'Open App' : 'Start App'} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        {isMounted && isAuthenticated ? 'Open App' : 'Get Started For Free'} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                     </span>
                                 </Link>
-                                <button className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-white/5 text-gray-900 dark:text-white rounded-2xl font-bold flex items-center justify-center gap-2 border-2 border-transparent hover:border-gray-200 dark:hover:border-neutral-700 hover:bg-gray-50 dark:hover:bg-white/10 transition-all backdrop-blur-md">
+                                <Link
+                                    href="https://drive.google.com/file/d/15WDSTvG2J9wDqfyYuSn_e6oG-zGXIeSZ/view?usp=drive_link"
+                                    target="_blank"
+                                    className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-white/5 text-gray-900 dark:text-white rounded-2xl font-bold flex items-center justify-center gap-2 border-2 border-transparent hover:border-gray-200 dark:hover:border-neutral-700 hover:bg-gray-50 dark:hover:bg-white/10 transition-all backdrop-blur-md"
+                                >
                                     <Play className="w-4 h-4 fill-current" /> Watch Demo
-                                </button>
+                                </Link>
                             </div>
 
                             {/* Stats / Trust */}

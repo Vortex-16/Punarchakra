@@ -119,13 +119,13 @@ export default function NavigationHeader() {
                             ) : (
                                 <>
                                     <Link
-                                        href="/dashboard"
+                                        href="/login"
                                         className="text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-forest-green dark:hover:text-emerald-400 transition-colors"
                                     >
                                         Login
                                     </Link>
                                     <Link
-                                        href="/dashboard"
+                                        href="/register"
                                         className="relative px-5 py-2.5 bg-forest-green text-white rounded-xl text-sm font-bold shadow-lg shadow-forest-green/25 hover:shadow-forest-green/40 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden group"
                                     >
                                         <span className="relative z-10">Sign Up</span>
@@ -185,13 +185,13 @@ export default function NavigationHeader() {
                                 ) : (
                                     <>
                                         <Link
-                                            href="/dashboard"
+                                            href="/login"
                                             className="flex items-center justify-center py-3 text-gray-700 dark:text-gray-300 font-bold hover:text-forest-green bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10"
                                         >
                                             Login
                                         </Link>
                                         <Link
-                                            href="/dashboard"
+                                            href="/register"
                                             className="flex items-center justify-center py-3 bg-forest-green text-white rounded-xl font-bold shadow-lg shadow-forest-green/20"
                                         >
                                             Sign Up

@@ -4,9 +4,16 @@ import Link from "next/link";
 import { ArrowRight, Sparkles, Zap, Shield } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useSession } from "@/hooks/useSession";
 
 export default function FinalCTA() {
     const containerRef = useRef<HTMLElement>(null);
+    const { isAuthenticated } = useSession();
+    const [isMounted, setIsMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     useGSAP(() => {
         gsap.fromTo(".cta-content > *",
@@ -49,14 +56,18 @@ export default function FinalCTA() {
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                             <Link
-                                href="/dashboard"
+                                href={isMounted && isAuthenticated ? "/dashboard" : "/login"}
                                 className="w-full sm:w-auto px-10 py-5 bg-white text-forest-green hover:bg-emerald-50 rounded-2xl font-black text-lg transition-all shadow-xl hover:-translate-y-1 flex items-center justify-center gap-2"
                             >
                                 Get Started Free <ArrowRight className="w-6 h-6" />
                             </Link>
-                            <button className="w-full sm:w-auto px-10 py-5 border-2 border-white/20 hover:bg-white/10 text-white rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-2">
-                                Contact Sales
-                            </button>
+                            <Link
+                                href="https://drive.google.com/file/d/15WDSTvG2J9wDqfyYuSn_e6oG-zGXIeSZ/view?usp=drive_link"
+                                target="_blank"
+                                className="w-full sm:w-auto px-10 py-5 border-2 border-white/20 hover:bg-white/10 text-white rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-2"
+                            >
+                                Demo Video
+                            </Link>
                         </div>
 
                         {/* Final Reassurances */}
