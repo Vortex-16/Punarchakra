@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
 
 export const {
     handlers: { GET, POST },
@@ -12,6 +13,10 @@ export const {
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        }),
+        FacebookProvider({
+            clientId: process.env.FACEBOOK_CLIENT_ID,
+            clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
         }),
         CredentialsProvider({
             name: "Credentials",
@@ -96,6 +101,48 @@ export const {
                     return false;
                 } catch (error) {
                     console.error("Google Auth Backend Sync Error:", error);
+                    return false;
+                }
+            }
+            
+            if (account?.provider === "facebook") {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+                try {
+                    const res = await fetch(`${apiUrl}/auth/facebook`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            name: user.name,
+                            email: user.email,
+                            facebookId: account.providerAccountId,
+                        }),
+                    });
+
+                    const responseText = await res.text();
+                    let backendUser;
+
+                    try {
+                        backendUser = JSON.parse(responseText);
+                    } catch (e) {
+                        console.error("Facebook Auth: Non-JSON response:", responseText);
+                        return false;
+                    }
+
+                    if (res.ok && backendUser) {
+                        // Attach backend token to the user object so it persists in the JWT
+                        // @ts-ignore
+                        user.token = backendUser.token;
+                        // @ts-ignore
+                        user.role = backendUser.role;
+                        // @ts-ignore
+                        user._id = backendUser._id;
+                        return true;
+                    }
+                    return false;
+                } catch (error) {
+                    console.error("Facebook Auth Backend Sync Error:", error);
                     return false;
                 }
             }
