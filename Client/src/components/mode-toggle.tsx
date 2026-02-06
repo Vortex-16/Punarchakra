@@ -6,8 +6,8 @@ import { Cloud, Star } from "lucide-react";
 import { useTheme } from "next-themes";
 
 export function ModeToggle() {
-    const { theme, setTheme } = useTheme();
-    const isDark = theme === "dark";
+    const { theme, setTheme, resolvedTheme } = useTheme();
+    const isDark = resolvedTheme === "dark";
 
     const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
         const newTheme = isDark ? "light" : "dark";

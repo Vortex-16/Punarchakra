@@ -6,8 +6,8 @@ import { Sun, Moon, Cloud, Star } from "lucide-react";
 import { useTheme } from "next-themes";
 
 export default function ThemeToggle() {
-    const { theme, setTheme } = useTheme();
-    const isDark = theme === "dark";
+    const { theme, setTheme, resolvedTheme } = useTheme();
+    const isDark = resolvedTheme === "dark";
 
     const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
         const newTheme = isDark ? "light" : "dark";
