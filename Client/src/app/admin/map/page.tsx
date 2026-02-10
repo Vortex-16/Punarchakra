@@ -34,7 +34,9 @@ export default function AdminMapPage() {
     useEffect(() => {
         const fetchBins = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/bins');
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+                const res = await fetch(`${apiUrl}/bins`);
+                if (!res.ok) throw new Error('Failed to fetch bins');
                 const data = await res.json();
                 setBins(data);
             } catch (error) {

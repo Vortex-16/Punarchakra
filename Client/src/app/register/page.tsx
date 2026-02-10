@@ -22,8 +22,17 @@ export default function RegisterPage() {
         setIsLoading(true);
         setError("");
 
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+        if (!apiUrl) {
+            setError("API URL is not configured");
+            setIsLoading(false);
+            return;
+        }
+
         try {
-            const res = await fetch("http://localhost:5000/api/auth/register", {
+            console.log("Attempting to register with URL:", `${apiUrl}/auth/register`);
+            const res = await fetch(`${apiUrl}/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -42,7 +51,12 @@ export default function RegisterPage() {
                 setError(data.message || "Registration failed");
             }
         } catch (err) {
-            setError("An unexpected error occurred");
+            console.error("Registration error:", err);
+            if (err instanceof TypeError && err.message === "Failed to fetch") {
+                setError("Network error: Could not connect to the server. Please ensure the backend is running.");
+            } else {
+                setError("An unexpected error occurred. Check the console for details.");
+            }
         } finally {
             setIsLoading(false);
         }

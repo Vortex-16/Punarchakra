@@ -27,7 +27,7 @@ providers.push(
         async authorize(credentials) {
             if (!credentials?.email || !credentials?.password) return null;
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
             try {
                 const res = await fetch(`${apiUrl}/auth/login`, {
@@ -72,7 +72,7 @@ export const {
     callbacks: {
         async signIn({ user, account }) {
             if (account?.provider === "google") {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
                 try {
                     const res = await fetch(`${apiUrl}/auth/google`, {
                         method: "POST",
